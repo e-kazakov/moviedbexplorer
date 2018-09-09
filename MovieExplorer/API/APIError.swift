@@ -9,5 +9,6 @@
 enum APIError: Error {
   case noData
   case jsonMapping(inner: ParsingError)
+  case network(inner: Error?)
   case unknown(inner: Error?)
 }
