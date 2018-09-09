@@ -11,7 +11,7 @@ import Foundation
 typealias HTTPParametersEncoder = (URLRequest) -> URLRequest
 
 protocol HTTPResourceParameters {
-  func encode(in request: URLRequest) throws -> URLRequest
+  func encode(in request: URLRequest) -> URLRequest
 }
 
 struct URLQueryParameters: HTTPResourceParameters {
@@ -22,7 +22,7 @@ struct URLQueryParameters: HTTPResourceParameters {
     self.queryParameters = queryParameters
   }
   
-  func encode(in request: URLRequest) throws -> URLRequest {
+  func encode(in request: URLRequest) -> URLRequest {
     
     var req = request
     req.appendQueryItems(queryParameters.map(URLQueryItem.init))

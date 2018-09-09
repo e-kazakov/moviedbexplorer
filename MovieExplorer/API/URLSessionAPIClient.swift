@@ -42,15 +42,11 @@ class URLSessionAPIClient: APIClient {
   }
   
   func fetch<T>(resource: HTTPResource<T>, callback: @escaping (Result<T, APIError>) -> Void) {
-    do {
-      let task = urlSession.dataTask(
-        with: try request(for: resource),
-        completionHandler: dataTaskCompletionHandler(resource: resource, callback: callback)
-      )
-      task.resume()
-    } catch {
-      callback(.failure(.parameterEncoding(inner: error)))
-    }
+    let task = urlSession.dataTask(
+      with: request(for: resource),
+      completionHandler: dataTaskCompletionHandler(resource: resource, callback: callback)
+    )
+    task.resume()
   }
   
   private func dataTaskCompletionHandler<T>(
@@ -73,11 +69,11 @@ class URLSessionAPIClient: APIClient {
     }
   }
   
-  private func request<T>(for resource: HTTPResource<T>) throws -> URLRequest {
+  private func request<T>(for resource: HTTPResource<T>) -> URLRequest {
     let url = apiBase.appendingPathComponent(resource.path)
     let configuredRequest = configure(request: URLRequest(url: url))
     if let queryParams = resource.parameters {
-      return try queryParams.encode(in: configuredRequest)
+      return queryParams.encode(in: configuredRequest)
     } else {
       return configuredRequest
     }
