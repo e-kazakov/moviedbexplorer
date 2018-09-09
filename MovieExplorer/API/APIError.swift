@@ -7,7 +7,6 @@
 //
 
 enum APIError: Error {
-  case parameterEncoding(inner: Error)
   case noData
   case jsonMapping(inner: ParsingError)
   case unknown(inner: Error?)
