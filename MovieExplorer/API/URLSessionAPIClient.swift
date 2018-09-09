@@ -11,34 +11,24 @@ import Foundation
 struct MovieDBServerConfig {
   let apiBase: URL
   let imageBase: URL
-}
-
-enum PosterSize: String {
-  case w92 = "w92"
-  case w185 = "w185"
-  case w500 = "w500"
-  case w780 = "w780"
+  let apiKey: String
 }
 
 class URLSessionAPIClient: APIClient {
 
-  private let urlSession: URLSession
+  private let urlSession: URLSessionProtocol
   
-  private let apiKey = "8ce5ac519ae011454741f33c416274e2"
+  private let serverConfig: MovieDBServerConfig
+
+  static let apiKeyQueryItemName = "api_key"
   
-  private let apiKeyQueryItemName = "api_key"
-  
-  private let apiBase: URL
-  private let imageBase: URL
-  
-  init(apiBase: URL, imageBase: URL, urlSession: URLSession) {
-    self.apiBase = apiBase
-    self.imageBase = imageBase
+  init(serverConfig: MovieDBServerConfig, urlSession: URLSessionProtocol) {
+    self.serverConfig = serverConfig
     self.urlSession = urlSession
   }
   
   func posterURL(path: String, size: PosterSize) -> URL {
-    return imageBase.appendingPathComponent(size.rawValue).appendingPathComponent(path)
+    return serverConfig.imageBase.appendingPathComponent(size.rawValue).appendingPathComponent(path)
   }
   
   func fetch<T>(resource: HTTPResource<T>, callback: @escaping (Result<T, APIError>) -> Void) {
@@ -55,7 +45,7 @@ class URLSessionAPIClient: APIClient {
   ) -> (Data?, URLResponse?, Error?) -> Void {
     return { data, response, error in
       if let error = error {
-        callback(.failure(.unknown(inner: error)))
+        callback(.failure(.network(inner: error)))
       } else {
         if let data = data {
           let parsingResult = resource.parse(data)
@@ -70,18 +60,24 @@ class URLSessionAPIClient: APIClient {
   }
   
   private func request<T>(for resource: HTTPResource<T>) -> URLRequest {
-    let url = apiBase.appendingPathComponent(resource.path)
-    let configuredRequest = configure(request: URLRequest(url: url))
+    let request = configure(request: createRequest(for: resource))
     if let queryParams = resource.parameters {
-      return queryParams.encode(in: configuredRequest)
+      return queryParams.encode(in: request)
     } else {
-      return configuredRequest
+      return request
     }
+  }
+  
+  private func createRequest<T>(for resource: HTTPResource<T>) -> URLRequest {
+    let url = serverConfig.apiBase.appendingPathComponent(resource.path)
+    var request = URLRequest(url: url)
+    request.httpMethod = resource.method.rawValue
+    return request
   }
   
   private func configure(request: URLRequest) -> URLRequest {
     var req = request
-    req.appendQueryItem(URLQueryItem(name: apiKeyQueryItemName, value: apiKey))
+    req.appendQueryItem(URLQueryItem(name: URLSessionAPIClient.apiKeyQueryItemName, value: serverConfig.apiKey))
     return req
   }
   

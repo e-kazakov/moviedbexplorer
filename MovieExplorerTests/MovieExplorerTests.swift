@@ -12,9 +12,12 @@ import XCTest
 class MovieExplorerTests: XCTestCase {
   
   func testApi() {
-    let apiBaseURL = URL(string: "https://api.themoviedb.org/3")!
-    let imageBase = URL(string: "https://image.tmdb.org/t/p")!
-    let client = URLSessionAPIClient(apiBase: apiBaseURL, imageBase: imageBase, urlSession: URLSession.shared)
+    let serverConfig = MovieDBServerConfig(
+      apiBase: URL(string: "https://api.themoviedb.org/3")!,
+      imageBase: URL(string: "https://image.tmdb.org/t/p")!,
+      apiKey: "key"
+    )
+    let client = URLSessionAPIClient(serverConfig: serverConfig, urlSession: URLSession.shared)
     
     let exp = expectation(description: "fetch")
     client.fetch(resource: MovieDBAPI.search(query: "batman")) { result in

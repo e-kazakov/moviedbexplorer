@@ -23,3 +23,19 @@ extension Result {
     }
   }
 }
+
+extension Result: Equatable where Value: Equatable, Error: Equatable {
+  static func == (lhs: Result<Value, Error>, rhs: Result<Value, Error>) -> Bool {
+    switch (lhs, rhs) {
+    case (.success(let leftValue), .success(let rightValue)):
+      return leftValue == rightValue
+    
+    case (.failure(let leftError), .failure(let rightError)):
+      return leftError == rightError
+    
+    case (.success, .failure), (.failure, .success):
+      return false
+    }
+  }
+  
+}
