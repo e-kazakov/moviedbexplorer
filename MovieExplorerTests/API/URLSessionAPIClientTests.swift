@@ -17,12 +17,12 @@ let testServerConfig = MovieDBServerConfig(
 
 class URLSessionAPIClientTests: XCTestCase {
   
-  private var sessionMock = MockURLSession()
+  private var sessionMock = FakeURLSession()
   private lazy var client = URLSessionAPIClient(serverConfig: testServerConfig, urlSession: sessionMock)
   
   override func setUp() {
     super.setUp()
-    sessionMock = MockURLSession()
+    sessionMock = FakeURLSession()
     client = URLSessionAPIClient(serverConfig: testServerConfig, urlSession: sessionMock)
   }
   
@@ -45,7 +45,7 @@ class URLSessionAPIClientTests: XCTestCase {
   }
   
   func test_FetchResource_ResumesTheDataTask() {
-    let dataTask = MockURLSessionDataTask()
+    let dataTask = FakeURLSessionDataTask()
     sessionMock.nextDataTask = dataTask
     
     client.fetch(resource: TestAPI.movie()) { _ in }
@@ -79,7 +79,7 @@ class URLSessionAPIClientTests: XCTestCase {
     let jsonString = "{ \"name\": \"Avengers\" }"
     let jsonData = jsonString.data(using: .utf8)!
     
-    sessionMock.nextResponse = MockResponse(data: jsonData)
+    sessionMock.nextResponse = FakeResponse(data: jsonData)
     
     let exp = expectation(description: "")
     client.fetch(resource: TestAPI.movie()) { result in
@@ -99,7 +99,7 @@ class URLSessionAPIClientTests: XCTestCase {
   
   func test_DataTaskError_ReturnsFailureWithNetworkError() {
     let requestError = TestAPIError.anError
-    sessionMock.nextResponse = MockResponse(error: requestError)
+    sessionMock.nextResponse = FakeResponse(error: requestError)
 
     let exp = expectation(description: "")
     client.fetch(resource: TestAPI.movie()) { result in
@@ -128,7 +128,7 @@ class URLSessionAPIClientTests: XCTestCase {
   }
   
   func test_ParsingError_ReturnsFailureWithMappingError() {
-    sessionMock.nextResponse = MockResponse(data: Data())
+    sessionMock.nextResponse = FakeResponse(data: Data())
     let parsingError = ParsingError.jsonDecoding(inner: TestAPIError.anError)
     
     let exp = expectation(description: "")
