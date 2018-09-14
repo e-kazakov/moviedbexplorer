@@ -11,7 +11,7 @@ import XCTest
 
 class MovieMappingTests: XCTestCase {
   
-  func test_ValidMovieJSON_SuccessfullyParsed() {
+  func testJSONDecode_ValidMovieJSON_SuccessfullyParsed() {
     do {
       let decoder = JSONDecoder()
       let jsonData = try ResourceReader().read(named: "movie", with: "json")
