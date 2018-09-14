@@ -11,7 +11,7 @@ import XCTest
 
 class URLQueryParametersTests: XCTestCase {
   
-  func test_RequestWithoutQueryItems_CreatesRequestWithQueryItems() {
+  func testEncode_RequestWithoutQueryItems_CreatesRequestWithQueryItems() {
     let request = URLRequest(url: URL(string: "http://example.com/path")!)
     
     let queryParameters = URLQueryParameters(["answer" : "42"])
@@ -20,7 +20,7 @@ class URLQueryParametersTests: XCTestCase {
     XCTAssertEqual(URL(string: "http://example.com/path?answer=42"), actualResult.url)
   }
   
-  func test_QueryItemWithNonURLSymbols_UsesPercentEncoding() {
+  func testEncode_QueryItemWithNonURLSymbols_UsesPercentEncoding() {
     let request = URLRequest(url: URL(string: "http://example.com/path")!)
     
     let queryParameters = URLQueryParameters(["answer" : " 42"])
@@ -29,7 +29,7 @@ class URLQueryParametersTests: XCTestCase {
     XCTAssertEqual(URL(string: "http://example.com/path?answer=%2042"), actualResult.url)
   }
 
-  func test_EmptyParameters_DoesNotRemoteExistingQueryItems() {
+  func testEncode_EmptyParameters_DoesNotRemoteExistingQueryItems() {
     let request = URLRequest(url: URL(string: "http://example.com/path?answer=42")!)
     
     let queryParameters = URLQueryParameters([:])
@@ -38,7 +38,7 @@ class URLQueryParametersTests: XCTestCase {
     XCTAssertEqual(URL(string: "http://example.com/path?answer=42"), actualResult.url)
   }
   
-  func test_RequestWithExistingQueryItems_DoesNotModifyExistingQueryItems() {
+  func testEncode_RequestWithExistingQueryItems_DoesNotModifyExistingQueryItems() {
     let request = URLRequest(url: URL(string: "http://example.com/path?some=value")!)
     
     let queryParameters = URLQueryParameters(["answer" : "42"])

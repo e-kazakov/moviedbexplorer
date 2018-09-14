@@ -26,14 +26,14 @@ class URLSessionAPIClientTests: XCTestCase {
     client = URLSessionAPIClient(serverConfig: testServerConfig, urlSession: sessionMock)
   }
   
-  func test_PosterURL_ReturnsCorrectURL() {
+  func testPosterURL_Get_ReturnsCorrectURL() {
     let actualURL = client.posterURL(path: "42", size: .w780)
 
     let expectedURL = URL(string: "http://image.example.com/w780/42")!
     XCTAssertEqual(expectedURL, actualURL)
   }
   
-  func test_FetchResource_ConstructsRequestWithCorrectHTTPMethod() {
+  func testFetch_Resource_ConstructsRequestWithCorrectHTTPMethod() {
     let resource = TestAPI.find()
     client.fetch(resource: resource) { _ in }
     guard let req = sessionMock.lastRequest, let httpMethod = req.httpMethod else {
@@ -44,7 +44,7 @@ class URLSessionAPIClientTests: XCTestCase {
     XCTAssertEqual(resource.method.rawValue, httpMethod)
   }
   
-  func test_FetchResource_ResumesTheDataTask() {
+  func testFetch_Resource_ResumesTheDataTask() {
     let dataTask = FakeURLSessionDataTask()
     sessionMock.nextDataTask = dataTask
     
@@ -53,7 +53,7 @@ class URLSessionAPIClientTests: XCTestCase {
     XCTAssertTrue(dataTask.isResumed, "Data task should be resumed.")
   }
   
-  func test_FetchResource_AppendsApiKeyQueryItem() {
+  func testFetch_Resource_AppendsApiKeyQueryItem() {
     let apiKeyQueryItem = URLQueryItem(name: URLSessionAPIClient.apiKeyQueryItemName, value: testServerConfig.apiKey)
 
     client.fetch(resource: TestAPI.movie()) { _ in }
@@ -74,7 +74,7 @@ class URLSessionAPIClientTests: XCTestCase {
     )
   }
   
-  func test_FetchResourceWithResponseData_ParsesReturnedData() {
+  func testFetch_ResourceWithResponseData_ParsesReturnedData() {
     let movie = TestAPIMovie(name: "Avengers")
     let jsonString = "{ \"name\": \"Avengers\" }"
     let jsonData = jsonString.data(using: .utf8)!
@@ -97,7 +97,7 @@ class URLSessionAPIClientTests: XCTestCase {
     waitForExpectations(timeout: 1.0)
   }
   
-  func test_DataTaskError_ReturnsFailureWithNetworkError() {
+  func testFetch_DataTaskError_ReturnsFailureWithNetworkError() {
     let requestError = TestAPIError.anError
     sessionMock.nextResponse = FakeResponse(error: requestError)
 
@@ -127,7 +127,7 @@ class URLSessionAPIClientTests: XCTestCase {
     waitForExpectations(timeout: 1.0)
   }
   
-  func test_ParsingError_ReturnsFailureWithMappingError() {
+  func testFetch_ParsingError_ReturnsFailureWithMappingError() {
     sessionMock.nextResponse = FakeResponse(data: Data())
     let parsingError = ParsingError.jsonDecoding(inner: TestAPIError.anError)
     

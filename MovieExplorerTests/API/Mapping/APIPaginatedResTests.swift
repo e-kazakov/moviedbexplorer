@@ -11,7 +11,7 @@ import XCTest
 
 class APIPaginatedResTests: XCTestCase {
   
-  func test_ValidMoviesJSON_SuccessfullyParsed() {
+  func testJSONDecode_ValidMoviesJSON_SuccessfullyParsed() {
     do {
       let decoder = JSONDecoder()
       let jsonData = try ResourceReader().read(named: "paginated_movies", with: "json")
