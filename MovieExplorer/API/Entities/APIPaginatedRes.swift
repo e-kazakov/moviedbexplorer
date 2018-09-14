@@ -22,3 +22,14 @@ struct APIPaginatedRes<Wrapped: Codable>: Codable {
     case totalPages = "total_pages"
   }
 }
+
+extension APIPaginatedRes {
+  var nextPage: Int? {
+    let nextPage = page + 1
+    if nextPage <= totalPages {
+      return nextPage
+    } else {
+      return nil
+    }
+  }
+}
