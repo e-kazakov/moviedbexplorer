@@ -7,10 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F6928537214C5ED2002ED354 /* ResultTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6928536214C5ED2002ED354 /* ResultTests.swift */; };
 		F692852D214C29F2002ED354 /* MoviesList.swift in Sources */ = {isa = PBXBuildFile; fileRef = F692852C214C29F2002ED354 /* MoviesList.swift */; };
 		F692852F214C3BE7002ED354 /* LoadStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = F692852E214C3BE7002ED354 /* LoadStatus.swift */; };
 		F6928533214C3E27002ED354 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6928532214C3E27002ED354 /* Store.swift */; };
+		F6928537214C5ED2002ED354 /* ResultTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6928536214C5ED2002ED354 /* ResultTests.swift */; };
+		F6928539214C6581002ED354 /* StoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6928538214C6581002ED354 /* StoreTests.swift */; };
 		F69C58C921451F0F0086702D /* URLSessionAPIClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F69C58C821451F0F0086702D /* URLSessionAPIClientTests.swift */; };
 		F69C58CB21451F1D0086702D /* FakeURLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = F69C58CA21451F1D0086702D /* FakeURLSession.swift */; };
 		F69C58CD214524230086702D /* URLSessionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = F69C58CC214524230086702D /* URLSessionProtocol.swift */; };
@@ -52,10 +53,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		F6928536214C5ED2002ED354 /* ResultTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultTests.swift; sourceTree = "<group>"; };
 		F692852C214C29F2002ED354 /* MoviesList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesList.swift; sourceTree = "<group>"; };
 		F692852E214C3BE7002ED354 /* LoadStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadStatus.swift; sourceTree = "<group>"; };
 		F6928532214C3E27002ED354 /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
+		F6928536214C5ED2002ED354 /* ResultTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultTests.swift; sourceTree = "<group>"; };
+		F6928538214C6581002ED354 /* StoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreTests.swift; sourceTree = "<group>"; };
 		F69C58C821451F0F0086702D /* URLSessionAPIClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionAPIClientTests.swift; sourceTree = "<group>"; };
 		F69C58CA21451F1D0086702D /* FakeURLSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeURLSession.swift; sourceTree = "<group>"; };
 		F69C58CC214524230086702D /* URLSessionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionProtocol.swift; sourceTree = "<group>"; };
@@ -108,14 +110,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		F6928535214C5EC8002ED354 /* Core */ = {
-			isa = PBXGroup;
-			children = (
-				F6928536214C5ED2002ED354 /* ResultTests.swift */,
-			);
-			path = Core;
-			sourceTree = "<group>";
-		};
 		F692852B214C29E6002ED354 /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -123,6 +117,15 @@
 				F692852E214C3BE7002ED354 /* LoadStatus.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		F6928535214C5EC8002ED354 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				F6928536214C5ED2002ED354 /* ResultTests.swift */,
+				F6928538214C6581002ED354 /* StoreTests.swift */,
+			);
+			path = Core;
 			sourceTree = "<group>";
 		};
 		F6B65D582144242D00BD7D12 = {
@@ -407,6 +410,7 @@
 				F6B65DB42144762100BD7D12 /* URLQueryParametersTests.swift in Sources */,
 				F6928537214C5ED2002ED354 /* ResultTests.swift in Sources */,
 				F69C58CB21451F1D0086702D /* FakeURLSession.swift in Sources */,
+				F6928539214C6581002ED354 /* StoreTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
