@@ -1,5 +1,5 @@
 //
-//  MockURLSessionDataTask.swift
+//  FakeURLSessionDataTask.swift
 //  MovieExplorerTests
 //
 //  Created by Evgeny Kazakov on 9/9/18.
@@ -9,7 +9,7 @@
 import Foundation
 @testable import MovieExplorer
 
-class MockURLSessionDataTask: URLSessionDataTaskProtocol {
+class FakeURLSessionDataTask: URLSessionDataTaskProtocol {
   
   private(set) var isResumed = false
   

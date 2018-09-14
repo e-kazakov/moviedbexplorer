@@ -8,9 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		F69C58C921451F0F0086702D /* URLSessionAPIClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F69C58C821451F0F0086702D /* URLSessionAPIClientTests.swift */; };
-		F69C58CB21451F1D0086702D /* MockURLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = F69C58CA21451F1D0086702D /* MockURLSession.swift */; };
+		F69C58CB21451F1D0086702D /* FakeURLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = F69C58CA21451F1D0086702D /* FakeURLSession.swift */; };
 		F69C58CD214524230086702D /* URLSessionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = F69C58CC214524230086702D /* URLSessionProtocol.swift */; };
-		F69C58CF214524430086702D /* MockURLSessionDataTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = F69C58CE214524430086702D /* MockURLSessionDataTask.swift */; };
+		F69C58CF214524430086702D /* FakeURLSessionDataTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = F69C58CE214524430086702D /* FakeURLSessionDataTask.swift */; };
 		F6B65D652144242D00BD7D12 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6B65D642144242D00BD7D12 /* AppDelegate.swift */; };
 		F6B65D672144242D00BD7D12 /* MovieSearchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6B65D662144242D00BD7D12 /* MovieSearchVC.swift */; };
 		F6B65D692144242D00BD7D12 /* ExploreVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6B65D682144242D00BD7D12 /* ExploreVC.swift */; };
@@ -50,9 +50,9 @@
 
 /* Begin PBXFileReference section */
 		F69C58C821451F0F0086702D /* URLSessionAPIClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionAPIClientTests.swift; sourceTree = "<group>"; };
-		F69C58CA21451F1D0086702D /* MockURLSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLSession.swift; sourceTree = "<group>"; };
+		F69C58CA21451F1D0086702D /* FakeURLSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeURLSession.swift; sourceTree = "<group>"; };
 		F69C58CC214524230086702D /* URLSessionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionProtocol.swift; sourceTree = "<group>"; };
-		F69C58CE214524430086702D /* MockURLSessionDataTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLSessionDataTask.swift; sourceTree = "<group>"; };
+		F69C58CE214524430086702D /* FakeURLSessionDataTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeURLSessionDataTask.swift; sourceTree = "<group>"; };
 		F6B65D612144242D00BD7D12 /* MovieExplorer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MovieExplorer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6B65D642144242D00BD7D12 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F6B65D662144242D00BD7D12 /* MovieSearchVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieSearchVC.swift; sourceTree = "<group>"; };
@@ -220,8 +220,8 @@
 				F6B65DB22144760700BD7D12 /* HTTP */,
 				F6B65DA721446DE300BD7D12 /* Mapping */,
 				F69C58C821451F0F0086702D /* URLSessionAPIClientTests.swift */,
-				F69C58CA21451F1D0086702D /* MockURLSession.swift */,
-				F69C58CE214524430086702D /* MockURLSessionDataTask.swift */,
+				F69C58CA21451F1D0086702D /* FakeURLSession.swift */,
+				F69C58CE214524430086702D /* FakeURLSessionDataTask.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -376,9 +376,9 @@
 				F6B65DB1214473AF00BD7D12 /* ResourceReader.swift in Sources */,
 				F6B65DA921446DF900BD7D12 /* MovieMappingTests.swift in Sources */,
 				F69C58C921451F0F0086702D /* URLSessionAPIClientTests.swift in Sources */,
-				F69C58CF214524430086702D /* MockURLSessionDataTask.swift in Sources */,
+				F69C58CF214524430086702D /* FakeURLSessionDataTask.swift in Sources */,
 				F6B65DB42144762100BD7D12 /* URLQueryParametersTests.swift in Sources */,
-				F69C58CB21451F1D0086702D /* MockURLSession.swift in Sources */,
+				F69C58CB21451F1D0086702D /* FakeURLSession.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

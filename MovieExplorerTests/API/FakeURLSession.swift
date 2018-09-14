@@ -1,5 +1,5 @@
 //
-//  URLSessionMock.swift
+//  FakeURLSession.swift
 //  MovieExplorerTests
 //
 //  Created by Evgeny Kazakov on 9/9/18.
@@ -9,10 +9,10 @@
 import Foundation
 @testable import MovieExplorer
 
-class MockURLSession: URLSessionProtocol {
+class FakeURLSession: URLSessionProtocol {
 
-  var nextResponse = MockResponse.empty
-  var nextDataTask = MockURLSessionDataTask()
+  var nextResponse = FakeResponse.empty
+  var nextDataTask = FakeURLSessionDataTask()
   private(set) var lastRequest: URLRequest?
   
   func dataTask(
@@ -27,9 +27,9 @@ class MockURLSession: URLSessionProtocol {
   }
 }
 
-struct MockResponse {
+struct FakeResponse {
   
-  static let empty = MockResponse()
+  static let empty = FakeResponse()
   
   let data: Data?
   let urlResponse: URLResponse?
