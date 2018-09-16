@@ -47,7 +47,7 @@ class TMDBMoviesList: MoviesList {
     load(page: nil)
   }
   
-  func loadNextPage() {
+  private func loadNextPage() {
     guard let nextPage = nextPage else { return }
     load(page: nextPage)
   }

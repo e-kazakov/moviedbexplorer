@@ -12,9 +12,11 @@ typealias HTTPParametersEncoder = (URLRequest) -> URLRequest
 
 protocol HTTPResourceParameters {
   func encode(in request: URLRequest) -> URLRequest
+  
+  func equals(other: HTTPResourceParameters) -> Bool
 }
 
-struct URLQueryParameters: HTTPResourceParameters {
+struct URLQueryParameters: HTTPResourceParameters, Equatable {
   
   let queryParameters: [String: String]
   
@@ -29,4 +31,11 @@ struct URLQueryParameters: HTTPResourceParameters {
 
     return req
   }
+  
+  func equals(other: HTTPResourceParameters) -> Bool {
+    guard let other = other as? URLQueryParameters else { return false }
+    
+    return other == self
+  }
+
 }
