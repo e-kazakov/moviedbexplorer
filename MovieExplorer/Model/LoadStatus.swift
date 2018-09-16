@@ -12,6 +12,13 @@ enum LoadStatus {
   case loaded
   case error(Error)
   
+  var isNotLoaded: Bool {
+    switch self {
+    case .notLoaded: return true
+    default: return false
+    }
+  }
+  
   var isLoading: Bool {
     switch self {
     case .loading: return true
@@ -22,6 +29,13 @@ enum LoadStatus {
   var isLoaded: Bool {
     switch self {
     case .loaded: return true
+    default: return false
+    }
+  }
+  
+  var isError: Bool {
+    switch self {
+    case .error: return true
     default: return false
     }
   }

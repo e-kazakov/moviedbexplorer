@@ -85,26 +85,26 @@ class URLSessionAPIClient: APIClient {
 
 extension URLRequest {
   mutating func appendQueryItem(_ queryItem: URLQueryItem) {
-    guard let url = self.url, var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
-      return
-    }
-
-    var requestQueryItems = components.queryItems ?? []
-    requestQueryItems.append(queryItem)
-    components.queryItems = requestQueryItems
-    
-    self.url = components.url
+    appendQueryItems([queryItem])
   }
   
   mutating func appendQueryItems<S>(_ queryItems: S) where S: Sequence, S.Element == URLQueryItem {
-    guard let url = self.url, var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
-      return
+    url = url?.appendingQueryItems(queryItems)
+  }
+}
+
+extension URL {
+  
+  func appendingQueryItems<S>(_ queryItems: S) -> URL where S: Sequence, S.Element == URLQueryItem {
+    guard var components = URLComponents(url: self, resolvingAgainstBaseURL: false) else {
+      return self
     }
     
     var requestQueryItems = components.queryItems ?? []
     requestQueryItems.append(contentsOf: queryItems)
     components.queryItems = requestQueryItems
     
-    self.url = components.url
+    return components.url ?? self
   }
+
 }
