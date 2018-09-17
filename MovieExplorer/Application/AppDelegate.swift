@@ -13,6 +13,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
   var window: UIWindow?
 
+  private lazy var apiClient: APIClient = {
+    let serverConfig = MovieDBServerConfig(
+      apiBase: URL(string: "https://api.themoviedb.org/3/")!,
+      imageBase: URL(string: "https://image.tmdb.org/t/p/")!,
+      apiKey: "8ce5ac519ae011454741f33c416274e2"
+    )
+    return URLSessionAPIClient(serverConfig: serverConfig, urlSession: URLSession.shared)
+  }()  
+
   func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?
@@ -20,6 +29,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // Fixes dark spot artefact during push when navigation bar is translucent
     // and `hidesBottomBarWhenPushed` set to `true` on pushed controller.
     self.window?.backgroundColor = UIColor.white
+    
+    (self.window?.rootViewController as? MainTabVC)?.initialize(apiClient: apiClient)
+
     return true
   }
 

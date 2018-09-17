@@ -15,25 +15,34 @@ class ExploreVC: UIViewController {
   
   private lazy var movieTableController = MovieTableController(api: apiClient)
   
-  private lazy var apiClient: APIClient = {
-    let serverConfig = MovieDBServerConfig(
-      apiBase: URL(string: "https://api.themoviedb.org/3/")!,
-      imageBase: URL(string: "https://image.tmdb.org/t/p/")!,
-      apiKey: "8ce5ac519ae011454741f33c416274e2"
-    )
-    return URLSessionAPIClient(serverConfig: serverConfig, urlSession: URLSession.shared)
-  }()
-  
-  private lazy var moviesList: MoviesList = TMDBMoviesList(api: apiClient)
+  private var moviesList: MoviesList!
+  private var apiClient: APIClient!
   
   private var modelSubscriptionToken: SubscriptionToken?
+  
+  private var isInitialized = false
+  
+  private let detailsSequeIdentifier = "explore_details"
   
   deinit {
     modelSubscriptionToken?.dispose()
   }
   
+  func initialize(moviesList: MoviesList, apiClient: APIClient) {
+    guard !isInitialized else { return }
+    
+    self.moviesList = moviesList
+    self.apiClient = apiClient
+    
+    isInitialized = true
+  }
+  
   override func viewDidLoad() {
     super.viewDidLoad()
+    
+    guard isInitialized else {
+      fatalError("Must be initialized.")
+    }
     
     configureMoviesTableView()
     
@@ -78,7 +87,7 @@ class ExploreVC: UIViewController {
   }
   
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-    if segue.identifier == "explore_details" {
+    if segue.identifier == detailsSequeIdentifier {
       guard let detailsVC = segue.destination as? MovieDetailsVC, let movie = sender as? Movie else {
         fatalError("Unexpected destination view controller.")
       }
@@ -90,6 +99,6 @@ class ExploreVC: UIViewController {
   }
   
   private func goToDetails(_ movie: Movie) {
-    self.performSegue(withIdentifier: "explore_details", sender: movie)
+    self.performSegue(withIdentifier: detailsSequeIdentifier, sender: movie)
   }
 }
