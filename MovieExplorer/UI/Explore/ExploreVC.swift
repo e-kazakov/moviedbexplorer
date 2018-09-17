@@ -42,12 +42,17 @@ class ExploreVC: UIViewController {
     }
     
     moviesList.loadNext()
+    
+    navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
   }
   
   private func configureMoviesTableView() {
     movieTableController.tableView = tableView
     movieTableController.onCloseToEnd = { [weak self] in
       self?.moviesList.loadNext()
+    }
+    movieTableController.onSelect = { [weak self] movie in
+      self?.goToDetails(movie)
     }
   }
 
@@ -70,5 +75,21 @@ class ExploreVC: UIViewController {
   private func hideLoadingIndicator() {
     tableView.isHidden = false
     loadingIndicator.stopAnimating()
+  }
+  
+  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    if segue.identifier == "explore_details" {
+      guard let detailsVC = segue.destination as? MovieDetailsVC, let movie = sender as? Movie else {
+        fatalError("Unexpected destination view controller.")
+      }
+      detailsVC.viewModel = MovieViewModel(movie: movie, api: apiClient)
+      detailsVC.viewModel?.fetch()
+    } else {
+      super.prepare(for: segue, sender: sender)
+    }
+  }
+  
+  private func goToDetails(_ movie: Movie) {
+    self.performSegue(withIdentifier: "explore_details", sender: movie)
   }
 }

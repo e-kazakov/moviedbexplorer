@@ -11,6 +11,7 @@ import UIKit
 class MovieTableController: NSObject, UITableViewDataSource, UITableViewDataSourcePrefetching, UITableViewDelegate {
   
   var onCloseToEnd: (() -> Void)?
+  var onSelect: ((Movie) -> Void)?
   
   var tableView: UITableView? = nil {
     didSet {
@@ -94,6 +95,11 @@ class MovieTableController: NSObject, UITableViewDataSource, UITableViewDataSour
   
   // MARK: Delegate
 
+  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    tableView.deselectRow(at: indexPath, animated: true)
+    onSelect?(movies[indexPath.row])
+  }
+  
   func scrollViewDidScroll(_ scrollView: UIScrollView) {
     let threshold = scrollView.bounds.height * 3
     let distanceToEnd = scrollView.contentSize.height - scrollView.bounds.size.height - scrollView.contentOffset.y
