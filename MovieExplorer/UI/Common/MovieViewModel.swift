@@ -41,7 +41,7 @@ class MovieViewModel {
   func fetch() {
     guard imageTask == nil else { return }
     guard let posterPath = movie.posterPath else { return }
-    let posterURL = apiClient.posterURL(path: posterPath, size: .w500)
+    let posterURL = apiClient.posterURL(path: posterPath, size: .w780)
     imageTask = URLSession.shared.dataTask(with: posterURL) { data, response, error in
       if let data = data {
         let image = UIImage(data: data)?.decoded()

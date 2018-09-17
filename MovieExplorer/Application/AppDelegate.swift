@@ -17,6 +17,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?
   ) -> Bool {
+    // Fixes dark spot artefact during push when navigation bar is translucent
+    // and `hidesBottomBarWhenPushed` set to `true` on pushed controller.
+    self.window?.backgroundColor = UIColor.white
     return true
   }
 
