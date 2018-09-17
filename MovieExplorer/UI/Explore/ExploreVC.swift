@@ -50,13 +50,6 @@ class ExploreVC: UIViewController {
       self?.moviesList.loadNext()
     }
   }
-  
-  override func viewDidLayoutSubviews() {
-    super.viewDidLayoutSubviews()
-    
-    let bottomContentInset = view.safeAreaInsets.bottom + additionalSafeAreaInsets.bottom
-    tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bottomContentInset, right: 0)
-  }
 
   private func update(with newState: MoviesListState) {
     movieTableController.movies = newState.movies
