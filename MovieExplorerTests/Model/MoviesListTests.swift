@@ -157,6 +157,7 @@ class MoviesListTests: XCTestCase {
 extension Movie {
   static var random: Movie {
     return Movie(
+      id: Int(arc4random()),
       posterPath: UUID().uuidString,
       title: UUID().uuidString,
       releaseDate: UUID().uuidString,

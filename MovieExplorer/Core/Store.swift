@@ -59,3 +59,11 @@ struct ClosureSubscriptionToken: SubscriptionToken {
     disposeBlock = nil
   }
 }
+
+extension Store {
+  func observe(on targetQueue: DispatchQueue, _ observer: @escaping (State) -> Void) -> SubscriptionToken {
+    return observe { state in
+      targetQueue.async { observer(state) }
+    }
+  }
+}

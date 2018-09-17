@@ -19,5 +19,7 @@ protocol APIClient {
   
   func posterURL(path: String, size: PosterSize) -> URL
   
+//  func fetchPoster(path: String, size: PosterSize, callback: @escaping (Result<UIImage, APIError>)) -> 
+  
   func fetch<T>(resource: HTTPResource<T>, callback: @escaping (Result<T, APIError>) -> Void)
 }
