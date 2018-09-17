@@ -11,6 +11,7 @@ import UIKit
 class ExploreVC: UIViewController {
 
   @IBOutlet private var tableView: UITableView!
+  @IBOutlet private var loadingIndicator: UIActivityIndicatorView!
   
   private lazy var movieTableController = MovieTableController(api: apiClient)
   
@@ -37,7 +38,7 @@ class ExploreVC: UIViewController {
     configureMoviesTableView()
     
     modelSubscriptionToken = moviesList.store.observe(on: DispatchQueue.main) { [weak self] state in
-      self?.movieTableController.movies = state.movies
+      self?.update(with: state)
     }
     
     moviesList.loadNext()
@@ -57,4 +58,24 @@ class ExploreVC: UIViewController {
     tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bottomContentInset, right: 0)
   }
 
+  private func update(with newState: MoviesListState) {
+    movieTableController.movies = newState.movies
+    
+    let loadingFirstPage = newState.status.isLoading && newState.movies.isEmpty
+    if loadingFirstPage {
+      showLoadingIndicator()
+    } else {
+      hideLoadingIndicator()
+    }
+  }
+  
+  private func showLoadingIndicator() {
+    tableView.isHidden = true
+    loadingIndicator.startAnimating()
+  }
+  
+  private func hideLoadingIndicator() {
+    tableView.isHidden = false
+    loadingIndicator.stopAnimating()
+  }
 }
