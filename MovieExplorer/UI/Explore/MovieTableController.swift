@@ -44,7 +44,7 @@ class MovieTableController: NSObject, UITableViewDataSource, UITableViewDataSour
     
     tableView.register(MovieCell.nib, forCellReuseIdentifier: MovieCell.defaultReuseIdentifier)
     tableView.rowHeight = UITableViewAutomaticDimension
-    tableView.estimatedRowHeight = 780
+    tableView.estimatedRowHeight = 198
     
     tableView.delegate = self
     tableView.dataSource = self
@@ -93,13 +93,9 @@ class MovieTableController: NSObject, UITableViewDataSource, UITableViewDataSour
   }
   
   // MARK: Delegate
-  
-  func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-    cell.separatorInset = UIEdgeInsets(top: 0, left: tableView.bounds.size.width, bottom: 0, right: 0)
-  }
 
   func scrollViewDidScroll(_ scrollView: UIScrollView) {
-    let threshold = scrollView.bounds.height * 5
+    let threshold = scrollView.bounds.height * 3
     let distanceToEnd = scrollView.contentSize.height - scrollView.bounds.size.height - scrollView.contentOffset.y
     if distanceToEnd <= threshold {
       onCloseToEnd?()
