@@ -8,51 +8,39 @@
 
 import UIKit
 
-class MovieViewModel {
+protocol MovieViewModel {
+  var title: String { get }
+  var overview: String? { get }
+  var releaseYear: String { get }
+  var image: RemoteImageViewModelProtocol? { get }
   
-  let id: Int
+  func select()
+}
+
+class MovieViewModelImpl: MovieViewModel {
+
   let title: String
   let overview: String?
   let releaseYear: String
-  
-  var image: UIImage? = nil {
-    didSet {
-      onChange?()
-    }
-  }
-  
-  var onChange: (() -> Void)?
+  let image: RemoteImageViewModelProtocol?
   
   private let movie: Movie
-  
   private let apiClient: APIClient
-  
-  private var imageTask: URLSessionTask?
+
+  var onSelect: (() -> Void)?
   
   init(movie: Movie, api: APIClient) {
     self.movie = movie
     self.apiClient = api
-    id = movie.id
+    let releaseYear = movie.releaseDate.split(separator: "-").first.map(String.init) ?? ""
     title = movie.title
     overview = movie.overview
-    releaseYear = "2018"//movie.releaseDate
+    self.releaseYear = releaseYear
+    let url = movie.posterPath.map { api.posterURL(path: $0, size: .w780) }
+    image = url.map { RemoteImageViewModel(url: $0) }
   }
   
-  func fetch() {
-    guard imageTask == nil else { return }
-    guard let posterPath = movie.posterPath else { return }
-    let posterURL = apiClient.posterURL(path: posterPath, size: .w780)
-    imageTask = URLSession.shared.dataTask(with: posterURL) { data, response, error in
-      if let data = data {
-        let image = UIImage(data: data)?.decoded()
-        DispatchQueue.main.async { self.image = image }
-      }
-    }
-    imageTask?.resume()
-  }
-  
-  func cancel() {
-    imageTask?.cancel()
-    imageTask = nil
+  func select() {
+    onSelect?()
   }
 }
