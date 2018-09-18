@@ -45,7 +45,8 @@ class MainTabVC: UITabBarController, UITabBarControllerDelegate {
     
     switch rootVC {
     case let explore as ExploreVC:
-      explore.initialize(moviesList: TMDBMoviesList(api: apiClient), apiClient: apiClient)
+      let moviesListViewModel = MoviesListViewModelImpl(moviesList: TMDBMoviesList(api: apiClient), api: apiClient)
+      explore.initialize(moviesList: moviesListViewModel, apiClient: apiClient)
     case let search as MovieSearchVC:
       print("Selected \(search)")
     case let favorites as FavoritesVC:
