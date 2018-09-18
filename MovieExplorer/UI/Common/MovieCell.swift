@@ -20,8 +20,7 @@ class MovieCell: UITableViewCell {
   override func awakeFromNib() {
     super.awakeFromNib()
     
-    releaseYearLabel.layer.borderColor = UIColor.lightGray.cgColor
-    releaseYearLabel.layer.borderWidth = 0.5
+    UILabel.Style.releaseYear(releaseYearLabel)
   }
   
   override func prepareForReuse() {
