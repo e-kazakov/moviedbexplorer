@@ -15,8 +15,7 @@ class MovieDetailsVC: UIViewController {
   @IBOutlet var overviewLabel: UILabel!
   @IBOutlet var releaseYearLabel: UILabel! {
     didSet {
-      releaseYearLabel?.layer.borderColor = UIColor(white: 151.0 / 255.0, alpha: 1.0).cgColor
-      releaseYearLabel?.layer.borderWidth = 0.5
+      UILabel.Style.releaseYear(releaseYearLabel)
     }
   }
   
