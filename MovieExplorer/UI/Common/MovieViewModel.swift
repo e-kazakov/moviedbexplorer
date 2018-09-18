@@ -35,7 +35,7 @@ class MovieViewModel {
     id = movie.id
     title = movie.title
     overview = movie.overview
-    releaseYear = "2018"//movie.releaseDate
+    releaseYear = movie.releaseDate.split(separator: "-").first.map(String.init) ?? ""
   }
   
   func fetch() {
