@@ -32,22 +32,29 @@ class RemoteImageViewModel: RemoteImageViewModelProtocol {
   
   private let url: URL
   
-  private var imageTask: URLSessionTask?
+  private var imageTask: URLSessionDataTaskProtocol?
   
-  init(url: URL, placeholder: UIImage? = nil) {
+  private let fetcher: ImageFetcher
+  
+  init(url: URL, placeholder: UIImage? = nil, fetcher: ImageFetcher) {
     self.url = url
     self.placeholder = placeholder
+    self.fetcher = fetcher
   }
   
   func load() {
     guard imageTask == nil else { return }
-    imageTask = URLSession.shared.dataTask(with: url) { data, response, error in
-      if let data = data {
+    imageTask = fetcher.fetch(from: url) { result in
+      switch result {
+      case .success(let data):
         let image = UIImage(data: data)?.decoded()
-        DispatchQueue.main.async { self.image = image }
+        DispatchQueue.main.async {
+          self.image = image
+        }
+      case .failure(let error):
+        print("Failed to load remote image. \(error)")
       }
     }
-    imageTask?.resume()
   }
   
   func cancel() {

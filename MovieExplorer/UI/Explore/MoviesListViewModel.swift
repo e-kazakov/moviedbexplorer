@@ -39,15 +39,17 @@ class MoviesListViewModelImpl: MoviesListViewModel {
   
   private let moviesList: MoviesList
   private let apiClient: APIClient
+  private let imageFetcher: ImageFetcher
   private var subscriptionToken: SubscriptionToken?
   
   deinit {
     subscriptionToken?.dispose()
   }
   
-  init(moviesList: MoviesList, api: APIClient) {
+  init(moviesList: MoviesList, api: APIClient, imageFetcher: ImageFetcher) {
     self.moviesList = moviesList
     self.apiClient = api
+    self.imageFetcher = imageFetcher
     subscriptionToken = nil
     status = .initial
     
@@ -82,7 +84,7 @@ class MoviesListViewModelImpl: MoviesListViewModel {
   }
   
   private func createMovieViewModel(_ movie: Movie) -> MovieViewModel {
-    let vm = MovieViewModelImpl(movie: movie, api: apiClient)
+    let vm = MovieViewModelImpl(movie: movie, api: apiClient, imageFetcher: imageFetcher)
     vm.onSelect = { [weak self] in self?.onGoToDetails?(movie) }
     return vm
   }

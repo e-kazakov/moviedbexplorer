@@ -12,9 +12,14 @@ import Foundation
 class FakeURLSessionDataTask: URLSessionDataTaskProtocol {
   
   private(set) var isResumed = false
+  private(set) var isCancelled = false
   
   func resume() {
     isResumed = true
+  }
+  
+  func cancel() {
+    isCancelled = true
   }
   
 }

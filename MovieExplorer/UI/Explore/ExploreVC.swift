@@ -17,6 +17,7 @@ class ExploreVC: UIViewController {
   
   private var moviesList: MoviesListViewModel!
   private var apiClient: APIClient!
+  private var imageFetcher: ImageFetcher!
   
   private var modelSubscriptionToken: SubscriptionToken?
   
@@ -28,11 +29,12 @@ class ExploreVC: UIViewController {
     modelSubscriptionToken?.dispose()
   }
   
-  func initialize(moviesList: MoviesListViewModel, apiClient: APIClient) {
+  func initialize(moviesList: MoviesListViewModel, apiClient: APIClient, imageFetcher: ImageFetcher) {
     guard !isInitialized else { return }
     
     self.moviesList = moviesList
     self.apiClient = apiClient
+    self.imageFetcher = imageFetcher
     
     isInitialized = true
   }
@@ -110,7 +112,7 @@ class ExploreVC: UIViewController {
       guard let detailsVC = segue.destination as? MovieDetailsVC, let movie = sender as? Movie else {
         fatalError("Unexpected destination view controller.")
       }
-      detailsVC.viewModel = MovieViewModelImpl(movie: movie, api: apiClient)
+      detailsVC.viewModel = MovieViewModelImpl(movie: movie, api: apiClient, imageFetcher: imageFetcher)
     } else {
       super.prepare(for: segue, sender: sender)
     }

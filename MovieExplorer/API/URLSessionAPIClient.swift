@@ -14,6 +14,18 @@ struct MovieDBServerConfig {
   let apiKey: String
 }
 
+func createSession() -> URLSessionProtocol {
+  let config = URLSessionConfiguration.default
+  config.urlCache = createCache()
+  return URLSession(configuration: config)
+}
+
+func createCache() -> URLCache {
+  let mem = 100 * 1024 * 1024
+  let disk = 500 * 1024 * 1024
+  return URLCache(memoryCapacity: mem, diskCapacity: disk, diskPath: "urlcache")
+}
+
 class URLSessionAPIClient: APIClient {
 
   private let urlSession: URLSessionProtocol
