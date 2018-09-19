@@ -11,6 +11,7 @@ import UIKit
 class MainTabVC: UITabBarController, UITabBarControllerDelegate {
 
   private var apiClient: APIClient!
+  private var imageFetcher: ImageFetcher!
 
   override var selectedViewController: UIViewController? {
     didSet {
@@ -20,10 +21,11 @@ class MainTabVC: UITabBarController, UITabBarControllerDelegate {
   
   private var isInitialized = false
   
-  func initialize(apiClient: APIClient) {
+  func initialize(apiClient: APIClient, imageFetcher: ImageFetcher) {
     guard !isInitialized else { return }
     
     self.apiClient = apiClient
+    self.imageFetcher = imageFetcher
     isInitialized = true
   }
   
@@ -45,7 +47,12 @@ class MainTabVC: UITabBarController, UITabBarControllerDelegate {
     
     switch rootVC {
     case let explore as ExploreVC:
-      explore.initialize(moviesList: TMDBMoviesList(api: apiClient), apiClient: apiClient)
+      let moviesListViewModel = MoviesListViewModelImpl(
+        moviesList: TMDBMoviesList(api: apiClient),
+        api: apiClient,
+        imageFetcher: imageFetcher
+      )
+      explore.initialize(moviesList: moviesListViewModel, apiClient: apiClient, imageFetcher: imageFetcher)
     case let search as MovieSearchVC:
       print("Selected \(search)")
     case let favorites as FavoritesVC:

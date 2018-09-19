@@ -30,6 +30,7 @@ class MovieDetailsVC: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     bind()
+    load()
   }
 
   private func bind() {
@@ -39,9 +40,20 @@ class MovieDetailsVC: UIViewController {
     nameLabel.text = viewModel.title
     overviewLabel.text = viewModel.overview
     releaseYearLabel.text = viewModel.releaseYear
-    posterImageView.image = viewModel.image
-    viewModel.onChange = { [weak self] in
-      self?.posterImageView.image = viewModel.image
+    posterImageView.image = viewModel.image?.image ?? viewModel.image?.placeholder
+    posterImageView.alpha = viewModel.image == nil ? 0 : 1.0
+    
+    viewModel.image?.onChanged = { [weak self] in
+      if let image = viewModel.image?.image {
+        self?.posterImageView.image = image
+        if (self?.posterImageView.alpha ?? 1.0) < CGFloat(1.0) {
+          UIView.animate(withDuration: 0.3) { self?.posterImageView.alpha = 1.0 }
+        }
+      }
     }
+  }
+  
+  private func load() {
+    viewModel?.image?.load()
   }
 }

@@ -11,7 +11,6 @@ import UIKit
 class MovieTableController: NSObject, UITableViewDataSource, UITableViewDataSourcePrefetching, UITableViewDelegate {
   
   var onCloseToEnd: (() -> Void)?
-  var onSelect: ((Movie) -> Void)?
   
   var tableView: UITableView? = nil {
     didSet {
@@ -19,16 +18,7 @@ class MovieTableController: NSObject, UITableViewDataSource, UITableViewDataSour
     }
   }
   
-  var movies: [Movie] = [] {
-    didSet {
-      let viewModelsById = moviesVM.reduce(into: [Int: MovieViewModel]()) { dict, viewModel in
-        dict[viewModel.id] = viewModel
-      }
-      moviesVM = movies.map { viewModelsById[$0.id] ?? MovieViewModel(movie: $0, api: apiClient) }
-    }
-  }
-  
-  private var moviesVM: [MovieViewModel] = [] {
+  var movies: [MovieViewModel] = [] {
     didSet {
       tableView?.reloadData()
     }
@@ -55,15 +45,14 @@ class MovieTableController: NSObject, UITableViewDataSource, UITableViewDataSour
   // MARK: DataSource
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return moviesVM.count
+    return movies.count
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let movie = moviesVM[indexPath.row]
+    let movie = movies[indexPath.row]
     let movieCell = self.movieCell(tableView: tableView, at: indexPath)
     
     movieCell.configure(with: movie)
-    movie.fetch()
     
     return movieCell
   }
@@ -83,21 +72,21 @@ class MovieTableController: NSObject, UITableViewDataSource, UITableViewDataSour
   
   func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
     indexPaths
-      .map { moviesVM[$0.row] }
-      .forEach { $0.fetch() }
+      .map { movies[$0.row] }
+      .forEach { $0.image?.load() }
   }
   
   func tableView(_ tableView: UITableView, cancelPrefetchingForRowsAt indexPaths: [IndexPath]) {
     indexPaths
-      .map { moviesVM[$0.row] }
-      .forEach { $0.cancel() }
+      .map { movies[$0.row] }
+      .forEach { $0.image?.cancel() }
   }
   
   // MARK: Delegate
 
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     tableView.deselectRow(at: indexPath, animated: true)
-    onSelect?(movies[indexPath.row])
+    movies[indexPath.row].select()
   }
   
   func scrollViewDidScroll(_ scrollView: UIScrollView) {

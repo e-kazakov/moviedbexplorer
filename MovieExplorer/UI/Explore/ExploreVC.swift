@@ -15,8 +15,9 @@ class ExploreVC: UIViewController {
   
   private lazy var movieTableController = MovieTableController(api: apiClient)
   
-  private var moviesList: MoviesList!
+  private var moviesList: MoviesListViewModel!
   private var apiClient: APIClient!
+  private var imageFetcher: ImageFetcher!
   
   private var modelSubscriptionToken: SubscriptionToken?
   
@@ -28,13 +29,26 @@ class ExploreVC: UIViewController {
     modelSubscriptionToken?.dispose()
   }
   
-  func initialize(moviesList: MoviesList, apiClient: APIClient) {
+  func initialize(moviesList: MoviesListViewModel, apiClient: APIClient, imageFetcher: ImageFetcher) {
     guard !isInitialized else { return }
     
     self.moviesList = moviesList
     self.apiClient = apiClient
+    self.imageFetcher = imageFetcher
     
     isInitialized = true
+  }
+  
+  override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+    super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    
+    configureNavigationItem()
+  }
+  
+  required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+    
+    configureNavigationItem()
   }
   
   override func viewDidLoad() {
@@ -46,12 +60,11 @@ class ExploreVC: UIViewController {
     
     configureMoviesTableView()
     
-    modelSubscriptionToken = moviesList.store.observe(on: DispatchQueue.main) { [weak self] state in
-      self?.update(with: state)
-    }
-    
+    bind()
     moviesList.loadNext()
-    
+  }
+  
+  private func configureNavigationItem() {
     navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
   }
   
@@ -60,19 +73,27 @@ class ExploreVC: UIViewController {
     movieTableController.onCloseToEnd = { [weak self] in
       self?.moviesList.loadNext()
     }
-    movieTableController.onSelect = { [weak self] movie in
+  }
+  
+  private func bind() {
+    moviesList.onChanged = { [weak self] in
+      self?.update()
+    }
+    moviesList.onGoToDetails = { [weak self] movie in
       self?.goToDetails(movie)
     }
   }
-
-  private func update(with newState: MoviesListState) {
-    movieTableController.movies = newState.movies
+  
+  private func update() {
+    movieTableController.movies = moviesList.movies
     
-    let loadingFirstPage = newState.status.isLoading && newState.movies.isEmpty
-    if loadingFirstPage {
-      showLoadingIndicator()
-    } else {
-      hideLoadingIndicator()
+    switch moviesList.status {
+    case .initial: break
+    case .loading: showLoadingIndicator()
+    case .loaded: hideLoadingIndicator()
+    case .loadingNext: break
+    case .failedToLoad: hideLoadingIndicator()
+    case .failedToLoadNext: break
     }
   }
   
@@ -91,8 +112,7 @@ class ExploreVC: UIViewController {
       guard let detailsVC = segue.destination as? MovieDetailsVC, let movie = sender as? Movie else {
         fatalError("Unexpected destination view controller.")
       }
-      detailsVC.viewModel = MovieViewModel(movie: movie, api: apiClient)
-      detailsVC.viewModel?.fetch()
+      detailsVC.viewModel = MovieViewModelImpl(movie: movie, api: apiClient, imageFetcher: imageFetcher)
     } else {
       super.prepare(for: segue, sender: sender)
     }
