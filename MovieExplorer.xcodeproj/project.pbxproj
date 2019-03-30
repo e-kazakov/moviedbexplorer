@@ -47,7 +47,6 @@
 		F6B65D9B21443A1900BD7D12 /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6B65D9A21443A1900BD7D12 /* HTTPMethod.swift */; };
 		F6B65D9D21443A3200BD7D12 /* ParsingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6B65D9C21443A3200BD7D12 /* ParsingError.swift */; };
 		F6B65D9F21443A3E00BD7D12 /* HTTPResourceParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6B65D9E21443A3E00BD7D12 /* HTTPResourceParameters.swift */; };
-		F6B65DA221443C0C00BD7D12 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6B65DA121443C0C00BD7D12 /* Result.swift */; };
 		F6B65DA421443C1F00BD7D12 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6B65DA321443C1F00BD7D12 /* APIError.swift */; };
 		F6B65DA921446DF900BD7D12 /* MovieMappingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6B65DA821446DF900BD7D12 /* MovieMappingTests.swift */; };
 		F6B65DAB21446E0E00BD7D12 /* APIPaginatedResTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6B65DAA21446E0E00BD7D12 /* APIPaginatedResTests.swift */; };
@@ -112,7 +111,6 @@
 		F6B65D9A21443A1900BD7D12 /* HTTPMethod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPMethod.swift; sourceTree = "<group>"; };
 		F6B65D9C21443A3200BD7D12 /* ParsingError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParsingError.swift; sourceTree = "<group>"; };
 		F6B65D9E21443A3E00BD7D12 /* HTTPResourceParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPResourceParameters.swift; sourceTree = "<group>"; };
-		F6B65DA121443C0C00BD7D12 /* Result.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		F6B65DA321443C1F00BD7D12 /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
 		F6B65DA821446DF900BD7D12 /* MovieMappingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieMappingTests.swift; sourceTree = "<group>"; };
 		F6B65DAA21446E0E00BD7D12 /* APIPaginatedResTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIPaginatedResTests.swift; sourceTree = "<group>"; };
@@ -336,7 +334,6 @@
 		F6B65DA021443C0600BD7D12 /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				F6B65DA121443C0C00BD7D12 /* Result.swift */,
 				F6928532214C3E27002ED354 /* Store.swift */,
 			);
 			path = Core;
@@ -424,9 +421,11 @@
 				TargetAttributes = {
 					F6B65D602144242D00BD7D12 = {
 						CreatedOnToolsVersion = 9.4.1;
+						LastSwiftMigration = 1020;
 					};
 					F6B65D762144242E00BD7D12 = {
 						CreatedOnToolsVersion = 9.4.1;
+						LastSwiftMigration = 1020;
 						TestTargetID = F6B65D602144242D00BD7D12;
 					};
 				};
@@ -482,7 +481,6 @@
 				F6B65D692144242D00BD7D12 /* ExploreVC.swift in Sources */,
 				F6B65D652144242D00BD7D12 /* AppDelegate.swift in Sources */,
 				F6B65D9B21443A1900BD7D12 /* HTTPMethod.swift in Sources */,
-				F6B65DA221443C0C00BD7D12 /* Result.swift in Sources */,
 				F616769E214FF62A008753BA /* FavoritesVC.swift in Sources */,
 				F65571A621524F39002D8867 /* URLSessionImageFetcher.swift in Sources */,
 				F6B65D9F21443A3E00BD7D12 /* HTTPResourceParameters.swift in Sources */,
@@ -687,7 +685,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.ekazakov.MovieExplorer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -705,7 +703,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.ekazakov.MovieExplorer;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -725,7 +723,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.ekazakov.MovieExplorerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MovieExplorer.app/MovieExplorer";
 			};
@@ -746,7 +744,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = org.ekazakov.MovieExplorerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MovieExplorer.app/MovieExplorer";
 			};

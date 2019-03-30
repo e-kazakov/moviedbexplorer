@@ -34,7 +34,7 @@ class MovieTableController: NSObject, UITableViewDataSource, UITableViewDataSour
     guard let tableView = tableView else { return }
     
     tableView.register(MovieCell.nib, forCellReuseIdentifier: MovieCell.defaultReuseIdentifier)
-    tableView.rowHeight = UITableViewAutomaticDimension
+    tableView.rowHeight = UITableView.automaticDimension
     tableView.estimatedRowHeight = 198
     
     tableView.delegate = self
@@ -66,7 +66,7 @@ class MovieTableController: NSObject, UITableViewDataSource, UITableViewDataSour
       
       return reusedMovieCell
     } else {
-      return MovieCell(style: UITableViewCellStyle.default, reuseIdentifier: MovieCell.defaultReuseIdentifier)
+      return MovieCell(style: UITableViewCell.CellStyle.default, reuseIdentifier: MovieCell.defaultReuseIdentifier)
     }
   }
   
