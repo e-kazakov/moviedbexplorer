@@ -1,14 +1,14 @@
 //
-//  MovieViewModel.swift
+//  MovieCellViewModel.swift
 //  MovieExplorer
 //
-//  Created by Evgeny Kazakov on 9/17/18.
-//  Copyright © 2018 Evgeny Kazakov. All rights reserved.
+//  Created by Evgeny Kazakov on 4/10/19.
+//  Copyright © 2019 Evgeny Kazakov. All rights reserved.
 //
 
 import UIKit
 
-protocol MovieViewModel {
+protocol MovieCellViewModel {
   var title: String { get }
   var overview: String? { get }
   var releaseYear: String { get }
@@ -17,8 +17,8 @@ protocol MovieViewModel {
   func select()
 }
 
-class MovieViewModelImpl: MovieViewModel {
-
+class MovieCellViewModelImpl: MovieCellViewModel {
+  
   let title: String
   let overview: String?
   let releaseYear: String
@@ -27,13 +27,14 @@ class MovieViewModelImpl: MovieViewModel {
   private let movie: Movie
   private let apiClient: APIClient
   private let imageFetcher: ImageFetcher
-
+  
   var onSelect: (() -> Void)?
   
   init(movie: Movie, api: APIClient, imageFetcher: ImageFetcher) {
     self.movie = movie
     self.apiClient = api
     self.imageFetcher = imageFetcher
+    
     let releaseYear = movie.releaseDate.split(separator: "-").first.map(String.init) ?? ""
     title = movie.title
     overview = movie.overview
@@ -46,3 +47,4 @@ class MovieViewModelImpl: MovieViewModel {
     onSelect?()
   }
 }
+

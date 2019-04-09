@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="49e-Tb-3d3">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="49e-Tb-3d3">
     <device id="retina5_9" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
-        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -142,7 +141,7 @@
             </objects>
             <point key="canvasLocation" x="1553" y="191"/>
         </scene>
-        <!--Movie DetailsVC-->
+        <!--Title-->
         <scene sceneID="Lxf-fj-viN">
             <objects>
                 <viewController storyboardIdentifier="MovieDetailsVC" hidesBottomBarWhenPushed="YES" id="KcI-NT-A23" customClass="MovieDetailsVC" customModule="MovieExplorer" customModuleProvider="target" sceneMemberID="viewController">
@@ -221,6 +220,15 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Ov5-xc-H5i"/>
                     </view>
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" title="Title" id="Anm-ay-Hor">
+                        <barButtonItem key="rightBarButtonItem" image="star-o-ic" style="plain" id="ze2-Dc-PUR">
+                            <connections>
+                                <action selector="onToggleFavorite" destination="KcI-NT-A23" id="HIW-Iu-qPM"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="nameLabel" destination="SWw-KE-5TO" id="LiJ-xb-Klz"/>
                         <outlet property="overviewLabel" destination="Vcf-lF-87E" id="BRG-Qf-fSU"/>

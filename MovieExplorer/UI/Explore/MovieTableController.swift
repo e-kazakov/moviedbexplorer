@@ -18,7 +18,7 @@ class MovieTableController: NSObject, UITableViewDataSource, UITableViewDataSour
     }
   }
   
-  var movies: [MovieViewModel] = [] {
+  var movies: [MovieCellViewModel] = [] {
     didSet {
       tableView?.reloadData()
     }
@@ -90,10 +90,25 @@ class MovieTableController: NSObject, UITableViewDataSource, UITableViewDataSour
   }
   
   func scrollViewDidScroll(_ scrollView: UIScrollView) {
-    let threshold = scrollView.bounds.height * 3
-    let distanceToEnd = scrollView.contentSize.height - scrollView.bounds.size.height - scrollView.contentOffset.y
-    if distanceToEnd <= threshold {
+    if isCloseToEnd {
       onCloseToEnd?()
     }
+  }
+  
+  private var isCloseToEnd: Bool {
+    return distanceToEnd <= distanceToEndThreshold
+  }
+  
+  private var distanceToEndThreshold: CGFloat {
+    guard let tableView = tableView else { return 0 }
+    
+    let screensOfContentToBeClose = 3 as CGFloat
+    return tableView.bounds.height * screensOfContentToBeClose
+  }
+  
+  private var distanceToEnd: CGFloat {
+    guard let tableView = tableView else { return 0 }
+
+    return tableView.contentSize.height - tableView.bounds.size.height - tableView.contentOffset.y
   }
 }

@@ -56,4 +56,19 @@ class MovieDetailsVC: UIViewController {
   private func load() {
     viewModel?.image?.load()
   }
+  
+  // MARK: Actions
+  
+  private var isStarred = false
+  @IBAction
+  func onToggleFavorite() {
+    isStarred.toggle()
+    
+    let favButton = UIBarButtonItem(
+      image: isStarred ? UIImage.tmdb.starFilled : UIImage.tmdb.starO,
+      style: .plain,
+      target: self, action: #selector(onToggleFavorite)
+    )
+    navigationItem.setRightBarButton(favButton, animated: true)
+  }
 }

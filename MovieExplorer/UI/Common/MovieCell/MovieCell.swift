@@ -15,7 +15,7 @@ class MovieCell: UITableViewCell {
   @IBOutlet var overviewLabel: UILabel!
   @IBOutlet var releaseYearLabel: UILabel!
   
-  private var viewModel: MovieViewModel?
+  private var viewModel: MovieCellViewModel?
   
   override func awakeFromNib() {
     super.awakeFromNib()
@@ -38,7 +38,7 @@ class MovieCell: UITableViewCell {
     posterImageView.layer.removeAllAnimations()
   }
   
-  func configure(with viewModel: MovieViewModel) {
+  func configure(with viewModel: MovieCellViewModel) {
     self.viewModel = viewModel
     
     nameLabel.text = viewModel.title
@@ -62,31 +62,3 @@ class MovieCell: UITableViewCell {
 }
 
 extension MovieCell: NibLoadable, Reusable { }
-
-protocol NibLoadable {
-  
-  static var nibName: String { get }
-  
-  static var nib: UINib { get }
-}
-
-extension NibLoadable where Self: UIView {
-  
-  static var nibName: String {
-    return String(describing: self)
-  }
-  
-  static var nib: UINib {
-    return UINib(nibName: nibName, bundle: Bundle(for: self))
-  }
-}
-
-protocol Reusable {
-  static var defaultReuseIdentifier: String { get }
-}
-
-extension Reusable {
-  static var defaultReuseIdentifier: String {
-    return String(describing: self)
-  }
-}

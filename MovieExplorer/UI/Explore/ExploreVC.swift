@@ -19,15 +19,9 @@ class ExploreVC: UIViewController {
   private var apiClient: APIClient!
   private var imageFetcher: ImageFetcher!
   
-  private var modelSubscriptionToken: SubscriptionToken?
-  
   private var isInitialized = false
   
   private let detailsSequeIdentifier = "explore_details"
-  
-  deinit {
-    modelSubscriptionToken?.dispose()
-  }
   
   func initialize(moviesList: MoviesListViewModel, apiClient: APIClient, imageFetcher: ImageFetcher) {
     guard !isInitialized else { return }

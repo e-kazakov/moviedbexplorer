@@ -19,7 +19,7 @@ enum MoviesListViewModelStatus {
 
 protocol MoviesListViewModel {
   var status: MoviesListViewModelStatus { get }
-  var movies: [MovieViewModel] { get }
+  var movies: [MovieCellViewModel] { get }
   
   var onChanged: (() -> Void)? { get set }
   var onGoToDetails: ((Movie) -> Void)? { get set }
@@ -31,8 +31,8 @@ protocol MoviesListViewModel {
 class MoviesListViewModelImpl: MoviesListViewModel {
   
   private(set) var status: MoviesListViewModelStatus
-  private(set) var movies: [MovieViewModel] = []
-  private var moviesById: [Int: MovieViewModel] = [:]
+  private(set) var movies: [MovieCellViewModel] = []
+  private var moviesById: [Int: MovieCellViewModel] = [:]
   
   var onChanged: (() -> Void)?
   var onGoToDetails: ((Movie) -> Void)?
@@ -74,7 +74,7 @@ class MoviesListViewModelImpl: MoviesListViewModel {
   }
   
   private func update(movies state: MoviesListState) {
-    var movies: [MovieViewModel] = []
+    var movies: [MovieCellViewModel] = []
     for movie in state.movies {
       let movieVM = moviesById[movie.id] ?? createMovieViewModel(movie)
       moviesById[movie.id] = movieVM
@@ -83,8 +83,8 @@ class MoviesListViewModelImpl: MoviesListViewModel {
     self.movies = movies
   }
   
-  private func createMovieViewModel(_ movie: Movie) -> MovieViewModel {
-    let vm = MovieViewModelImpl(movie: movie, api: apiClient, imageFetcher: imageFetcher)
+  private func createMovieViewModel(_ movie: Movie) -> MovieCellViewModel {
+    let vm = MovieCellViewModelImpl(movie: movie, api: apiClient, imageFetcher: imageFetcher)
     vm.onSelect = { [weak self] in self?.onGoToDetails?(movie) }
     return vm
   }
