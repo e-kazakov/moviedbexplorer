@@ -102,7 +102,6 @@ class MoviesListTests: XCTestCase {
     let stubResultSecondCall = Result<APIPaginatedRes<Movie>, APIError>.success(stubResponseSecondCall)
     
     stubClient.nextFetchResultResolver = {_ in stubResult }
-    
     moviesList.loadNext()
 
     stubClient.nextFetchResultResolver = { _ in stubResultSecondCall }

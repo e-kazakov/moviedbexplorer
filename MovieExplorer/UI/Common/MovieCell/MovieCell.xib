@@ -1,22 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
-        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="198" id="LxV-rD-IdE" customClass="MovieCell" customModule="MovieExplorer" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="320" height="198"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="226" id="LxV-rD-IdE" customClass="MovieCell" customModule="MovieExplorer" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="328" height="198"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="LxV-rD-IdE" id="byd-gg-wjD">
-                <rect key="frame" x="0.0" y="0.0" width="320" height="197.5"/>
+                <rect key="frame" x="0.0" y="0.0" width="328" height="197.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="til-Ce-J0c">
@@ -27,13 +26,13 @@
                         </constraints>
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" text="A movie name" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XpR-Im-cMm">
-                        <rect key="frame" x="137" y="5" width="151" height="20.5"/>
+                        <rect key="frame" x="137" y="5" width="159" height="20.5"/>
                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="1000" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oaD-kQ-U8Y">
-                        <rect key="frame" x="137" y="33.5" width="167" height="127"/>
+                        <rect key="frame" x="137" y="33.5" width="175" height="127"/>
                         <string key="text">Ut condimentum, arcu sed porta sagittis, nulla quam mattis erat, eget laoreet orci orci a lacus. Aenean suscipit tortor elementum sapien tincidunt, a feugiat nunc dignissim. Suspendisse in mi et mi lobortis fermentum vitae faucibus sapien. Aliquam semper mollis congue. Proin eros nulla, rutrum et elit et, semper faucibus lacus. </string>
                         <fontDescription key="fontDescription" type="system" weight="light" pointSize="14"/>
                         <nil key="textColor"/>
@@ -50,7 +49,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" image="angle_right-ic" translatesAutoresizingMaskIntoConstraints="NO" id="lPb-GF-yjr">
-                        <rect key="frame" x="296" y="9" width="8" height="13"/>
+                        <rect key="frame" x="304" y="9" width="8" height="13"/>
                     </imageView>
                 </subviews>
                 <constraints>
@@ -76,7 +75,7 @@
                 <outlet property="posterImageView" destination="til-Ce-J0c" id="Lpo-ak-Z1Z"/>
                 <outlet property="releaseYearLabel" destination="l1A-4A-CLD" id="6Iq-Rt-jpi"/>
             </connections>
-            <point key="canvasLocation" x="145" y="-430.5"/>
+            <point key="canvasLocation" x="246.40000000000001" y="-418.29085457271367"/>
         </tableViewCell>
     </objects>
     <resources>

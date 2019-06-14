@@ -52,7 +52,9 @@ class RemoteImageViewModel: RemoteImageViewModelProtocol {
           self.image = image
         }
       case .failure(let error):
-        print("Failed to load remote image. \(error)")
+        if !error.isCancelledRequestError {
+          print("Failed to load remote image. \(error)")
+        }
       }
     }
   }

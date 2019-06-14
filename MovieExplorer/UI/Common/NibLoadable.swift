@@ -24,4 +24,14 @@ extension NibLoadable where Self: UIView {
   static var nib: UINib {
     return UINib(nibName: nibName, bundle: Bundle(for: self))
   }
+  
+  static func loadFromNib() -> Self? {
+    for obj in nib.instantiate(withOwner: nil, options: nil) {
+      if let view = obj as? Self {
+        return view
+      }
+    }
+    
+    return nil
+  }
 }

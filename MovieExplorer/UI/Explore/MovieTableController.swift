@@ -12,6 +12,8 @@ class MovieTableController: NSObject, UITableViewDataSource, UITableViewDataSour
   
   var onCloseToEnd: (() -> Void)?
   
+  let screensOfContentToBeClose = 1 as CGFloat
+  
   var tableView: UITableView? = nil {
     didSet {
       configureTableView()
@@ -20,7 +22,9 @@ class MovieTableController: NSObject, UITableViewDataSource, UITableViewDataSour
   
   var movies: [MovieCellViewModel] = [] {
     didSet {
-      tableView?.reloadData()
+      if movies.count != oldValue.count {
+        tableView?.reloadData()
+      }
     }
   }
   
@@ -34,12 +38,11 @@ class MovieTableController: NSObject, UITableViewDataSource, UITableViewDataSour
     guard let tableView = tableView else { return }
     
     tableView.register(MovieCell.nib, forCellReuseIdentifier: MovieCell.defaultReuseIdentifier)
-    tableView.rowHeight = UITableView.automaticDimension
-    tableView.estimatedRowHeight = 198
+    tableView.rowHeight = MovieCell.preferredHeight
     
     tableView.delegate = self
-    tableView.dataSource = self
     tableView.prefetchDataSource = self
+    tableView.dataSource = self
   }
   
   // MARK: DataSource
@@ -61,7 +64,7 @@ class MovieTableController: NSObject, UITableViewDataSource, UITableViewDataSour
     if let reusedCell = tableView.dequeueReusableCell(withIdentifier: MovieCell.defaultReuseIdentifier) {
       
       guard let reusedMovieCell = reusedCell as? MovieCell else {
-        fatalError("Unexpected type of rused cell. Expecting \(MovieCell.self), got \(type(of: reusedCell))")
+        fatalError("Unexpected type of reused cell. Expecting \(MovieCell.self), got \(type(of: reusedCell))")
       }
       
       return reusedMovieCell
@@ -74,12 +77,6 @@ class MovieTableController: NSObject, UITableViewDataSource, UITableViewDataSour
     indexPaths
       .map { movies[$0.row] }
       .forEach { $0.image?.load() }
-  }
-  
-  func tableView(_ tableView: UITableView, cancelPrefetchingForRowsAt indexPaths: [IndexPath]) {
-    indexPaths
-      .map { movies[$0.row] }
-      .forEach { $0.image?.cancel() }
   }
   
   // MARK: Delegate
@@ -102,7 +99,6 @@ class MovieTableController: NSObject, UITableViewDataSource, UITableViewDataSour
   private var distanceToEndThreshold: CGFloat {
     guard let tableView = tableView else { return 0 }
     
-    let screensOfContentToBeClose = 3 as CGFloat
     return tableView.bounds.height * screensOfContentToBeClose
   }
   

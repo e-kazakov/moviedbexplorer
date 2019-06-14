@@ -11,9 +11,9 @@ import UIKit
 class ExploreVC: UIViewController {
 
   @IBOutlet private var tableView: UITableView!
-  @IBOutlet private var loadingIndicator: UIActivityIndicatorView!
   
   private lazy var movieTableController = MovieTableController(api: apiClient)
+  private lazy var movieTableLoadingController = MovieTableLoadingController()
   
   private var moviesList: MoviesListViewModel!
   private var apiClient: APIClient!
@@ -63,7 +63,6 @@ class ExploreVC: UIViewController {
   }
   
   private func configureMoviesTableView() {
-    movieTableController.tableView = tableView
     movieTableController.onCloseToEnd = { [weak self] in
       self?.moviesList.loadNext()
     }
@@ -79,26 +78,40 @@ class ExploreVC: UIViewController {
   }
   
   private func update() {
-    movieTableController.movies = moviesList.movies
-    
     switch moviesList.status {
     case .initial: break
-    case .loading: showLoadingIndicator()
-    case .loaded: hideLoadingIndicator()
+    case .loading: configureForLoading()
+    case .loaded: configureForLoaded()
     case .loadingNext: break
-    case .failedToLoad: hideLoadingIndicator()
+    case .failedToLoad: break
     case .failedToLoadNext: break
     }
   }
   
-  private func showLoadingIndicator() {
-    tableView.isHidden = true
-    loadingIndicator.startAnimating()
+  private func configureForLoading() {
+    if movieTableLoadingController.tableView !== tableView {
+      tableView.isUserInteractionEnabled = false
+      movieTableLoadingController.tableView = tableView
+      tableView.reloadData()
+    }
   }
   
-  private func hideLoadingIndicator() {
-    tableView.isHidden = false
-    loadingIndicator.stopAnimating()
+  private func configureForLoaded() {
+    movieTableController.movies = moviesList.movies
+    
+    if movieTableController.tableView !== tableView {
+      tableView.isUserInteractionEnabled = true
+      movieTableController.tableView = tableView
+      UIView.transition(
+        with: tableView,
+        duration: CATransaction.animationDuration(),
+        options: .transitionCrossDissolve,
+        animations: {
+          self.tableView.reloadData()
+        },
+        completion: nil
+      )
+    }
   }
   
   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
