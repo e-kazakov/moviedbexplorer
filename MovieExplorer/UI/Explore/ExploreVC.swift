@@ -10,10 +10,10 @@ import UIKit
 
 class ExploreVC: UIViewController {
 
-  @IBOutlet private var tableView: UITableView!
-  
-  private lazy var movieTableController = MovieTableController(api: apiClient)
-  private lazy var movieTableLoadingController = MovieTableLoadingController()
+  @IBOutlet private var collectionView: UICollectionView!
+
+  private lazy var moviesCollectionController = MovieCollectionController(api: apiClient)
+  private lazy var moviesCollectionLoadingController = MovieCollectionLoadingController()
   
   private var moviesList: MoviesListViewModel!
   private var apiClient: APIClient!
@@ -63,7 +63,7 @@ class ExploreVC: UIViewController {
   }
   
   private func configureMoviesTableView() {
-    movieTableController.onCloseToEnd = { [weak self] in
+    moviesCollectionController.onCloseToEnd = { [weak self] in
       self?.moviesList.loadNext()
     }
   }
@@ -89,26 +89,23 @@ class ExploreVC: UIViewController {
   }
   
   private func configureForLoading() {
-    if movieTableLoadingController.tableView !== tableView {
-      tableView.isUserInteractionEnabled = false
-      movieTableLoadingController.tableView = tableView
-      tableView.reloadData()
+    if moviesCollectionLoadingController.collectionView !== collectionView {
+      collectionView.isUserInteractionEnabled = false
+      moviesCollectionLoadingController.collectionView = collectionView
     }
   }
   
   private func configureForLoaded() {
-    movieTableController.movies = moviesList.movies
-    
-    if movieTableController.tableView !== tableView {
-      tableView.isUserInteractionEnabled = true
-      movieTableController.tableView = tableView
+    moviesCollectionController.movies = moviesList.movies
+
+    if moviesCollectionController.collectionView !== collectionView {
+      collectionView.isUserInteractionEnabled = true
+      moviesCollectionController.collectionView = collectionView
       UIView.transition(
-        with: tableView,
+        with: collectionView,
         duration: CATransaction.animationDuration(),
         options: .transitionCrossDissolve,
-        animations: {
-          self.tableView.reloadData()
-        },
+        animations: { },
         completion: nil
       )
     }

@@ -39,23 +39,30 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="aL4-V6-WlY">
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="5Xi-FB-kzc">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            </tableView>
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="TFR-Fb-3P7">
+                                    <size key="itemSize" width="50" height="50"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells/>
+                            </collectionView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="XZa-WA-92i" firstAttribute="trailing" secondItem="aL4-V6-WlY" secondAttribute="trailing" id="6SW-aE-dww"/>
-                            <constraint firstAttribute="bottom" secondItem="aL4-V6-WlY" secondAttribute="bottom" id="F9V-M6-LfW"/>
-                            <constraint firstItem="aL4-V6-WlY" firstAttribute="top" secondItem="tsR-hK-woN" secondAttribute="top" id="ggl-gb-qff"/>
-                            <constraint firstItem="aL4-V6-WlY" firstAttribute="leading" secondItem="XZa-WA-92i" secondAttribute="leading" id="o3c-mf-bDY"/>
+                            <constraint firstItem="5Xi-FB-kzc" firstAttribute="leading" secondItem="XZa-WA-92i" secondAttribute="leading" id="9BC-Dz-Ws3"/>
+                            <constraint firstAttribute="bottom" secondItem="5Xi-FB-kzc" secondAttribute="bottom" id="9tu-Qz-Pmz"/>
+                            <constraint firstItem="XZa-WA-92i" firstAttribute="trailing" secondItem="5Xi-FB-kzc" secondAttribute="trailing" id="BR5-Qo-BlW"/>
+                            <constraint firstItem="5Xi-FB-kzc" firstAttribute="top" secondItem="tsR-hK-woN" secondAttribute="top" id="bmO-Sv-Mz7"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="XZa-WA-92i"/>
                     </view>
                     <navigationItem key="navigationItem" title="The Movie DB" id="ahz-gk-cIs"/>
                     <connections>
-                        <outlet property="tableView" destination="aL4-V6-WlY" id="x2G-am-T0f"/>
+                        <outlet property="collectionView" destination="5Xi-FB-kzc" id="oVo-1P-ggw"/>
                         <segue destination="KcI-NT-A23" kind="show" identifier="explore_details" id="B8j-ek-w8W"/>
                     </connections>
                 </viewController>

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MovieSkeletonCell: UITableViewCell {
+class MovieSkeletonCell: UICollectionViewCell {
   
   static let preferredHeight = CGFloat(198)
   static let duration = 1.0
@@ -34,19 +34,14 @@ class MovieSkeletonCell: UITableViewCell {
     return gradientLayer
   }()
   
-  override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-    super.init(style: style, reuseIdentifier: reuseIdentifier)
+  override init(frame: CGRect) {
+    super.init(frame: frame)
 
     contentView.addSubview(animatingView)
   }
   
   required init?(coder aDecoder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
-  }
-  
-  override func awakeFromNib() {
-    super.awakeFromNib()
-
   }
   
   override func layoutSubviews() {
@@ -85,6 +80,8 @@ class MovieSkeletonCell: UITableViewCell {
     gradientMove.duration = MovieSkeletonCell.duration
     gradientMove.repeatCount = .greatestFiniteMagnitude
     gradientMove.timingFunction = CAMediaTimingFunction(name: .easeIn)
+    // Start every skeleton animation at the same time regardless of when animation was created
+    gradientMove.beginTime = 1
     
     gradientLayer.add(gradientMove, forKey: "skeleton")
   }

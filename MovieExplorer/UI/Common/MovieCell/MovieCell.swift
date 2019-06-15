@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MovieCell: UITableViewCell {
+class MovieCell: UICollectionViewCell {
   
   @IBOutlet var posterImageView: UIImageView!
   @IBOutlet var nameLabel: UILabel!
