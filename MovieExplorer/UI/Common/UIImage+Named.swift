@@ -8,26 +8,34 @@
 
 import UIKit
 
-extension UIImage {
-  
-  static var tmdb: TMDB<UIImage> {
-    return TMDB(holder: self)
+extension TMDB where Base: UIImage {
+
+  static var starFilled: UIImage {
+    return UIImage(named: "star-filled-ic")!
   }
   
-}
-
-struct TMDB<T> {
-  var holder: T.Type
-}
-
-extension TMDB where T: UIImage {
+  static var popcornO: UIImage {
+    return UIImage(named: "popcorn-o-ic")!
+  }
   
-  var starO: UIImage {
+  static var popcornFilled: UIImage {
+    return UIImage(named: "popcorn-filled-ic")!
+  }
+  
+  static var starO: UIImage {
     return UIImage(named: "star-o-ic")!
   }
   
-  var starFilled: UIImage {
+  static var startFilled: UIImage {
     return UIImage(named: "star-filled-ic")!
+  }
+  
+  static var magnifyingGlass: UIImage {
+    return UIImage(named: "magnifying_glass-ic")!
+  }
+  
+  static var magnifyingGlassThick: UIImage {
+    return UIImage(named: "magnifying_glass-thick-ic")!
   }
   
 }

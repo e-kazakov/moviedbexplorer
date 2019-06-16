@@ -10,55 +10,41 @@ import UIKit
 
 class MainTabVC: UITabBarController, UITabBarControllerDelegate {
 
-  private var apiClient: APIClient!
-  private var imageFetcher: ImageFetcher!
+  private let apiClient: APIClient
+  private let imageFetcher: ImageFetcher
 
-  override var selectedViewController: UIViewController? {
-    didSet {
-      configureSelectedController()
-    }
-  }
-  
-  private var isInitialized = false
-  
-  func initialize(apiClient: APIClient, imageFetcher: ImageFetcher) {
-    guard !isInitialized else { return }
-    
+  init(apiClient: APIClient, imageFetcher: ImageFetcher) {
     self.apiClient = apiClient
     self.imageFetcher = imageFetcher
-    isInitialized = true
+
+    super.init(nibName: nil, bundle: nil)
+    
+    self.tabBar.tintColor = .black
   }
   
+  required init?(coder aDecoder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
+
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    guard isInitialized else {
-      fatalError("Must be initialized.")
-    }
-  }
-  
-  private func configureSelectedController() {
-    guard let selectedViewController = selectedViewController else { return }
-    guard let selectedNavigationController = selectedViewController as? UINavigationController else {
-      fatalError("Unexpected controller type.")
+    let moviesListViewModel = MoviesListViewModelImpl(
+      moviesList: TMDBMoviesList(api: apiClient),
+      api: apiClient,
+      imageFetcher: imageFetcher
+    )
+
+    let nc = { (rootVC: UIViewController) -> UINavigationController in
+      let nc = UINavigationController(rootViewController: rootVC)
+      nc.navigationBar.tintColor = .black
+      return nc
     }
     
-    guard let rootVC = selectedNavigationController.viewControllers.first else { return }
-    
-    switch rootVC {
-    case let explore as ExploreVC:
-      let moviesListViewModel = MoviesListViewModelImpl(
-        moviesList: TMDBMoviesList(api: apiClient),
-        api: apiClient,
-        imageFetcher: imageFetcher
-      )
-      explore.initialize(moviesList: moviesListViewModel, apiClient: apiClient, imageFetcher: imageFetcher)
-    case let search as MovieSearchVC:
-      print("Selected \(search)")
-    case let favorites as FavoritesVC:
-      print("Selected \(favorites)")
-    default:
-      break
-    }
+    self.viewControllers = [
+      nc(ExploreVC(moviesList: moviesListViewModel, apiClient: apiClient, imageFetcher: imageFetcher)),
+      nc(FavoritesVC()),
+      nc(MovieSearchVC())
+    ]
   }
 }

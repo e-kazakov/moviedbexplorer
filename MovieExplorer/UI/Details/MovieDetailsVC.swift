@@ -10,14 +10,7 @@ import UIKit
 
 class MovieDetailsVC: UIViewController {
   
-  @IBOutlet var posterImageView: UIImageView!
-  @IBOutlet var nameLabel: UILabel!
-  @IBOutlet var overviewLabel: UILabel!
-  @IBOutlet var releaseYearLabel: UILabel! {
-    didSet {
-      UILabel.Style.releaseYear(releaseYearLabel)
-    }
-  }
+  private let detailsView = MovieDetailsView()
   
   var viewModel: MovieViewModel? {
     didSet {
@@ -26,31 +19,66 @@ class MovieDetailsVC: UIViewController {
       }
     }
   }
+
+  init(viewModel: MovieViewModel) {
+    self.viewModel = viewModel
+    
+    super.init(nibName: nil, bundle: nil)
+    
+    configureNavigationItem()
+  }
+  
+  required init?(coder aDecoder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    setupViews()
     bind()
     load()
+  }
+  
+  private func configureNavigationItem() {
+    navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage.tmdb.starO,
+                                                        style: .plain,
+                                                        target: self,
+                                                        action: #selector(onToggleFavorite))
+  }
+  
+  private func setupViews() {
+    self.view.backgroundColor = .white
+    
+    let scrollView = UIScrollView()
+    scrollView.translatesAutoresizingMaskIntoConstraints = false
+    detailsView.translatesAutoresizingMaskIntoConstraints = false
+
+    view.addSubview(scrollView)
+    scrollView.addSubview(detailsView)
+    
+    NSLayoutConstraint.activate([
+      scrollView.topAnchor.constraint(equalTo: view.topAnchor),
+      scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+      scrollView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor),
+      scrollView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor),
+
+      detailsView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+      detailsView.leftAnchor.constraint(equalTo: scrollView.leftAnchor),
+      detailsView.rightAnchor.constraint(equalTo: scrollView.rightAnchor),
+      detailsView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+      detailsView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+    ])
   }
 
   private func bind() {
     guard let viewModel = viewModel else { return }
     
     title = viewModel.title
-    nameLabel.text = viewModel.title
-    overviewLabel.text = viewModel.overview
-    releaseYearLabel.text = viewModel.releaseYear
-    posterImageView.image = viewModel.image?.image ?? viewModel.image?.placeholder
-    posterImageView.alpha = viewModel.image == nil ? 0 : 1.0
+    detailsView.nameLabel.text = viewModel.title
+    detailsView.overviewLabel.text = viewModel.overview
+    detailsView.releaseYearLabel.text = viewModel.releaseYear
     
-    viewModel.image?.onChanged = { [weak self] in
-      if let image = viewModel.image?.image {
-        self?.posterImageView.image = image
-        if (self?.posterImageView.alpha ?? 1.0) < CGFloat(1.0) {
-          UIView.animate(withDuration: 0.3) { self?.posterImageView.alpha = 1.0 }
-        }
-      }
-    }
+    detailsView.posterImageView.tmdb.setImage(remote: viewModel.image)
   }
   
   private func load() {
@@ -60,8 +88,9 @@ class MovieDetailsVC: UIViewController {
   // MARK: Actions
   
   private var isStarred = false
-  @IBAction
-  func onToggleFavorite() {
+  
+  @objc
+  private func onToggleFavorite() {
     isStarred.toggle()
     
     let favButton = UIBarButtonItem(

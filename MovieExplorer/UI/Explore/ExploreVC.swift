@@ -10,47 +10,43 @@ import UIKit
 
 class ExploreVC: UIViewController {
 
-  @IBOutlet private var collectionView: UICollectionView!
+  private lazy var collectionView: UICollectionView = {
+    let layout = UICollectionViewFlowLayout()
+    let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+    cv.backgroundColor = .white
+    return cv
+  }()
 
   private lazy var moviesCollectionController = MovieCollectionController(api: apiClient)
   private lazy var moviesCollectionLoadingController = MovieCollectionLoadingController()
   
-  private var moviesList: MoviesListViewModel!
-  private var apiClient: APIClient!
-  private var imageFetcher: ImageFetcher!
-  
-  private var isInitialized = false
+  private var moviesList: MoviesListViewModel
+  private let apiClient: APIClient
+  private let imageFetcher: ImageFetcher
   
   private let detailsSequeIdentifier = "explore_details"
   
-  func initialize(moviesList: MoviesListViewModel, apiClient: APIClient, imageFetcher: ImageFetcher) {
-    guard !isInitialized else { return }
-    
+  init (moviesList: MoviesListViewModel, apiClient: APIClient, imageFetcher: ImageFetcher) {
     self.moviesList = moviesList
     self.apiClient = apiClient
     self.imageFetcher = imageFetcher
     
-    isInitialized = true
-  }
-  
-  override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-    super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-    
+    super.init(nibName: nil, bundle: nil)
+
     configureNavigationItem()
+    configureTabBarItem()
   }
   
   required init?(coder aDecoder: NSCoder) {
-    super.init(coder: aDecoder)
-    
-    configureNavigationItem()
+    fatalError("init(coder:) has not been implemented")
+  }
+  
+  override func loadView() {
+    view = collectionView
   }
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    
-    guard isInitialized else {
-      fatalError("Must be initialized.")
-    }
     
     configureMoviesTableView()
     
@@ -59,7 +55,14 @@ class ExploreVC: UIViewController {
   }
   
   private func configureNavigationItem() {
+    title = "The Movie DB"
     navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+  }
+  
+  private func configureTabBarItem() {
+    tabBarItem.title = "Explore"
+    tabBarItem.image = UIImage.tmdb.popcornO
+    tabBarItem.selectedImage = UIImage.tmdb.popcornFilled
   }
   
   private func configureMoviesTableView() {
@@ -123,6 +126,8 @@ class ExploreVC: UIViewController {
   }
   
   private func goToDetails(_ movie: Movie) {
-    self.performSegue(withIdentifier: detailsSequeIdentifier, sender: movie)
+    let vm = MovieViewModelImpl(movie: movie, api: apiClient, imageFetcher: imageFetcher)
+    let detailsVC = MovieDetailsVC(viewModel: vm)
+    show(detailsVC, sender: nil)
   }
 }

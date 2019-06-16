@@ -46,23 +46,9 @@ class MovieCell: UICollectionViewCell {
     overviewLabel.text = viewModel.overview
     releaseYearLabel.text = viewModel.releaseYear
 
-    if let imageVM = viewModel.image {
-      posterImageView.image = imageVM.image ?? imageVM.placeholder
-      posterImageView.alpha = imageVM.image == nil ? 0 : 1.0
-      
-      imageVM.onChanged = { [weak self, unowned imageVM] in
-        if let image = imageVM.image {
-          self?.posterImageView.image = image
-          if (self?.posterImageView.alpha ?? 1.0) < CGFloat(1.0) {
-            UIView.animate(withDuration: 0.3) { self?.posterImageView.alpha = 1.0 }
-          }
-        }
-      }
-      
-      viewModel.image?.load()
-    } else {
-      posterImageView.image = nil;
-    }
+    posterImageView.tmdb.setImage(remote: viewModel.image)
+
+    viewModel.image?.load()
   }
 }
 
