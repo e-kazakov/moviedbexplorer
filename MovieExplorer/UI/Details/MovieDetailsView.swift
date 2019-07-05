@@ -23,10 +23,10 @@ class MovieDetailsView: UIView {
     overviewLabel.translatesAutoresizingMaskIntoConstraints = false
     releaseYearLabel.translatesAutoresizingMaskIntoConstraints = false
     
-    self.addSubview(posterImageView)
-    self.addSubview(nameLabel)
-    self.addSubview(overviewLabel)
-    self.addSubview(releaseYearLabel)
+    addSubview(posterImageView)
+    addSubview(nameLabel)
+    addSubview(overviewLabel)
+    addSubview(releaseYearLabel)
     
     NSLayoutConstraint.activate([
       posterImageView.topAnchor.constraint(equalTo: self.topAnchor),

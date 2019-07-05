@@ -30,4 +30,20 @@ extension UILabel.Style {
     label.numberOfLines = 0
     return label
   }
+  
+  @discardableResult
+  static func errorTitle(_ label: UILabel) -> UILabel {
+    label.font = UIFont.systemFont(ofSize: 25, weight: .light)
+    label.textAlignment = .center
+    return label
+  }
+  
+  @discardableResult
+  static func errorMessage(_ label: UILabel) -> UILabel {
+    label.font = UIFont.systemFont(ofSize: 17, weight: .thin)
+    label.textAlignment = .center
+    label.numberOfLines = 0
+    return label
+  }
+
 }

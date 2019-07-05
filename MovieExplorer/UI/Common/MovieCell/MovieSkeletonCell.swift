@@ -18,7 +18,7 @@ class MovieSkeletonCell: UICollectionViewCell {
   private lazy var animatingView: UIView = {
     let view = UIView()
     view.backgroundColor = skeletonColor
-    view.mask = MoviewSkeletonMaskView()
+    view.mask = MovieSkeletonMaskView()
     view.layer.addSublayer(gradientLayer)
     return view
   }()

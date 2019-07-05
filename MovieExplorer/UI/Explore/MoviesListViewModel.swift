@@ -59,6 +59,8 @@ class MoviesListViewModelImpl: MoviesListViewModel {
   }
   
   func loadNext() {
+    guard status != .failedToLoadNext else { return }
+    
     moviesList.loadNext()
   }
   

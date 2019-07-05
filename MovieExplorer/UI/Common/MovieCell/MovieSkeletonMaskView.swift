@@ -1,5 +1,5 @@
 //
-//  MoviewSkeletonMaskView.swift
+//  MovieSkeletonMaskView.swift
 //  MovieExplorer
 //
 //  Created by Evgeny Kazakov on 14.06.2019.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MoviewSkeletonMaskView: UIView {
+class MovieSkeletonMaskView: UIView {
   
   private let imageStub = UIView.black
   private let titleStub = UIView.black

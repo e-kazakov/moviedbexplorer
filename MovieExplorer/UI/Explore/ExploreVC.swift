@@ -10,21 +10,16 @@ import UIKit
 
 class ExploreVC: UIViewController {
 
-  private lazy var collectionView: UICollectionView = {
-    let layout = UICollectionViewFlowLayout()
-    let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
-    cv.backgroundColor = .white
-    return cv
-  }()
-
-  private lazy var moviesCollectionController = MovieCollectionController(api: apiClient)
-  private lazy var moviesCollectionLoadingController = MovieCollectionLoadingController()
+  private let contentView = ExploreView()
+  private var collectionView: UICollectionView {
+    return contentView.moviesListView
+  }
+  private let moviesCollectionController = MovieCollectionController()
+  private let moviesCollectionLoadingController = MovieCollectionLoadingController()
   
   private var moviesList: MoviesListViewModel
   private let apiClient: APIClient
   private let imageFetcher: ImageFetcher
-  
-  private let detailsSequeIdentifier = "explore_details"
   
   init (moviesList: MoviesListViewModel, apiClient: APIClient, imageFetcher: ImageFetcher) {
     self.moviesList = moviesList
@@ -42,13 +37,11 @@ class ExploreVC: UIViewController {
   }
   
   override func loadView() {
-    view = collectionView
+    view = contentView
   }
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    
-    configureMoviesTableView()
     
     bind()
     moviesList.loadNext()
@@ -65,13 +58,12 @@ class ExploreVC: UIViewController {
     tabBarItem.selectedImage = UIImage.tmdb.popcornFilled
   }
   
-  private func configureMoviesTableView() {
-    moviesCollectionController.onCloseToEnd = { [weak self] in
-      self?.moviesList.loadNext()
-    }
+  private func bind() {
+    bindOutputs()
+    bindInputs()
   }
   
-  private func bind() {
+  private func bindOutputs() {
     moviesList.onChanged = { [weak self] in
       self?.update()
     }
@@ -80,14 +72,27 @@ class ExploreVC: UIViewController {
     }
   }
   
+  private func bindInputs() {
+    contentView.errorView.onRetry = moviesList.retry
+    moviesCollectionController.onCloseToEnd = moviesList.loadNext
+    moviesCollectionController.onRetry = moviesList.retry
+  }
+  
   private func update() {
     switch moviesList.status {
-    case .initial: break
-    case .loading: configureForLoading()
-    case .loaded: configureForLoaded()
-    case .loadingNext: break
-    case .failedToLoad: break
-    case .failedToLoadNext: break
+    case .initial:
+      break
+    
+    case .loading:
+      contentView.showList()
+      configureForLoading()
+    
+    case .loaded, .loadingNext, .failedToLoadNext:
+      contentView.showList()
+      configureForLoaded()
+    
+    case .failedToLoad:
+      contentView.showError()
     }
   }
   
@@ -99,29 +104,12 @@ class ExploreVC: UIViewController {
   }
   
   private func configureForLoaded() {
-    moviesCollectionController.movies = moviesList.movies
-
+    moviesCollectionController.viewModel = MovieCollectionViewModel(from: moviesList)
+    
     if moviesCollectionController.collectionView !== collectionView {
       collectionView.isUserInteractionEnabled = true
       moviesCollectionController.collectionView = collectionView
-      UIView.transition(
-        with: collectionView,
-        duration: CATransaction.animationDuration(),
-        options: .transitionCrossDissolve,
-        animations: { },
-        completion: nil
-      )
-    }
-  }
-  
-  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-    if segue.identifier == detailsSequeIdentifier {
-      guard let detailsVC = segue.destination as? MovieDetailsVC, let movie = sender as? Movie else {
-        fatalError("Unexpected destination view controller.")
-      }
-      detailsVC.viewModel = MovieViewModelImpl(movie: movie, api: apiClient, imageFetcher: imageFetcher)
-    } else {
-      super.prepare(for: segue, sender: sender)
+      collectionView.tmdb.crossDissolveTransition { }
     }
   }
   
@@ -129,5 +117,20 @@ class ExploreVC: UIViewController {
     let vm = MovieViewModelImpl(movie: movie, api: apiClient, imageFetcher: imageFetcher)
     let detailsVC = MovieDetailsVC(viewModel: vm)
     show(detailsVC, sender: nil)
+  }
+}
+
+extension MovieCollectionViewModel {
+  init(from moviesList: MoviesListViewModel) {
+    switch moviesList.status {
+    case .loadingNext:
+      status = .loadingNext
+    case .failedToLoadNext:
+      status = .failedToLoadNext
+    default:
+      status = .loaded
+    }
+    
+    movies = moviesList.movies
   }
 }
