@@ -8,10 +8,6 @@
 
 import Foundation
 
-protocol SubscriptionToken {
-  mutating func dispose()
-}
-
 class Store<State> {
   
   private(set) var state: State
@@ -22,11 +18,11 @@ class Store<State> {
     self.state = initialState
   }
   
-  func observe(_ observer: @escaping (State) -> Void) -> SubscriptionToken {
+  func observe(_ observer: @escaping (State) -> Void) -> Disposable {
     let uid = UUID()
     stateObservers[uid] = observer
     
-    return ClosureSubscriptionToken { [weak self] in
+    return ClosureDisposable { [weak self] in
       self?.stateObservers[uid] = nil
     }
   }
@@ -46,22 +42,8 @@ class Store<State> {
 
 }
 
-struct ClosureSubscriptionToken: SubscriptionToken {
-  
-  private var disposeBlock: (() -> Void)?
-  
-  init(_ disposeBlock: @escaping () -> Void) {
-    self.disposeBlock = disposeBlock
-  }
-  
-  mutating func dispose() {
-    disposeBlock?()
-    disposeBlock = nil
-  }
-}
-
 extension Store {
-  func observe(on targetQueue: DispatchQueue, _ observer: @escaping (State) -> Void) -> SubscriptionToken {
+  func observe(on targetQueue: DispatchQueue, _ observer: @escaping (State) -> Void) -> Disposable {
     return observe { state in
       targetQueue.async { observer(state) }
     }

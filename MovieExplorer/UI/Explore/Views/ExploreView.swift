@@ -10,17 +10,18 @@ import UIKit
 
 class ExploreView: UIView {
   
-  lazy private(set) var moviesListView: UICollectionView = {
+  let moviesListView: UICollectionView = {
     let layout = UICollectionViewFlowLayout()
     let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
     cv.backgroundColor = .white
     return cv
   }()
-  lazy private(set) var errorView: ExploreErrorView = {
-    let ev = ExploreErrorView()
-    ev.backgroundColor = .white
-    ev.isHidden = true
-    return ev
+  let errorView: ListErrorView = {
+    let errorView = ListErrorView()
+    errorView.title = "Failed to load movies"
+    errorView.message = "Please retry"
+    errorView.retryButtonTitle = "Retry"
+    return errorView
   }()
 
   override init(frame: CGRect) {

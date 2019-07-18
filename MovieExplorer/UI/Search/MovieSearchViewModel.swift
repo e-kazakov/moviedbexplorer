@@ -1,35 +1,31 @@
 //
-//  MoviesListViewModel.swift
+//  MovieSearchViewModel.swift
 //  MovieExplorer
 //
-//  Created by Evgeny Kazakov on 9/18/18.
-//  Copyright © 2018 Evgeny Kazakov. All rights reserved.
+//  Created by Evgeny Kazakov on 07.07.2019.
+//  Copyright © 2019 Evgeny Kazakov. All rights reserved.
 //
 
 import Foundation
 
-enum MoviesListViewModelStatus {
-  case initial
-  case loading
-  case loaded
-  case failedToLoad
-  case loadingNext
-  case failedToLoadNext
-}
+protocol MovieSearchViewModel {
 
-protocol MoviesListViewModel {
+  var searchQuery: String? { get }
   var status: MoviesListViewModelStatus { get }
   var movies: [MovieCellViewModel] { get }
-  
+
   var onChanged: (() -> Void)? { get set }
   var onGoToDetails: ((Movie) -> Void)? { get set }
   
+  func search(query: String)
+  func cancel()
   func loadNext()
   func retry()
+  
 }
 
-class MoviesListViewModelImpl: MoviesListViewModel {
-  
+class MovieSearchViewModelImpl: MovieSearchViewModel {
+  private(set) var searchQuery: String?
   private(set) var status: MoviesListViewModelStatus
   private(set) var movies: [MovieCellViewModel] = []
   private var moviesById: [Int: MovieCellViewModel] = [:]
@@ -37,7 +33,7 @@ class MoviesListViewModelImpl: MoviesListViewModel {
   var onChanged: (() -> Void)?
   var onGoToDetails: ((Movie) -> Void)?
   
-  private let moviesList: MoviesList
+  private let moviesSearch: MoviesSearch
   private let apiClient: APIClient
   private let imageFetcher: ImageFetcher
   private var disposable: Disposable?
@@ -46,35 +42,45 @@ class MoviesListViewModelImpl: MoviesListViewModel {
     disposable?.dispose()
   }
   
-  init(moviesList: MoviesList, api: APIClient, imageFetcher: ImageFetcher) {
-    self.moviesList = moviesList
+  init(moviesSearch: MoviesSearch, api: APIClient, imageFetcher: ImageFetcher) {
+    self.moviesSearch = moviesSearch
     self.apiClient = api
     self.imageFetcher = imageFetcher
     status = .initial
     
-    disposable = moviesList.store.observe(on: DispatchQueue.main) { [weak self] state in
+    disposable = moviesSearch.store.observe(on: DispatchQueue.main) { [weak self] state in
       self?.update(with: state)
     }
+  }
+  
+  func search(query: String) {
+    let trimmedQuery = query.trimmingCharacters(in: .whitespaces)
+    searchQuery = query
+    moviesSearch.search(query: trimmedQuery)
+  }
+  
+  func cancel() {
+    moviesSearch.cancel()
   }
   
   func loadNext() {
     guard status != .failedToLoadNext else { return }
     
-    moviesList.loadNext()
+    moviesSearch.loadNext()
   }
   
   func retry() {
-    moviesList.loadNext()
+    moviesSearch.loadNext()
   }
   
-  private func update(with state: MoviesListState) {
+  private func update(with state: MoviesSearchState) {
     update(movies: state)
     update(status: state)
     
     onChanged?()
   }
   
-  private func update(movies state: MoviesListState) {
+  private func update(movies state: MoviesSearchState) {
     var movies: [MovieCellViewModel] = []
     for movie in state.movies {
       let movieVM = moviesById[movie.id] ?? createMovieViewModel(movie)
@@ -90,7 +96,7 @@ class MoviesListViewModelImpl: MoviesListViewModel {
     return vm
   }
   
-  private func update(status state: MoviesListState) {
+  private func update(status state: MoviesSearchState) {
     switch state.status {
     case .notLoaded:
       status = .initial

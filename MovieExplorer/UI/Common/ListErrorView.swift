@@ -1,16 +1,43 @@
 //
-//  ExploreErrorView.swift
+//  ListErrorView.swift
 //  MovieExplorer
 //
-//  Created by Evgeny Kazakov on 22.06.2019.
+//  Created by Evgeny Kazakov on 07.07.2019.
 //  Copyright © 2019 Evgeny Kazakov. All rights reserved.
 //
 
 import UIKit
 
-class ExploreErrorView: UIView {
+class ListErrorView: UIView {
   
   var onRetry: (() -> Void)?
+  
+  var title: String? {
+    get {
+      return titleLabel.text
+    }
+    set {
+      titleLabel.text = newValue
+    }
+  }
+  
+  var message: String? {
+    get {
+      return messageLabel.text
+    }
+    set {
+      messageLabel.text = newValue
+    }
+  }
+  
+  var retryButtonTitle: String? {
+    get {
+      return reloadButton.title(for: .normal)
+    }
+    set {
+      reloadButton.setTitle(newValue, for: .normal)
+    }
+  }
   
   private let reloadButton: UIButton = {
     let button = UIButton(type: .system)
@@ -21,7 +48,6 @@ class ExploreErrorView: UIView {
     button.layer.borderWidth = 1.0
     return button
   }()
-  
   private let titleLabel = UILabel.Style.errorTitle(UILabel())
   private let messageLabel = UILabel.Style.errorMessage(UILabel())
   
@@ -51,7 +77,7 @@ class ExploreErrorView: UIView {
     reloadButton.translatesAutoresizingMaskIntoConstraints = false
     titleLabel.translatesAutoresizingMaskIntoConstraints = false
     messageLabel.translatesAutoresizingMaskIntoConstraints = false
-
+    
     let buttonOffsets = UIEdgeInsets(top: 0, left: 20, bottom: 20, right: 20)
     NSLayoutConstraint.activate([
       reloadButton.leftAnchor.constraint(equalTo: leftAnchor, constant: buttonOffsets.left),
@@ -66,7 +92,7 @@ class ExploreErrorView: UIView {
       messageLabel.topAnchor.constraint(equalTo: titleLabel.topAnchor, constant: 64),
       messageLabel.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 32),
       messageLabel.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -32),
-    ])
+      ])
   }
   
   @objc

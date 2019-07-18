@@ -12,26 +12,36 @@ import XCTest
 class MoviesListTests: XCTestCase {
   
   func testInit_NotLoadedState() {
+    // given
     let stubClient = FakeAPIClient()
-    let moviesList = TMDBMoviesList(api: stubClient)
     
+    // when
+    let moviesList = TMDBMoviesList(api: stubClient)
     let state = moviesList.store.state
+    
+    // then
     XCTAssertTrue(state.status.isNotLoaded)
     XCTAssertEqual([], state.movies)
     XCTAssertFalse(state.hasMore)
   }
   
-  func testLoadNext_Request_UpdatesLoadingState() {
+  // MARK: LoadNext initial load tests
+  
+  func testLoadNext_Request_SetsLoadingState() {
+    // given
     let stubClient = FakeAPIClient()
     let moviesList = TMDBMoviesList(api: stubClient)
     
+    // when
     moviesList.loadNext()
     let state = moviesList.store.state
     
+    // then
     XCTAssertTrue(state.status.isLoading)
   }
   
   func testLoadNext_SinglePage_UpdatesStateWithResponse() {
+    // given
     let stubClient = FakeAPIClient()
     let moviesList = TMDBMoviesList(api: stubClient)
     let stubResponse = APIPaginatedRes<Movie>(
@@ -40,18 +50,22 @@ class MoviesListTests: XCTestCase {
       totalResults: 1,
       totalPages: 1
     )
-    let stubResult = Result<APIPaginatedRes<Movie>, APIError>.success(stubResponse)
-    stubClient.nextFetchResultResolver = { _ in stubResult }
+    stubClient.nextFetchResultResolver = SingleSyncFakeAPIClientResultResolver(result: .success(stubResponse))
     
+    let expectedMovies = stubResponse.results
+    
+    // when
     moviesList.loadNext()
     let state = moviesList.store.state
     
+    // then
     XCTAssertFalse(state.hasMore)
     XCTAssertTrue(state.status.isLoaded)
-    XCTAssertEqual(stubResponse.results, state.movies)
+    XCTAssertEqual(expectedMovies, state.movies)
   }
   
   func testLoadNext_Multipage_UpdatesStateWithResponse() {
+    // given
     let stubClient = FakeAPIClient()
     let moviesList = TMDBMoviesList(api: stubClient)
     let stubResponse = APIPaginatedRes<Movie>(
@@ -60,61 +74,76 @@ class MoviesListTests: XCTestCase {
       totalResults: 1,
       totalPages: 2
     )
-    let stubResult = Result<APIPaginatedRes<Movie>, APIError>.success(stubResponse)
-    stubClient.nextFetchResultResolver = { _ in stubResult }
+    stubClient.nextFetchResultResolver = SingleSyncFakeAPIClientResultResolver(result: .success(stubResponse))
     
+    let expectedMovies = stubResponse.results
+    
+    // when
     moviesList.loadNext()
     let state = moviesList.store.state
     
+    // then
     XCTAssertTrue(state.hasMore)
     XCTAssertTrue(state.status.isLoaded)
-    XCTAssertEqual(stubResponse.results, state.movies)
+    XCTAssertEqual(expectedMovies, state.movies)
   }
   
-  func testLoadNext_FailedResponse_ErrorStatus() {
+  func testLoadNext_FailedResponse_UpdatesStateWithErrorStatus() {
+    // given
     let stubClient = FakeAPIClient()
     let moviesList = TMDBMoviesList(api: stubClient)
-    let stubResult = Result<APIPaginatedRes<Movie>, APIError>.failure(.noData)
-    stubClient.nextFetchResultResolver = { _ in stubResult }
+    stubClient.nextFetchResultResolver = SingleSyncFakeAPIClientResultResolver(result: .failure(.noData))
 
+    // when
     moviesList.loadNext()
     let state = moviesList.store.state
 
+    // then
     XCTAssertTrue(state.status.isError)
   }
   
+  // MARK: LoadNext subsequent load tests
+  
   func testLoadNext_SecondLoadSinglePage_NoSecondFetch() {
+    // given
     let stubClient = FakeAPIClient()
     let moviesList = TMDBMoviesList(api: stubClient)
+    let firstPageResource = MovieDBAPI.explore().asTestResource
+    let secondPageResource = MovieDBAPI.explore(page: 2).asTestResource
     let stubResponse = APIPaginatedRes<Movie>(
       page: 1,
       results: [Movie.random],
       totalResults: 1,
       totalPages: 1
     )
-    let stubResult = Result<APIPaginatedRes<Movie>, APIError>.success(stubResponse)
     let stubResponseSecondCall = APIPaginatedRes<Movie>(
       page: 1,
       results: [Movie.random, Movie.random],
       totalResults: 2,
       totalPages: 1
     )
-    let stubResultSecondCall = Result<APIPaginatedRes<Movie>, APIError>.success(stubResponseSecondCall)
     
-    stubClient.nextFetchResultResolver = {_ in stubResult }
+    stubClient.nextFetchResultResolver = SyncFakeAPIClientResultResolver(results: [
+      firstPageResource: .success(stubResponse),
+      secondPageResource: .success(stubResponseSecondCall),
+    ])
+    
+    let expectedMovies = stubResponse.results
+    
+    // when
     moviesList.loadNext()
-
-    stubClient.nextFetchResultResolver = { _ in stubResultSecondCall }
     moviesList.loadNext()
     
     let state = moviesList.store.state
     
+    // then
     XCTAssertFalse(state.hasMore)
     XCTAssertTrue(state.status.isLoaded)
-    XCTAssertEqual(stubResponse.results, state.movies)
+    XCTAssertEqual(expectedMovies, state.movies)
   }
   
   func testLoadNext_SecondLoadMultiplePages_RequestsCorrectPage() {
+    // given
     let stubClient = FakeAPIClient()
     let moviesList = TMDBMoviesList(api: stubClient)
     let firstPageResource = MovieDBAPI.explore().asTestResource
@@ -125,42 +154,28 @@ class MoviesListTests: XCTestCase {
       totalResults: 2,
       totalPages: 2
     )
-    let stubResult = Result<APIPaginatedRes<Movie>, APIError>.success(stubResponse)
     let stubResponseSecondPage = APIPaginatedRes<Movie>(
       page: 2,
       results: [Movie.random],
       totalResults: 2,
       totalPages: 2
     )
-    let stubResultSecondPage = Result<APIPaginatedRes<Movie>, APIError>.success(stubResponseSecondPage)
-    stubClient.nextFetchResultResolver = { resource in
-      switch resource {
-      case firstPageResource: return stubResult
-      case secondPageResource: return stubResultSecondPage
-      default: return nil
-      }
-    }
     
+    stubClient.nextFetchResultResolver = SyncFakeAPIClientResultResolver(results: [
+      firstPageResource: .success(stubResponse),
+      secondPageResource: .success(stubResponseSecondPage),
+    ])
+    
+    // when
     moviesList.loadNext()
     moviesList.loadNext()
     
     let state = moviesList.store.state
     
+    // then
     XCTAssertFalse(state.hasMore)
     XCTAssertTrue(state.status.isLoaded)
     XCTAssertEqual(stubResponse.results + stubResponseSecondPage.results, state.movies)
   }
  
-}
-
-extension Movie {
-  static var random: Movie {
-    return Movie(
-      id: Int(arc4random()),
-      posterPath: UUID().uuidString,
-      title: UUID().uuidString,
-      releaseDate: UUID().uuidString,
-      overview: UUID().uuidString
-    )
-  }
 }

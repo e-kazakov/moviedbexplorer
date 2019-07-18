@@ -15,9 +15,14 @@ enum PosterSize: String {
   case w780 = "w780"
 }
 
+struct RequestToken {
+  let cancel: () -> Void
+}
+
 protocol APIClient {
   
   func posterURL(path: String, size: PosterSize) -> URL
   
-  func fetch<T>(resource: HTTPResource<T>, callback: @escaping (Result<T, APIError>) -> Void)
+  @discardableResult
+  func fetch<T>(resource: HTTPResource<T>, callback: @escaping (Result<T, APIError>) -> Void) -> Disposable
 }

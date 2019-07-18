@@ -41,8 +41,8 @@ class MovieCollectionController: NSObject, UICollectionViewDataSource, UICollect
   
   private var movies: [MovieCellViewModel] = []
   
-  private let moviesSectionInedx = 0;
-  private let loadingSectionIndex = 1;
+  private let moviesSectionInedx = 0
+  private let loadingSectionIndex = 1
   
   private func configureCollectionView() {
     guard let cv = collectionView else { return }
@@ -51,9 +51,9 @@ class MovieCollectionController: NSObject, UICollectionViewDataSource, UICollect
     cv.register(MovieSkeletonCell.self, forCellWithReuseIdentifier: MovieSkeletonCell.defaultReuseIdentifier)
     cv.register(MovieFailedCell.self, forCellWithReuseIdentifier: MovieFailedCell.defaultReuseIdentifier)
 
+    cv.dataSource = self
     cv.delegate = self
     cv.prefetchDataSource = self
-    cv.dataSource = self
   }
   
   // MARK: DataSource
@@ -120,7 +120,7 @@ class MovieCollectionController: NSObject, UICollectionViewDataSource, UICollect
     
     failedCell.onRetry = onRetry
     
-    return failedCell;
+    return failedCell
   }
 
   func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
@@ -158,7 +158,7 @@ class MovieCollectionController: NSObject, UICollectionViewDataSource, UICollect
   }
   
   func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-    return indexPath.section == moviesSectionInedx;
+    return indexPath.section == moviesSectionInedx
   }
   
   func collectionView(_ collectionView: UICollectionView,

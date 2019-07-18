@@ -26,6 +26,7 @@ class MovieCollectionLoadingController: NSObject, UICollectionViewDataSource, UI
 
     cv.delegate = self
     cv.dataSource = self
+    cv.prefetchDataSource = nil
   }
   
   // MARK: DataSource

@@ -10,7 +10,7 @@ import UIKit
 
 class ExploreVC: UIViewController {
 
-  private let contentView = ExploreView()
+  private lazy var contentView = ExploreView()
   private var collectionView: UICollectionView {
     return contentView.moviesListView
   }

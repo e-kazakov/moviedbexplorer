@@ -44,12 +44,17 @@ class URLSessionAPIClient: APIClient {
     return serverConfig.imageBase.appendingPathComponent(size.rawValue).appendingPathComponent(path)
   }
   
-  func fetch<T>(resource: HTTPResource<T>, callback: @escaping (Result<T, APIError>) -> Void) {
+  @discardableResult
+  func fetch<T>(resource: HTTPResource<T>, callback: @escaping (Result<T, APIError>) -> Void) -> Disposable {
     let task = urlSession.dataTask(
       with: request(for: resource),
       completionHandler: dataTaskCompletionHandler(resource: resource, callback: callback)
     )
     task.resume()
+    
+    return ClosureDisposable {
+      task.cancel()
+    }
   }
   
   private func dataTaskCompletionHandler<T>(

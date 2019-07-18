@@ -56,7 +56,7 @@ class TMDBMoviesList: MoviesList {
     guard !store.state.status.isLoading else { return }
     
     startLoading()
-    api.fetch(resource: MovieDBAPI.explore(page: page)) { [weak self] result in
+    _ = api.fetch(resource: MovieDBAPI.explore(page: page)) { [weak self] result in
       switch result {
       case .success(let paginatedResponse):
         self?.loaded(movies: paginatedResponse.results, nextPage: paginatedResponse.nextPage)

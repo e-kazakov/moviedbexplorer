@@ -34,6 +34,12 @@ class MainTabVC: UITabBarController, UITabBarControllerDelegate {
       api: apiClient,
       imageFetcher: imageFetcher
     )
+    
+    let searchViewModel = MovieSearchViewModelImpl(
+      moviesSearch: TMDBMoviesSearch(api: apiClient),
+      api: apiClient,
+      imageFetcher: imageFetcher
+    )
 
     let nc = { (rootVC: UIViewController) -> UINavigationController in
       let nc = UINavigationController(rootViewController: rootVC)
@@ -44,7 +50,7 @@ class MainTabVC: UITabBarController, UITabBarControllerDelegate {
     self.viewControllers = [
       nc(ExploreVC(moviesList: moviesListViewModel, apiClient: apiClient, imageFetcher: imageFetcher)),
       nc(FavoritesVC()),
-      nc(MovieSearchVC())
+      nc(MovieSearchVC(viewModel: searchViewModel, apiClient: apiClient, imageFetcher: imageFetcher))
     ]
   }
 }

@@ -14,6 +14,7 @@ protocol HTTPResourceParameters {
   func encode(in request: URLRequest) -> URLRequest
   
   func equals(other: HTTPResourceParameters) -> Bool
+  func hash(into hasher: inout Hasher)
 }
 
 struct URLQueryParameters: HTTPResourceParameters, Equatable {
@@ -38,4 +39,7 @@ struct URLQueryParameters: HTTPResourceParameters, Equatable {
     return other == self
   }
 
+  func hash(into hasher: inout Hasher) {
+    hasher.combine(queryParameters)
+  }
 }
