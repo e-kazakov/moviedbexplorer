@@ -13,6 +13,7 @@ protocol MovieSearchViewModel {
   var searchQuery: String? { get }
   var status: MoviesListViewModelStatus { get }
   var movies: [MovieCellViewModel] { get }
+  var recentSearches: [String] { get }
 
   var onChanged: (() -> Void)? { get set }
   var onGoToDetails: ((Movie) -> Void)? { get set }
@@ -26,8 +27,9 @@ protocol MovieSearchViewModel {
 
 class MovieSearchViewModelImpl: MovieSearchViewModel {
   private(set) var searchQuery: String?
-  private(set) var status: MoviesListViewModelStatus
+  private(set) var status: MoviesListViewModelStatus = .initial
   private(set) var movies: [MovieCellViewModel] = []
+  private(set) var recentSearches: [String] = []
   private var moviesById: [Int: MovieCellViewModel] = [:]
   
   var onChanged: (() -> Void)?
@@ -46,7 +48,8 @@ class MovieSearchViewModelImpl: MovieSearchViewModel {
     self.moviesSearch = moviesSearch
     self.apiClient = api
     self.imageFetcher = imageFetcher
-    status = .initial
+    
+    update(with: moviesSearch.store.state)
     
     disposable = moviesSearch.store.observe(on: DispatchQueue.main) { [weak self] state in
       self?.update(with: state)
@@ -76,6 +79,7 @@ class MovieSearchViewModelImpl: MovieSearchViewModel {
   private func update(with state: MoviesSearchState) {
     update(movies: state)
     update(status: state)
+    update(recentSearches: state)
     
     onChanged?()
   }
@@ -107,5 +111,9 @@ class MovieSearchViewModelImpl: MovieSearchViewModel {
     case .error:
       status = state.movies.isEmpty ? .failedToLoad : .failedToLoadNext
     }
+  }
+  
+  private func update(recentSearches state: MoviesSearchState) {
+    recentSearches = state.recentSearches
   }
 }

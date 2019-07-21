@@ -122,9 +122,17 @@ class TMDBMoviesSearch: MoviesSearch {
       state.status = .loaded
       state.hasMore = nextPage != nil
 
-      if let searchTerm = self.searchTerm, !state.recentSearches.contains(searchTerm) {
-        state.recentSearches.append(searchTerm)
+      if let searchTerm = self.searchTerm {
+        state.recentSearches = update(recentSearches: state.recentSearches, withQuery: searchTerm)
       }
+    }
+  }
+  
+  private func update(recentSearches: [String], withQuery query: String) -> [String] {
+    if !recentSearches.contains(query) {
+      return [query] + recentSearches
+    } else {
+      return recentSearches
     }
   }
   

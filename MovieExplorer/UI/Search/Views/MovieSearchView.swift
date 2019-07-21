@@ -69,6 +69,9 @@ class MovieSearchView: UIView {
   }
   
   func showLastSearches() {
+    guard recentSearchesListView.isHidden else { return }
+    
+    hideAll(except: recentSearchesListView)
   }
   
   private func hideAll(except toShow: UIView) {
@@ -94,13 +97,13 @@ class MovieSearchView: UIView {
     errorView.translatesAutoresizingMaskIntoConstraints = false
 
     NSLayoutConstraint.activate([
-      moviesListView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
-      moviesListView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
+      moviesListView.topAnchor.constraint(equalTo: topAnchor),
+      moviesListView.bottomAnchor.constraint(equalTo: bottomAnchor),
       moviesListView.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor),
       moviesListView.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor),
       
-      recentSearchesListView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
-      recentSearchesListView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
+      recentSearchesListView.topAnchor.constraint(equalTo: topAnchor),
+      recentSearchesListView.bottomAnchor.constraint(equalTo: bottomAnchor),
       recentSearchesListView.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor),
       recentSearchesListView.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor),
 

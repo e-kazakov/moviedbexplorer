@@ -129,7 +129,7 @@ class MoviesSearchTests: XCTestCase {
     XCTAssertEqual(stubResponse.results, state.movies)
   }
   
-  func testSeach_SecondCallDifferentQuery_ClearsPreviousSearch() {
+  func testSearch_SecondCallDifferentQuery_ClearsPreviousSearch() {
     // given
     let stubClient = FakeAPIClient()
     let moviesSearch = TMDBMoviesSearch(api: stubClient)
@@ -158,6 +158,36 @@ class MoviesSearchTests: XCTestCase {
     XCTAssertEqual([], state.movies)
     XCTAssertEqual([query], state.recentSearches)
     XCTAssertFalse(state.hasMore)
+  }
+  
+  func testSearch_SecondCallDifferentQuery_UpdatesRecentSearches() {
+    // given
+    let stubClient = FakeAPIClient()
+    let moviesSearch = TMDBMoviesSearch(api: stubClient)
+    
+    let query = "dummy query"
+    let otherQuery = "other dummy query"
+    
+    let stubResponse = APIPaginatedRes<Movie>(
+      page: 1,
+      results: [Movie.random],
+      totalResults: 1,
+      totalPages: 1
+    )
+    let firstSearchResource = MovieDBAPI.search(query: query).asTestResource
+    let secondSearchResource = MovieDBAPI.search(query: otherQuery).asTestResource
+    stubClient.nextFetchResultResolver = SyncFakeAPIClientResultResolver(results: [
+      firstSearchResource: .success(stubResponse),
+      secondSearchResource: .success(stubResponse)
+    ])
+    
+    // when
+    moviesSearch.search(query: query)
+    moviesSearch.search(query: otherQuery)
+    let state = moviesSearch.store.state
+    
+    // then
+    XCTAssertEqual([otherQuery, query], state.recentSearches)
   }
   
   func testSearch_FirstSearchFetchFinishesAfterSecondSearchStarted_DoesNotUpdateStateWithFirstFetchResults() {

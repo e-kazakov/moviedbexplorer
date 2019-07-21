@@ -46,22 +46,27 @@ class URLSessionAPIClient: APIClient {
   
   @discardableResult
   func fetch<T>(resource: HTTPResource<T>, callback: @escaping (Result<T, APIError>) -> Void) -> Disposable {
+    let isCancelled = Atomic(value: false)
     let task = urlSession.dataTask(
       with: request(for: resource),
-      completionHandler: dataTaskCompletionHandler(resource: resource, callback: callback)
+      completionHandler: dataTaskCompletionHandler(resource: resource, isCancelled: isCancelled, callback: callback)
     )
     task.resume()
     
     return ClosureDisposable {
+      isCancelled.set(true)
       task.cancel()
     }
   }
   
   private func dataTaskCompletionHandler<T>(
     resource: HTTPResource<T>,
+    isCancelled: Atomic<Bool>,
     callback: @escaping (Result<T, APIError>) -> Void
   ) -> (Data?, URLResponse?, Error?) -> Void {
     return { data, response, error in
+      guard !isCancelled.value else { return }
+      
       if let error = error {
         callback(.failure(.network(inner: error)))
       } else {

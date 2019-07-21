@@ -16,12 +16,15 @@ class MovieSearchVC: UIViewController {
   
   private let moviesCollectionController = MovieCollectionController()
   private let moviesCollectionLoadingController = MovieCollectionLoadingController()
+  private let recentSearchesCollectionController = RecentSearchesCollectionController()
   
   private let searchBar = UISearchBar()
   private lazy var contentView = MovieSearchView()
   private var moviesListView: UICollectionView {
     return contentView.moviesListView
   }
+  
+  private let keyboardObserver = KeyboardObserver(notificationCenter: .default)
   
   init(viewModel: MovieSearchViewModel, apiClient: APIClient, imageFetcher: ImageFetcher) {
     self.viewModel = viewModel
@@ -58,10 +61,37 @@ class MovieSearchVC: UIViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
+
+    configureKeyboardObserver()
     
+    recentSearchesCollectionController.collectionView = contentView.recentSearchesListView
+
     bind()
+    update()
   }
   
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    
+    keyboardObserver.startObserving()
+  }
+  
+  override func viewDidDisappear(_ animated: Bool) {
+    super.viewDidDisappear(animated)
+    
+    keyboardObserver.stopObserving()
+  }
+  
+  private func configureKeyboardObserver() {
+    keyboardObserver.onKeyboardWillShow = { [weak self] kbInfo in
+      self?.contentView.recentSearchesListView.adjustContentInset(forKeyboard: kbInfo)
+    }
+    
+    keyboardObserver.onKeyboardWillHide = { [weak self] in
+      self?.contentView.recentSearchesListView.contentInset = .zero
+    }
+  }
+
   private func bind() {
     bindOutputs()
     bindInputs()
@@ -80,20 +110,58 @@ class MovieSearchVC: UIViewController {
     contentView.errorView.onRetry = viewModel.retry
     moviesCollectionController.onCloseToEnd = viewModel.loadNext
     moviesCollectionController.onRetry = viewModel.retry
+    
+    recentSearchesCollectionController.onSelect = { [weak self] query in
+      guard let self = self else { return }
+      
+      self.searchBarEndEditing()
+      
+      self.viewModel.search(query: query)
+      self.contentView.showList()
+    }
   }
   
   private func update() {
-    switch viewModel.status {
-    case .initial:
-      contentView.showInitial()
+    searchBar.text = viewModel.searchQuery
 
+    updateLists()
+    updateViewsVisibility()
+  }
+  
+  func updateLists() {
+    recentSearchesCollectionController.recentSearches = viewModel.recentSearches
+    
+    switch viewModel.status {
     case .loading:
-      contentView.showList()
       configureForLoading()
       
     case .loaded, .loadingNext, .failedToLoadNext:
-      contentView.showList()
       configureForLoaded()
+      
+    case .initial, .failedToLoad:
+      break
+    }
+  }
+  
+  func updateViewsVisibility() {
+    if searchBar.isFirstResponder {
+      contentView.showLastSearches()
+      return
+    }
+    
+    switch viewModel.status {
+    case .initial:
+      contentView.showInitial()
+      
+    case .loading:
+      contentView.showList()
+      
+    case .loaded, .loadingNext, .failedToLoadNext:
+      if viewModel.movies.isEmpty {
+        contentView.showEmpty()
+      } else {
+        contentView.showList()
+      }
       
     case .failedToLoad:
       contentView.showError()
@@ -103,7 +171,7 @@ class MovieSearchVC: UIViewController {
   private func configureForLoading() {
     if moviesCollectionLoadingController.collectionView !== moviesListView {
       moviesCollectionController.collectionView = nil
-      moviesListView.contentOffset = .zero
+      moviesListView.scrollToTop()
       
       moviesListView.isUserInteractionEnabled = false
       moviesCollectionLoadingController.collectionView = moviesListView
@@ -116,15 +184,11 @@ class MovieSearchVC: UIViewController {
     
     if moviesCollectionController.collectionView !== moviesListView {
       moviesCollectionLoadingController.collectionView = nil
-      moviesListView.contentOffset = .zero
+      moviesListView.scrollToTop()
 
       moviesListView.isUserInteractionEnabled = true
       moviesCollectionController.collectionView = moviesListView
       moviesListView.tmdb.crossDissolveTransition { }
-    }
-    
-    if viewModel.movies.isEmpty {
-      contentView.showEmpty()
     }
   }
   
@@ -133,12 +197,24 @@ class MovieSearchVC: UIViewController {
     let detailsVC = MovieDetailsVC(viewModel: vm)
     show(detailsVC, sender: nil)
   }
+  
+  private func searchBarBeginEditing() {
+    searchBar.setShowsCancelButton(true, animated: true)
+  }
+  
+  private func searchBarEndEditing() {
+    searchBar.endEditing(true)
+    searchBar.setShowsCancelButton(false, animated: true)
+  }
 }
 
 extension MovieSearchVC: UISearchBarDelegate {
   
   func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-    searchBar.setShowsCancelButton(true, animated: true)
+    searchBarBeginEditing()
+    
+    contentView.recentSearchesListView.scrollToTop()
+    contentView.showLastSearches()
   }
   
   func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
@@ -148,19 +224,35 @@ extension MovieSearchVC: UISearchBarDelegate {
       viewModel.cancel()
     }
     
-    searchBar.setShowsCancelButton(false, animated: true)
-    searchBar.endEditing(true)
+    searchBarEndEditing()
   }
   
   func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-    searchBar.text = viewModel.searchQuery
-
-    searchBar.endEditing(true)
-    searchBar.setShowsCancelButton(false, animated: true)
+    searchBarEndEditing()
+    update()
   }
 }
 
-extension MovieCollectionViewModel {
+extension UIScrollView {
+  func scrollToTop() {
+    contentOffset = CGPoint(x: 0, y: -adjustedContentInset.top)
+  }
+  
+  func adjustContentInset(forKeyboard keyboardInfo: KeyboardInfo) {
+    guard let window = self.window else { return }
+    
+    let kbFrame = convert(keyboardInfo.endFrame, from: window)
+    let kbHeight = bounds.intersection(kbFrame).height
+    
+    guard kbHeight > 0 else { return }
+    
+    let bottomInset = kbHeight - safeAreaInsets.bottom
+    contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
+    scrollIndicatorInsets = contentInset
+  }
+}
+
+private extension MovieCollectionViewModel {
   init(from moviesList: MovieSearchViewModel) {
     switch moviesList.status {
     case .loadingNext:
