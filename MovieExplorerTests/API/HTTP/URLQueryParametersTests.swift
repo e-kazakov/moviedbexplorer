@@ -12,39 +12,55 @@ import XCTest
 class URLQueryParametersTests: XCTestCase {
   
   func testEncode_RequestWithoutQueryItems_CreatesRequestWithQueryItems() {
+    // given
     let request = URLRequest(url: URL(string: "http://example.com/path")!)
-    
     let queryParameters = URLQueryParameters(["answer" : "42"])
-    let actualResult = queryParameters.encode(in: request)
+    let expectedURL = URL(string: "http://example.com/path?answer=42")
+
+    // when
+    let encodedRequest = queryParameters.encode(in: request)
     
-    XCTAssertEqual(URL(string: "http://example.com/path?answer=42"), actualResult.url)
+    // then
+    XCTAssertEqual(expectedURL, encodedRequest.url)
   }
   
   func testEncode_QueryItemWithNonURLSymbols_UsesPercentEncoding() {
+    // given
     let request = URLRequest(url: URL(string: "http://example.com/path")!)
-    
     let queryParameters = URLQueryParameters(["answer" : " 42"])
-    let actualResult = queryParameters.encode(in: request)
+    let expectedURL = URL(string: "http://example.com/path?answer=%2042")
     
-    XCTAssertEqual(URL(string: "http://example.com/path?answer=%2042"), actualResult.url)
+    // when
+    let encodedRequest = queryParameters.encode(in: request)
+    
+    // then
+    XCTAssertEqual(expectedURL, encodedRequest.url)
   }
 
   func testEncode_EmptyParameters_DoesNotRemoteExistingQueryItems() {
+    // given
     let request = URLRequest(url: URL(string: "http://example.com/path?answer=42")!)
-    
     let queryParameters = URLQueryParameters([:])
-    let actualResult = queryParameters.encode(in: request)
+    let expectedURL = URL(string: "http://example.com/path?answer=42")
+
+    // when
+    let encodedRequest = queryParameters.encode(in: request)
     
-    XCTAssertEqual(URL(string: "http://example.com/path?answer=42"), actualResult.url)
+    // then
+    XCTAssertEqual(expectedURL, encodedRequest.url)
   }
   
   func testEncode_RequestWithExistingQueryItems_DoesNotModifyExistingQueryItems() {
+    // given
     let request = URLRequest(url: URL(string: "http://example.com/path?some=value")!)
-    
     let queryParameters = URLQueryParameters(["answer" : "42"])
-    let actualResult = queryParameters.encode(in: request)
+    let expectedURL = URL(string: "http://example.com/path?some=value&answer=42")
+
+    // when
+    let encodedRequest = queryParameters.encode(in: request)
     
-    XCTAssertEqual(URL(string: "http://example.com/path?some=value&answer=42"), actualResult.url)
+    // then
+    XCTAssertEqual(expectedURL, encodedRequest.url)
   }
   
 }

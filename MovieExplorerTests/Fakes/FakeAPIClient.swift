@@ -191,23 +191,6 @@ class SingleSyncFakeAPIClientResultResolver: FakeAPIClientResultResolving {
   }
 }
 
-//class ClosureSyncFakeAPIClientResultResolver: FakeAPIClientResultResolving {
-//
-//  typealias ClosureResolver = (TestHTTPResource) -> ResolverResult?
-//
-//  private let resolver: ClosureResolver
-//
-//  init(resolver: @escaping ClosureResolver) {
-//    self.resolver = resolver
-//  }
-//
-//  func resolve<T>(for resource: HTTPResource<T>, callback: (ResolverResult) -> Void) {
-//    if let result = resolver(resource.asTestResource) {
-//      callback(result)
-//    }
-//  }
-//}
-
 class NoOpFakeAPIClientResultResolver: FakeAPIClientResultResolving {
   func resolve(for resource: TestHTTPResource, callback: (ResolverResult) -> Void) {
     // no-op
