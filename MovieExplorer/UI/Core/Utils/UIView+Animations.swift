@@ -13,7 +13,7 @@ extension TMDB where Base: UIView {
   func crossDissolveTransition(
     duration: TimeInterval = CATransaction.animationDuration(),
     _ transition: @escaping () -> Void
-    ) {
+  ) {
     UIView.transition(
       with: base,
       duration: duration, options: [.transitionCrossDissolve],
