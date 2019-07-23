@@ -11,14 +11,34 @@ import XCTest
 
 class MoviesSearchTests: XCTestCase {
   
+  private var moviesSearch: TMDBMoviesSearch!
+  private var fakeAPIClient: FakeAPIClient!
+  private var fakeRecentSearchesRepository: FakeRecentSearchesRepository!
+  
+  override func setUp() {
+    super.setUp()
+    
+    fakeAPIClient = FakeAPIClient()
+    fakeRecentSearchesRepository = FakeRecentSearchesRepository()
+    moviesSearch = TMDBMoviesSearch(api: fakeAPIClient, recentSearchesRepository: fakeRecentSearchesRepository)
+  }
+  
+  override func tearDown() {
+    fakeAPIClient = nil
+    moviesSearch = nil
+    
+    super.tearDown()
+  }
+  
   // MARK: Init tests
   
   func testInit_NotLoadedState() {
     // given
     let stubClient = FakeAPIClient()
+    let fakeRecentSearchesRepository = FakeRecentSearchesRepository()
     
     // when
-    let moviesSearch = TMDBMoviesSearch(api: stubClient)
+    let moviesSearch = TMDBMoviesSearch(api: stubClient, recentSearchesRepository: fakeRecentSearchesRepository)
     let state = moviesSearch.store.state
 
     // then
@@ -28,13 +48,26 @@ class MoviesSearchTests: XCTestCase {
     XCTAssertFalse(state.hasMore)
   }
   
+  func testInit_RecentSearches_() {
+    //given
+    let expectedRecentSearches = ["Matrix", "Die hard"]
+    
+    let stubClient = FakeAPIClient()
+    let fakeRecentSearchesRepository = FakeRecentSearchesRepository()
+    fakeRecentSearchesRepository.searches = expectedRecentSearches
+
+    //when
+    let moviesSearch = TMDBMoviesSearch(api: stubClient, recentSearchesRepository: fakeRecentSearchesRepository)
+    let state = moviesSearch.store.state
+    
+    //then
+    XCTAssertEqual(expectedRecentSearches, state.recentSearches)
+  }
+  
   // MARK: Search tests
   
   func testSearch_Request_SetsLoadingState() {
     // given
-    let stubClient = FakeAPIClient()
-    let moviesSearch = TMDBMoviesSearch(api: stubClient)
-    
     let query = "dummy query"
     
     // when
@@ -45,11 +78,8 @@ class MoviesSearchTests: XCTestCase {
     XCTAssertTrue(state.status.isLoading)
   }
   
-  func testSeach_SecondCallSameQuery_DoesNothing() {
+  func testSearch_SecondCallSameQuery_DoesNothing() {
     // given
-    let stubClient = FakeAPIClient()
-    let moviesSearch = TMDBMoviesSearch(api: stubClient)
-
     let query = "dummy query"
     let expectedRequestsCount = 1
     
@@ -58,14 +88,11 @@ class MoviesSearchTests: XCTestCase {
     moviesSearch.search(query: query)
     
     // then
-    XCTAssertEqual(expectedRequestsCount, stubClient.requestsCount)
+    XCTAssertEqual(expectedRequestsCount, fakeAPIClient.requestsCount)
   }
   
   func testSearch_SinglePage_UpdatesStateWithResponse() {
     // given
-    let stubClient = FakeAPIClient()
-    let moviesSearch = TMDBMoviesSearch(api: stubClient)
-
     let query = "dummy query"
     let stubResponse = APIPaginatedRes<Movie>(
       page: 1,
@@ -73,7 +100,7 @@ class MoviesSearchTests: XCTestCase {
       totalResults: 1,
       totalPages: 1
     )
-    stubClient.nextFetchResultResolver = SingleSyncFakeAPIClientResultResolver(result: .success(stubResponse))
+    fakeAPIClient.nextFetchResultResolver = SingleSyncFakeAPIClientResultResolver(result: .success(stubResponse))
     
     // when
     moviesSearch.search(query: query)
@@ -85,14 +112,29 @@ class MoviesSearchTests: XCTestCase {
     XCTAssertEqual(stubResponse.results, state.movies)
   }
   
+  func testSearch_Success_SavesRecentSearches() {
+    // given
+    let query = "dummy query"
+    let stubResponse = APIPaginatedRes<Movie>(
+      page: 1,
+      results: [Movie.random],
+      totalResults: 1,
+      totalPages: 1
+    )
+    fakeAPIClient.nextFetchResultResolver = SingleSyncFakeAPIClientResultResolver(result: .success(stubResponse))
+    
+    // when
+    moviesSearch.search(query: query)
+    
+    // then
+    XCTAssertEqual([query], fakeRecentSearchesRepository.searches)
+  }
+  
   func testSearch_Error_UpdatesStateWithError() {
     // given
-    let stubClient = FakeAPIClient()
-    let moviesSearch = TMDBMoviesSearch(api: stubClient)
-
     let query = "dummy query"
     let error = APIError.unknown(inner: TestAPIError.anError)
-    stubClient.nextFetchResultResolver = SingleSyncFakeAPIClientResultResolver(result: .failure(error))
+    fakeAPIClient.nextFetchResultResolver = SingleSyncFakeAPIClientResultResolver(result: .failure(error))
 
     // when
     moviesSearch.search(query: query)
@@ -107,9 +149,6 @@ class MoviesSearchTests: XCTestCase {
   
   func testSearch_Multipage_UpdatesStateWithResponse() {
     // given
-    let stubClient = FakeAPIClient()
-    let moviesSearch = TMDBMoviesSearch(api: stubClient)
-
     let query = "dummy query"
     let stubResponse = APIPaginatedRes<Movie>(
       page: 1,
@@ -117,7 +156,7 @@ class MoviesSearchTests: XCTestCase {
       totalResults: 1,
       totalPages: 2
     )
-    stubClient.nextFetchResultResolver = SingleSyncFakeAPIClientResultResolver(result: .success(stubResponse))
+    fakeAPIClient.nextFetchResultResolver = SingleSyncFakeAPIClientResultResolver(result: .success(stubResponse))
     
     // when
     moviesSearch.search(query: query)
@@ -131,9 +170,6 @@ class MoviesSearchTests: XCTestCase {
   
   func testSearch_SecondCallDifferentQuery_ClearsPreviousSearch() {
     // given
-    let stubClient = FakeAPIClient()
-    let moviesSearch = TMDBMoviesSearch(api: stubClient)
-    
     let query = "dummy query"
     let otherQuery = "other dummy query"
     
@@ -144,7 +180,7 @@ class MoviesSearchTests: XCTestCase {
       totalPages: 1
     )
     let firstSearchResource = MovieDBAPI.search(query: query).asTestResource
-    stubClient.nextFetchResultResolver = SyncFakeAPIClientResultResolver(results: [
+    fakeAPIClient.nextFetchResultResolver = SyncFakeAPIClientResultResolver(results: [
       firstSearchResource: .success(stubResponse)
     ])
 
@@ -162,9 +198,6 @@ class MoviesSearchTests: XCTestCase {
   
   func testSearch_SecondCallDifferentQuery_UpdatesRecentSearches() {
     // given
-    let stubClient = FakeAPIClient()
-    let moviesSearch = TMDBMoviesSearch(api: stubClient)
-    
     let query = "dummy query"
     let otherQuery = "other dummy query"
     
@@ -176,7 +209,7 @@ class MoviesSearchTests: XCTestCase {
     )
     let firstSearchResource = MovieDBAPI.search(query: query).asTestResource
     let secondSearchResource = MovieDBAPI.search(query: otherQuery).asTestResource
-    stubClient.nextFetchResultResolver = SyncFakeAPIClientResultResolver(results: [
+    fakeAPIClient.nextFetchResultResolver = SyncFakeAPIClientResultResolver(results: [
       firstSearchResource: .success(stubResponse),
       secondSearchResource: .success(stubResponse)
     ])
@@ -192,9 +225,6 @@ class MoviesSearchTests: XCTestCase {
   
   func testSearch_FirstSearchFetchFinishesAfterSecondSearchStarted_DoesNotUpdateStateWithFirstFetchResults() {
     // given
-    let stubClient = FakeAPIClient()
-    let moviesSearch = TMDBMoviesSearch(api: stubClient)
-    
     let query = "dummy query"
     let otherQuery = "other dummy query"
     
@@ -208,7 +238,7 @@ class MoviesSearchTests: XCTestCase {
     let resolver = AsyncFakeAPIClientResultResolver(results: [
       firstSearchResource: .success(stubResponse)
     ])
-    stubClient.nextFetchResultResolver = resolver
+    fakeAPIClient.nextFetchResultResolver = resolver
 
     // when
     moviesSearch.search(query: query)
@@ -227,9 +257,6 @@ class MoviesSearchTests: XCTestCase {
   
   func testLoadNext_SecondLoadSinglePage_DoesNothing() {
     // given
-    let stubClient = FakeAPIClient()
-    let moviesSearch = TMDBMoviesSearch(api: stubClient)
-    
     let query = "dummy query"
     let stubResponse = APIPaginatedRes<Movie>(
       page: 1,
@@ -237,7 +264,7 @@ class MoviesSearchTests: XCTestCase {
       totalResults: 1,
       totalPages: 1
     )
-    stubClient.nextFetchResultResolver = SingleSyncFakeAPIClientResultResolver(result: .success(stubResponse))
+    fakeAPIClient.nextFetchResultResolver = SingleSyncFakeAPIClientResultResolver(result: .success(stubResponse))
 
     // when
     moviesSearch.search(query: query)
@@ -252,9 +279,6 @@ class MoviesSearchTests: XCTestCase {
 
   func testLoadNext_SecondLoadMultiPage_RequestsCorrectPage() {
     // given
-    let stubClient = FakeAPIClient()
-    let moviesSearch = TMDBMoviesSearch(api: stubClient)
-    
     let query = "dummy query"
     let stubResponse = APIPaginatedRes<Movie>(
       page: 1,
@@ -262,14 +286,14 @@ class MoviesSearchTests: XCTestCase {
       totalResults: 2,
       totalPages: 2
     )
-    stubClient.nextFetchResultResolver = SingleSyncFakeAPIClientResultResolver(result: .success(stubResponse))
+    fakeAPIClient.nextFetchResultResolver = SingleSyncFakeAPIClientResultResolver(result: .success(stubResponse))
 
     let expectedResource = MovieDBAPI.search(query: query, page: 2).asTestResource
     
     // when
     moviesSearch.search(query: query)
     moviesSearch.loadNext()
-    let requestedResource = stubClient.lastResource!
+    let requestedResource = fakeAPIClient.lastResource!
 
     // then
     XCTAssertEqual(expectedResource, requestedResource)
@@ -277,9 +301,6 @@ class MoviesSearchTests: XCTestCase {
   
   func testLoadNext_SecondLoadWhileFirstNotFinished_DoesNothing() {
     // given
-    let stubClient = FakeAPIClient()
-    let moviesSearch = TMDBMoviesSearch(api: stubClient)
-    
     let query = "dummy query"
     let stubResponse = APIPaginatedRes<Movie>(
       page: 1,
@@ -291,7 +312,7 @@ class MoviesSearchTests: XCTestCase {
     let resolver = AsyncFakeAPIClientResultResolver(results: [
       searchResource: .success(stubResponse)
     ])
-    stubClient.nextFetchResultResolver = resolver
+    fakeAPIClient.nextFetchResultResolver = resolver
     
     let expectedRequestsCount = 1
 
@@ -300,16 +321,13 @@ class MoviesSearchTests: XCTestCase {
     moviesSearch.loadNext()
     
     // then
-    XCTAssertEqual(expectedRequestsCount, stubClient.requestsCount)
+    XCTAssertEqual(expectedRequestsCount, fakeAPIClient.requestsCount)
   }
   
   // MARK: Cancel tests
   
   func testCancel_AfterSuccessfulSearch_ResetsState() {
     // given
-    let stubClient = FakeAPIClient()
-    let moviesSearch = TMDBMoviesSearch(api: stubClient)
-    
     let query = "dummy query"
     
     let stubResponse = APIPaginatedRes<Movie>(
@@ -318,7 +336,7 @@ class MoviesSearchTests: XCTestCase {
       totalResults: 1,
       totalPages: 1
     )
-    stubClient.nextFetchResultResolver = SingleSyncFakeAPIClientResultResolver(result: .success(stubResponse))
+    fakeAPIClient.nextFetchResultResolver = SingleSyncFakeAPIClientResultResolver(result: .success(stubResponse))
     
     // when
     moviesSearch.search(query: query)
@@ -334,9 +352,6 @@ class MoviesSearchTests: XCTestCase {
   
   func testCancel_FetchCompletesAfter_DoesNotUpdateStateWithResults() {
     // given
-    let stubClient = FakeAPIClient()
-    let moviesSearch = TMDBMoviesSearch(api: stubClient)
-    
     let query = "dummy query"
     
     let stubResponse = APIPaginatedRes<Movie>(
@@ -349,7 +364,7 @@ class MoviesSearchTests: XCTestCase {
     let resolver = AsyncFakeAPIClientResultResolver(results: [
       searchResource: .success(stubResponse)
     ])
-    stubClient.nextFetchResultResolver = resolver
+    fakeAPIClient.nextFetchResultResolver = resolver
     
     // when
     moviesSearch.search(query: query)
@@ -363,6 +378,5 @@ class MoviesSearchTests: XCTestCase {
     XCTAssertEqual([], state.recentSearches)
     XCTAssertFalse(state.hasMore)
   }
-  
   
 }

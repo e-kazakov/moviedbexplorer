@@ -35,8 +35,9 @@ class MainTabVC: UITabBarController, UITabBarControllerDelegate {
       imageFetcher: imageFetcher
     )
     
+    let recentSearchesRepository = DefaultsRecentSearchesRepository(defaults: UserDefaults.standard)
     let searchViewModel = MovieSearchViewModelImpl(
-      moviesSearch: TMDBMoviesSearch(api: apiClient),
+      moviesSearch: TMDBMoviesSearch(api: apiClient, recentSearchesRepository: recentSearchesRepository),
       api: apiClient,
       imageFetcher: imageFetcher
     )

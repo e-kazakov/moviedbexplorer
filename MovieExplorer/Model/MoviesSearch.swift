@@ -36,13 +36,28 @@ class TMDBMoviesSearch: MoviesSearch {
   let store = Store<MoviesSearchState>(.initial)
   
   private let api: APIClient
+  private let recentSearchesRepository: RecentSearchesRepository
   private var searchTerm: String?
   private var isFirstPageLoaded = false
   private var nextPage: Int?
   private var fetchDisposable: Disposable?
   
-  init(api: APIClient) {
+  init(api: APIClient, recentSearchesRepository: RecentSearchesRepository) {
     self.api = api
+    self.recentSearchesRepository = recentSearchesRepository
+    
+    load()
+  }
+  
+  private func load() {
+    do {
+      let recentSearches = try self.recentSearchesRepository.load()
+      store.update { state in
+        state.recentSearches = recentSearches
+      }
+    } catch {
+      debugPrint("Failed to load search state. Error: \(error)")
+    }
   }
   
   func search(query: String) {
@@ -92,7 +107,7 @@ class TMDBMoviesSearch: MoviesSearch {
   
   private func load(page: Int?) {
     guard let query = self.searchTerm else {
-      fatalError("Search query should be provided")
+      fatalError("Search query should be provided.")
     }
     guard !store.state.status.isLoading else { return }
     
@@ -125,6 +140,12 @@ class TMDBMoviesSearch: MoviesSearch {
       if let searchTerm = self.searchTerm {
         state.recentSearches = update(recentSearches: state.recentSearches, withQuery: searchTerm)
       }
+    }
+    
+    do {
+      try recentSearchesRepository.save(store.state.recentSearches)
+    } catch {
+      debugPrint("Failed to persist recent searches. Error: \(error)")
     }
   }
   

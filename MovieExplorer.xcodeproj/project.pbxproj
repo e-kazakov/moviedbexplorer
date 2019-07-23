@@ -46,6 +46,11 @@
 		F62AE44F22E65B7000A06DC4 /* Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62AE44E22E65B7000A06DC4 /* Atomic.swift */; };
 		F62AE45122E65B8C00A06DC4 /* RecentSearchQueryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62AE45022E65B8C00A06DC4 /* RecentSearchQueryCell.swift */; };
 		F62AE45322E65B9500A06DC4 /* RecentSearchesCollectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62AE45222E65B9500A06DC4 /* RecentSearchesCollectionController.swift */; };
+		F62AE45522E65D8600A06DC4 /* RecentSearchesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62AE45422E65D8600A06DC4 /* RecentSearchesRepository.swift */; };
+		F62AE45722E65DC000A06DC4 /* DefaultsRecentSearchesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62AE45622E65DC000A06DC4 /* DefaultsRecentSearchesRepository.swift */; };
+		F62AE45922E6ECDB00A06DC4 /* DefaultsRecentSearchesRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62AE45822E6ECDB00A06DC4 /* DefaultsRecentSearchesRepositoryTests.swift */; };
+		F62AE45B22E6ECE800A06DC4 /* FakeRecentSearchesRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62AE45A22E6ECE800A06DC4 /* FakeRecentSearchesRepository.swift */; };
+		F62AE45F22E6F1F800A06DC4 /* FakeUserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62AE45E22E6F1F800A06DC4 /* FakeUserDefaults.swift */; };
 		F650833C2259D0EF000EE1F4 /* NibLoadable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F650833B2259D0EF000EE1F4 /* NibLoadable.swift */; };
 		F650833E2259D111000EE1F4 /* Reusable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F650833D2259D111000EE1F4 /* Reusable.swift */; };
 		F65083DE225D4EBE000EE1F4 /* UIImage+Named.swift in Sources */ = {isa = PBXBuildFile; fileRef = F65083DD225D4EBE000EE1F4 /* UIImage+Named.swift */; };
@@ -139,6 +144,11 @@
 		F62AE44E22E65B7000A06DC4 /* Atomic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Atomic.swift; sourceTree = "<group>"; };
 		F62AE45022E65B8C00A06DC4 /* RecentSearchQueryCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecentSearchQueryCell.swift; sourceTree = "<group>"; };
 		F62AE45222E65B9500A06DC4 /* RecentSearchesCollectionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecentSearchesCollectionController.swift; sourceTree = "<group>"; };
+		F62AE45422E65D8600A06DC4 /* RecentSearchesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentSearchesRepository.swift; sourceTree = "<group>"; };
+		F62AE45622E65DC000A06DC4 /* DefaultsRecentSearchesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultsRecentSearchesRepository.swift; sourceTree = "<group>"; };
+		F62AE45822E6ECDB00A06DC4 /* DefaultsRecentSearchesRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultsRecentSearchesRepositoryTests.swift; sourceTree = "<group>"; };
+		F62AE45A22E6ECE800A06DC4 /* FakeRecentSearchesRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeRecentSearchesRepository.swift; sourceTree = "<group>"; };
+		F62AE45E22E6F1F800A06DC4 /* FakeUserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeUserDefaults.swift; sourceTree = "<group>"; };
 		F650833B2259D0EF000EE1F4 /* NibLoadable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NibLoadable.swift; sourceTree = "<group>"; };
 		F650833D2259D111000EE1F4 /* Reusable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reusable.swift; sourceTree = "<group>"; };
 		F65083DD225D4EBE000EE1F4 /* UIImage+Named.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Named.swift"; sourceTree = "<group>"; };
@@ -234,6 +244,8 @@
 				F69C58CA21451F1D0086702D /* FakeURLSession.swift */,
 				F69C58CE214524430086702D /* FakeURLSessionDataTask.swift */,
 				B9F3E88222E11C6400062023 /* TestAPIError.swift */,
+				F62AE45A22E6ECE800A06DC4 /* FakeRecentSearchesRepository.swift */,
+				F62AE45E22E6F1F800A06DC4 /* FakeUserDefaults.swift */,
 			);
 			path = Fakes;
 			sourceTree = "<group>";
@@ -356,6 +368,8 @@
 				F692852E214C3BE7002ED354 /* LoadStatus.swift */,
 				F692852C214C29F2002ED354 /* MoviesList.swift */,
 				B97C492722D2293200A62374 /* MoviesSearch.swift */,
+				F62AE45422E65D8600A06DC4 /* RecentSearchesRepository.swift */,
+				F62AE45622E65DC000A06DC4 /* DefaultsRecentSearchesRepository.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -374,6 +388,7 @@
 			children = (
 				F692853B214C6B3B002ED354 /* MoviesListTests.swift */,
 				B936279122D7E53A00DA7575 /* MoviesSearchTests.swift */,
+				F62AE45822E6ECDB00A06DC4 /* DefaultsRecentSearchesRepositoryTests.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -649,8 +664,10 @@
 				B97C492A22D231F600A62374 /* Disposable.swift in Sources */,
 				F6B65D9B21443A1900BD7D12 /* HTTPMethod.swift in Sources */,
 				F616769E214FF62A008753BA /* FavoritesVC.swift in Sources */,
+				F62AE45522E65D8600A06DC4 /* RecentSearchesRepository.swift in Sources */,
 				F65571A621524F39002D8867 /* URLSessionImageFetcher.swift in Sources */,
 				B9F9914F22B6255F003E66CB /* UIEdgeInsets+Ext.swift in Sources */,
+				F62AE45722E65DC000A06DC4 /* DefaultsRecentSearchesRepository.swift in Sources */,
 				F6B65D9F21443A3E00BD7D12 /* HTTPResourceParameters.swift in Sources */,
 				B994C6A722B2FD060016BE65 /* MovieSkeletonMaskView.swift in Sources */,
 				B97C493022D2632D00A62374 /* MovieSearchView.swift in Sources */,
@@ -705,12 +722,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F62AE45B22E6ECE800A06DC4 /* FakeRecentSearchesRepository.swift in Sources */,
 				F692853C214C6B3B002ED354 /* MoviesListTests.swift in Sources */,
 				B9F3E88A22E1A83D00062023 /* ParsingError+TestExt.swift in Sources */,
 				B9F3E88822E1A7F700062023 /* APIError+TestExt.swift in Sources */,
 				F6B65DAB21446E0E00BD7D12 /* APIPaginatedResTests.swift in Sources */,
 				F6B65DB1214473AF00BD7D12 /* ResourceReader.swift in Sources */,
 				F6B65DA921446DF900BD7D12 /* MovieMappingTests.swift in Sources */,
+				F62AE45922E6ECDB00A06DC4 /* DefaultsRecentSearchesRepositoryTests.swift in Sources */,
 				F69C58C921451F0F0086702D /* URLSessionAPIClientTests.swift in Sources */,
 				F69C58CF214524430086702D /* FakeURLSessionDataTask.swift in Sources */,
 				F6B65DB42144762100BD7D12 /* URLQueryParametersTests.swift in Sources */,
@@ -721,6 +740,7 @@
 				B936279222D7E53A00DA7575 /* MoviesSearchTests.swift in Sources */,
 				B949939F22DE284C00F0C7E3 /* Movie+Random.swift in Sources */,
 				B9F3E88322E11C6400062023 /* TestAPIError.swift in Sources */,
+				F62AE45F22E6F1F800A06DC4 /* FakeUserDefaults.swift in Sources */,
 				F604200D214D988F00333DD9 /* FakeAPIClient.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
