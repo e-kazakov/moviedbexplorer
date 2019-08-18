@@ -41,10 +41,16 @@ class TMDBMoviesSearch: MoviesSearch {
   private var isFirstPageLoaded = false
   private var nextPage: Int?
   private var fetchDisposable: Disposable?
+  private let maxRecentSearchesCount: Int
+  private static let defaultMaxRecentSearchesCount = 10
   
-  init(api: APIClient, recentSearchesRepository: RecentSearchesRepository) {
+  init(api: APIClient,
+       recentSearchesRepository: RecentSearchesRepository,
+       maxRecentSearchesCount: Int = TMDBMoviesSearch.defaultMaxRecentSearchesCount
+  ) {
     self.api = api
     self.recentSearchesRepository = recentSearchesRepository
+    self.maxRecentSearchesCount = maxRecentSearchesCount
     
     load()
   }
@@ -150,11 +156,17 @@ class TMDBMoviesSearch: MoviesSearch {
   }
   
   private func update(recentSearches: [String], withQuery query: String) -> [String] {
-    if !recentSearches.contains(query) {
-      return [query] + recentSearches
-    } else {
-      return recentSearches
+    var res = recentSearches
+    if let idx = res.firstIndex(of: query) {
+      res.remove(at: idx)
     }
+    
+    let countAfterUpdate = res.count + 1
+    if countAfterUpdate > maxRecentSearchesCount {
+      res.removeLast(countAfterUpdate - maxRecentSearchesCount)
+    }
+    
+    return [query] + res
   }
   
   private func failedToLoad(with error: Error) {
