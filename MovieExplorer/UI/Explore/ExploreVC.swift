@@ -17,14 +17,16 @@ class ExploreVC: UIViewController {
   private let moviesCollectionController = MovieCollectionController()
   private let moviesCollectionLoadingController = MovieCollectionLoadingController()
   
-  private var moviesList: MoviesListViewModel
+  private let moviesList: MoviesListViewModel
+  private let favorites: FavoriteMovies
   private let apiClient: APIClient
   private let imageFetcher: ImageFetcher
   
-  init (moviesList: MoviesListViewModel, apiClient: APIClient, imageFetcher: ImageFetcher) {
+  init (moviesList: MoviesListViewModel, favorites: FavoriteMovies, apiClient: APIClient, imageFetcher: ImageFetcher) {
     self.moviesList = moviesList
     self.apiClient = apiClient
     self.imageFetcher = imageFetcher
+    self.favorites = favorites
     
     super.init(nibName: nil, bundle: nil)
 
@@ -114,7 +116,7 @@ class ExploreVC: UIViewController {
   }
   
   private func goToDetails(_ movie: Movie) {
-    let vm = MovieViewModelImpl(movie: movie, api: apiClient, imageFetcher: imageFetcher)
+    let vm = MovieViewModelImpl(movie: movie, favorites: favorites, imageFetcher: imageFetcher, api: apiClient)
     let detailsVC = MovieDetailsVC(viewModel: vm)
     show(detailsVC, sender: nil)
   }

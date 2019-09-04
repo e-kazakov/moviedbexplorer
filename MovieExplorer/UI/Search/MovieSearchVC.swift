@@ -12,6 +12,7 @@ class MovieSearchVC: UIViewController {
 
   private let apiClient: APIClient
   private let imageFetcher: ImageFetcher
+  private let favorites: FavoriteMovies
   private var viewModel: MovieSearchViewModel
   
   private let moviesCollectionController = MovieCollectionController()
@@ -26,10 +27,11 @@ class MovieSearchVC: UIViewController {
   
   private let keyboardObserver = KeyboardObserver(notificationCenter: .default)
   
-  init(viewModel: MovieSearchViewModel, apiClient: APIClient, imageFetcher: ImageFetcher) {
+  init(viewModel: MovieSearchViewModel, favorites: FavoriteMovies, apiClient: APIClient, imageFetcher: ImageFetcher) {
     self.viewModel = viewModel
     self.apiClient = apiClient
     self.imageFetcher = imageFetcher
+    self.favorites = favorites
     
     super.init(nibName: nil, bundle: nil)
     
@@ -193,7 +195,7 @@ class MovieSearchVC: UIViewController {
   }
   
   private func goToDetails(_ movie: Movie) {
-    let vm = MovieViewModelImpl(movie: movie, api: apiClient, imageFetcher: imageFetcher)
+    let vm = MovieViewModelImpl(movie: movie, favorites: favorites, imageFetcher: imageFetcher, api: apiClient)
     let detailsVC = MovieDetailsVC(viewModel: vm)
     show(detailsVC, sender: nil)
   }

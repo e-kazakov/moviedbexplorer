@@ -17,7 +17,7 @@ enum MoviesListViewModelStatus {
   case failedToLoadNext
 }
 
-protocol MoviesListViewModel {
+protocol MoviesListViewModel: class {
   var status: MoviesListViewModelStatus { get }
   var movies: [MovieCellViewModel] { get }
   

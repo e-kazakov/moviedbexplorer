@@ -38,7 +38,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     let window = UIWindow(frame: UIScreen.main.bounds)
     window.backgroundColor = UIColor.white
-    window.rootViewController = MainTabVC(apiClient: apiClient, imageFetcher: imageFetcher)
+    window.rootViewController = MainTabVC(apiClient: apiClient,
+                                          favorites: TMDBFavoriteMovies(repository: JSONFavoriteMoviesRepository()),
+                                          imageFetcher: imageFetcher)
     window.makeKeyAndVisible()
     self.window = window
 

@@ -11,14 +11,7 @@ import UIKit
 class MovieDetailsVC: UIViewController {
   
   private let detailsView = MovieDetailsView()
-  
-  var viewModel: MovieViewModel? {
-    didSet {
-      if isViewLoaded {
-        bind()
-      }
-    }
-  }
+  private let viewModel: MovieViewModel
 
   init(viewModel: MovieViewModel) {
     self.viewModel = viewModel
@@ -37,6 +30,7 @@ class MovieDetailsVC: UIViewController {
     setupViews()
     bind()
     load()
+    update()
   }
   
   private func configureNavigationItem() {
@@ -71,33 +65,44 @@ class MovieDetailsVC: UIViewController {
   }
 
   private func bind() {
-    guard let viewModel = viewModel else { return }
-    
+    bindOutputs()
+    bindInputs()
+  }
+  
+  private func bindOutputs() {
+    viewModel.onChanged = { [weak self] in
+      self?.update()
+    }
+  }
+  
+  private func bindInputs() {
+  }
+  
+  private func update() {
     title = viewModel.title
     detailsView.nameLabel.text = viewModel.title
     detailsView.overviewLabel.text = viewModel.overview
     detailsView.releaseYearLabel.text = viewModel.releaseYear
     
     detailsView.posterImageView.tmdb.setImage(remote: viewModel.image)
+    
+    let favButton = UIBarButtonItem(
+      image: viewModel.isFavorite ? UIImage.tmdb.starFilled : UIImage.tmdb.starO,
+      style: .plain,
+      target: self,
+      action: #selector(onToggleFavorite)
+    )
+    navigationItem.setRightBarButton(favButton, animated: true)
   }
   
   private func load() {
-    viewModel?.image?.load()
+    viewModel.image?.load()
   }
   
   // MARK: Actions
   
-  private var isStarred = false
-  
   @objc
   private func onToggleFavorite() {
-    isStarred.toggle()
-    
-    let favButton = UIBarButtonItem(
-      image: isStarred ? UIImage.tmdb.starFilled : UIImage.tmdb.starO,
-      style: .plain,
-      target: self, action: #selector(onToggleFavorite)
-    )
-    navigationItem.setRightBarButton(favButton, animated: true)
+    viewModel.toggleFavorite()
   }
 }

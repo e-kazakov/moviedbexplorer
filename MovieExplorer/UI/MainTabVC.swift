@@ -12,10 +12,12 @@ class MainTabVC: UITabBarController, UITabBarControllerDelegate {
 
   private let apiClient: APIClient
   private let imageFetcher: ImageFetcher
+  private let favorites: FavoriteMovies
 
-  init(apiClient: APIClient, imageFetcher: ImageFetcher) {
+  init(apiClient: APIClient, favorites: FavoriteMovies, imageFetcher: ImageFetcher) {
     self.apiClient = apiClient
     self.imageFetcher = imageFetcher
+    self.favorites = favorites
 
     super.init(nibName: nil, bundle: nil)
     
@@ -34,6 +36,11 @@ class MainTabVC: UITabBarController, UITabBarControllerDelegate {
       api: apiClient,
       imageFetcher: imageFetcher
     )
+    let favoritesListViewModel = FavoritesViewModelImpl(
+      favorites: favorites,
+      api: apiClient,
+      imageFetcher: imageFetcher
+    )
     
     let recentSearchesRepository = DefaultsRecentSearchesRepository(defaults: UserDefaults.standard)
     let searchViewModel = MovieSearchViewModelImpl(
@@ -49,9 +56,9 @@ class MainTabVC: UITabBarController, UITabBarControllerDelegate {
     }
     
     self.viewControllers = [
-      nc(ExploreVC(moviesList: moviesListViewModel, apiClient: apiClient, imageFetcher: imageFetcher)),
-      nc(FavoritesVC()),
-      nc(MovieSearchVC(viewModel: searchViewModel, apiClient: apiClient, imageFetcher: imageFetcher))
+      nc(ExploreVC(moviesList: moviesListViewModel, favorites: favorites, apiClient: apiClient, imageFetcher: imageFetcher)),
+      nc(FavoritesVC(favoritesList: favoritesListViewModel, favorites: favorites, apiClient: apiClient, imageFetcher: imageFetcher)),
+      nc(MovieSearchVC(viewModel: searchViewModel, favorites: favorites, apiClient: apiClient, imageFetcher: imageFetcher))
     ]
   }
 }
