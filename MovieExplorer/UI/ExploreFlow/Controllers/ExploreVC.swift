@@ -10,28 +10,24 @@ import UIKit
 
 class ExploreVC: UIViewController {
 
+  var goToMovieDetails: ((Movie) -> Void)?
+  
+  private let viewModel: MoviesListViewModel
+  
   private lazy var contentView = ExploreView()
   private var collectionView: UICollectionView {
     return contentView.moviesListView
   }
+  
   private let moviesCollectionController = MovieCollectionController()
   private let moviesCollectionLoadingController = MovieCollectionLoadingController()
   
-  private let moviesList: MoviesListViewModel
-  private let favorites: FavoriteMovies
-  private let apiClient: APIClient
-  private let imageFetcher: ImageFetcher
-  
-  init (moviesList: MoviesListViewModel, favorites: FavoriteMovies, apiClient: APIClient, imageFetcher: ImageFetcher) {
-    self.moviesList = moviesList
-    self.apiClient = apiClient
-    self.imageFetcher = imageFetcher
-    self.favorites = favorites
+  init (viewModel: MoviesListViewModel) {
+    self.viewModel = viewModel
     
     super.init(nibName: nil, bundle: nil)
 
     configureNavigationItem()
-    configureTabBarItem()
   }
   
   required init?(coder aDecoder: NSCoder) {
@@ -46,18 +42,12 @@ class ExploreVC: UIViewController {
     super.viewDidLoad()
     
     bind()
-    moviesList.loadNext()
+    viewModel.loadNext()
   }
   
   private func configureNavigationItem() {
     title = "The Movie DB"
     navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-  }
-  
-  private func configureTabBarItem() {
-    tabBarItem.title = "Explore"
-    tabBarItem.image = UIImage.tmdb.popcornO
-    tabBarItem.selectedImage = UIImage.tmdb.popcornFilled
   }
   
   private func bind() {
@@ -66,22 +56,22 @@ class ExploreVC: UIViewController {
   }
   
   private func bindOutputs() {
-    moviesList.onChanged = { [weak self] in
+    viewModel.onChanged = { [weak self] in
       self?.update()
     }
-    moviesList.onGoToDetails = { [weak self] movie in
-      self?.goToDetails(movie)
+    viewModel.onGoToDetails = { [weak self] movie in
+      self?.goToMovieDetails?(movie)
     }
   }
   
   private func bindInputs() {
-    contentView.errorView.onRetry = moviesList.retry
-    moviesCollectionController.onCloseToEnd = moviesList.loadNext
-    moviesCollectionController.onRetry = moviesList.retry
+    contentView.errorView.onRetry = viewModel.retry
+    moviesCollectionController.onCloseToEnd = viewModel.loadNext
+    moviesCollectionController.onRetry = viewModel.retry
   }
   
   private func update() {
-    switch moviesList.status {
+    switch viewModel.status {
     case .initial:
       break
     
@@ -106,7 +96,7 @@ class ExploreVC: UIViewController {
   }
   
   private func configureForLoaded() {
-    moviesCollectionController.viewModel = MovieCollectionViewModel(from: moviesList)
+    moviesCollectionController.viewModel = MovieCollectionViewModel(from: viewModel)
     
     if moviesCollectionController.collectionView !== collectionView {
       collectionView.isUserInteractionEnabled = true
@@ -114,12 +104,7 @@ class ExploreVC: UIViewController {
       collectionView.tmdb.crossDissolveTransition { }
     }
   }
-  
-  private func goToDetails(_ movie: Movie) {
-    let vm = MovieViewModelImpl(movie: movie, favorites: favorites, imageFetcher: imageFetcher, api: apiClient)
-    let detailsVC = MovieDetailsVC(viewModel: vm)
-    show(detailsVC, sender: nil)
-  }
+
 }
 
 extension MovieCollectionViewModel {

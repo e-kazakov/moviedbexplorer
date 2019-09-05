@@ -10,6 +10,10 @@ import UIKit
 
 class FavoritesVC: UIViewController {
 
+  var goToMovieDetails: ((Movie) -> Void)?
+  
+  private let viewModel: FavoritesViewModel
+
   private lazy var contentView = FavoritesView()
   private var collectionView: UICollectionView {
     return contentView.moviesListView
@@ -18,21 +22,12 @@ class FavoritesVC: UIViewController {
   private let moviesCollectionController = MovieCollectionController()
   private let moviesCollectionLoadingController = MovieCollectionLoadingController()
   
-  private let favoritesList: FavoritesViewModel
-  private let favorites: FavoriteMovies
-  private let apiClient: APIClient
-  private let imageFetcher: ImageFetcher
-
-  init (favoritesList: FavoritesViewModel, favorites: FavoriteMovies, apiClient: APIClient, imageFetcher: ImageFetcher) {
-    self.favoritesList = favoritesList
-    self.apiClient = apiClient
-    self.imageFetcher = imageFetcher
-    self.favorites = favorites
+  init (viewModel: FavoritesViewModel) {
+    self.viewModel = viewModel
     
     super.init(nibName: nil, bundle: nil)
 
     configureNavigationItem()
-    configureTabBarItem()
   }
 
   required init?(coder aDecoder: NSCoder) {
@@ -57,40 +52,29 @@ class FavoritesVC: UIViewController {
     navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
   }
   
-  private func configureTabBarItem() {
-    tabBarItem.title = "Favorites"
-    tabBarItem.image = UIImage.tmdb.starO
-    tabBarItem.selectedImage = UIImage.tmdb.startFilled
-  }
-  
   private func bind() {
     bindOutputs()
   }
   
   private func bindOutputs() {
-    favoritesList.onChanged = { [weak self] in
+    viewModel.onChanged = { [weak self] in
       self?.update()
     }
-    favoritesList.onGoToDetails = { [weak self] movie in
-      self?.goToDetails(movie)
+    viewModel.onGoToDetails = { [weak self] movie in
+      self?.goToMovieDetails?(movie)
     }
   }
   
   private func update() {
-    moviesCollectionController.viewModel = MovieCollectionViewModel(from: favoritesList)
+    moviesCollectionController.viewModel = MovieCollectionViewModel(from: viewModel)
     
-    if favoritesList.movies.isEmpty {
+    if viewModel.movies.isEmpty {
       contentView.showInitial()
     } else {
       contentView.showList()
     }
   }
-  
-  private func goToDetails(_ movie: Movie) {
-    let vm = MovieViewModelImpl(movie: movie, favorites: favorites, imageFetcher: imageFetcher, api: apiClient)
-    let detailsVC = MovieDetailsVC(viewModel: vm)
-    show(detailsVC, sender: nil)
-  }
+
 }
 
 extension MovieCollectionViewModel {

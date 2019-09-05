@@ -10,8 +10,9 @@ import UIKit
 
 class MovieDetailsVC: UIViewController {
   
-  private let detailsView = MovieDetailsView()
   private let viewModel: MovieViewModel
+
+  private let detailsView = MovieDetailsView()
 
   init(viewModel: MovieViewModel) {
     self.viewModel = viewModel

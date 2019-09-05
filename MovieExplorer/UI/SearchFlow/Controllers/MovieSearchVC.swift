@@ -10,14 +10,9 @@ import UIKit
 
 class MovieSearchVC: UIViewController {
 
-  private let apiClient: APIClient
-  private let imageFetcher: ImageFetcher
-  private let favorites: FavoriteMovies
-  private var viewModel: MovieSearchViewModel
+  var goToMovieDetails: ((Movie) -> Void)?
   
-  private let moviesCollectionController = MovieCollectionController()
-  private let moviesCollectionLoadingController = MovieCollectionLoadingController()
-  private let recentSearchesCollectionController = RecentSearchesCollectionController()
+  private var viewModel: MovieSearchViewModel
   
   private let searchBar = UISearchBar()
   private lazy var contentView = MovieSearchView()
@@ -25,18 +20,18 @@ class MovieSearchVC: UIViewController {
     return contentView.moviesListView
   }
   
+  private let moviesCollectionController = MovieCollectionController()
+  private let moviesCollectionLoadingController = MovieCollectionLoadingController()
+  private let recentSearchesCollectionController = RecentSearchesCollectionController()
+  
   private let keyboardObserver = KeyboardObserver(notificationCenter: .default)
   
-  init(viewModel: MovieSearchViewModel, favorites: FavoriteMovies, apiClient: APIClient, imageFetcher: ImageFetcher) {
+  init(viewModel: MovieSearchViewModel) {
     self.viewModel = viewModel
-    self.apiClient = apiClient
-    self.imageFetcher = imageFetcher
-    self.favorites = favorites
-    
+
     super.init(nibName: nil, bundle: nil)
     
     configureNavigationItem()
-    configureTabBarItem()
     
     searchBar.delegate = self
   }
@@ -49,12 +44,6 @@ class MovieSearchVC: UIViewController {
     title = "Search"
     navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
     navigationItem.titleView = searchBar
-  }
-  
-  private func configureTabBarItem() {
-    tabBarItem.title = "Search"
-    tabBarItem.image = UIImage.tmdb.magnifyingGlass
-    tabBarItem.selectedImage = UIImage.tmdb.magnifyingGlassThick
   }
   
   override func loadView() {
@@ -104,7 +93,7 @@ class MovieSearchVC: UIViewController {
       self?.update()
     }
     viewModel.onGoToDetails = { [weak self] movie in
-      self?.goToDetails(movie)
+      self?.goToMovieDetails?(movie)
     }
   }
   
@@ -192,12 +181,6 @@ class MovieSearchVC: UIViewController {
       moviesCollectionController.collectionView = moviesListView
       moviesListView.tmdb.crossDissolveTransition { }
     }
-  }
-  
-  private func goToDetails(_ movie: Movie) {
-    let vm = MovieViewModelImpl(movie: movie, favorites: favorites, imageFetcher: imageFetcher, api: apiClient)
-    let detailsVC = MovieDetailsVC(viewModel: vm)
-    show(detailsVC, sender: nil)
   }
   
   private func searchBarBeginEditing() {

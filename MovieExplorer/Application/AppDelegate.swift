@@ -12,39 +12,25 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
   var window: UIWindow?
-
-  private lazy var urlSession = createSession()
-  
-  private lazy var apiClient: APIClient = {
-    let serverConfig = MovieDBServerConfig(
-      apiBase: URL(string: "https://api.themoviedb.org/3/")!,
-      imageBase: URL(string: "https://image.tmdb.org/t/p/")!,
-      apiKey: "8ce5ac519ae011454741f33c416274e2"
-    )
-    return URLSessionAPIClient(serverConfig: serverConfig, urlSession: urlSession)
-  }()
-  
-  private lazy var imageFetcher: ImageFetcher = {
-    return URLSessionImageFetcher(session: urlSession)
-  }()
+  private var coordinator: AppCoordinator?
 
   func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-
+    let window = UIWindow(frame: UIScreen.main.bounds)
     // Fixes dark spot artefact during push when navigation bar is translucent
     // and `hidesBottomBarWhenPushed` set to `true` on pushed controller.
-    
-    let window = UIWindow(frame: UIScreen.main.bounds)
     window.backgroundColor = UIColor.white
-    window.rootViewController = MainTabVC(apiClient: apiClient,
-                                          favorites: TMDBFavoriteMovies(repository: JSONFavoriteMoviesRepository()),
-                                          imageFetcher: imageFetcher)
-    window.makeKeyAndVisible()
+
+    let appCoordinator = AppCoordinator(window: window)
+
     self.window = window
+    self.coordinator = appCoordinator
+    
+    appCoordinator.start()
 
     return true
   }
-
+  
 }
