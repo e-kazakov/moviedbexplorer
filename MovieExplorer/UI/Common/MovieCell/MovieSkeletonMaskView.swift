@@ -62,7 +62,7 @@ private struct Layout {
   private static let textLineVerticalOffset = 16 as CGFloat
 
   static func layout(for size: CGSize) -> Layout {
-    let imageSize = CGSize(width: 125, height: 185)
+    let imageSize = CGSize(width: 125, height: 188)
     let imageOrigin = CGPoint(x: 0, y: (size.height - imageSize.height)/2)
     let imageFrame = CGRect(origin: imageOrigin, size: imageSize)
     

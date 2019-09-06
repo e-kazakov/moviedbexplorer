@@ -37,4 +37,8 @@ extension TMDB where Base: UIImage {
   static var magnifyingGlassThick: UIImage {
     return UIImage(named: "magnifying_glass-thick-ic")!
   }
+  
+  static var angleRight: UIImage {
+    return UIImage(named: "angle_right-ic")!
+  }
 }

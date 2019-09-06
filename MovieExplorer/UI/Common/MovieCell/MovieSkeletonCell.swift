@@ -10,7 +10,7 @@ import UIKit
 
 class MovieSkeletonCell: UICollectionViewCell {
   
-  static let preferredHeight = CGFloat(198)
+  static let preferredHeight = CGFloat(188)
   static let duration = 1.0
   
   private let skeletonColor = UIColor(rgb: 0xF7F7F7)

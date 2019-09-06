@@ -46,8 +46,14 @@ class MovieCollectionController: NSObject, UICollectionViewDataSource, UICollect
   
   private func configureCollectionView() {
     guard let cv = collectionView else { return }
+    guard let layout = cv.collectionViewLayout as? UICollectionViewFlowLayout else {
+      fatalError("Expecting UICollectionViewFlowLayout. Got \(cv.collectionViewLayout)")
+    }
     
-    cv.register(MovieCell.nib, forCellWithReuseIdentifier: MovieCell.defaultReuseIdentifier)
+    layout.minimumInteritemSpacing = 0
+    layout.minimumLineSpacing = 0
+
+    cv.register(MovieCell.self, forCellWithReuseIdentifier: MovieCell.defaultReuseIdentifier)
     cv.register(MovieSkeletonCell.self, forCellWithReuseIdentifier: MovieSkeletonCell.defaultReuseIdentifier)
     cv.register(MovieFailedCell.self, forCellWithReuseIdentifier: MovieFailedCell.defaultReuseIdentifier)
 
