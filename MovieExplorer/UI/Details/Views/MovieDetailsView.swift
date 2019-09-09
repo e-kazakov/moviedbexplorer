@@ -18,6 +18,15 @@ class MovieDetailsView: UIView {
   override init(frame: CGRect) {
     super.init(frame: frame)
     
+    setupSubviews()
+    style()
+  }
+  
+  required init?(coder aDecoder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
+  
+  private func setupSubviews() {
     posterImageView.translatesAutoresizingMaskIntoConstraints = false
     nameLabel.translatesAutoresizingMaskIntoConstraints = false
     overviewLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -49,8 +58,17 @@ class MovieDetailsView: UIView {
     ])
   }
   
-  required init?(coder aDecoder: NSCoder) {
-    fatalError("init(coder:) has not been implemented")
+  private func style() {
+    backgroundColor = .appBackground
+    UILabel.Style.releaseYear(releaseYearLabel)
+  }
+  
+  override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+    super.traitCollectionDidChange(previousTraitCollection)
+    
+    if traitCollection.userInterfaceStyle != previousTraitCollection?.userInterfaceStyle {
+      style()
+    }
   }
   
 }

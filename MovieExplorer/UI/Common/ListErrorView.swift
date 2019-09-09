@@ -42,9 +42,8 @@ class ListErrorView: UIView {
   private let reloadButton: UIButton = {
     let button = UIButton(type: .system)
     button.setTitle("Retry", for: .normal)
-    button.setTitleColor(.black, for: .normal)
-    button.tintColor = .black
-    button.layer.borderColor = UIColor.black.cgColor
+    button.setTitleColor(.appLabel, for: .normal)
+    button.tintColor = .appLabel
     button.layer.borderWidth = 1.0
     return button
   }()
@@ -55,6 +54,7 @@ class ListErrorView: UIView {
     super.init(frame: frame)
     
     setupSubviews()
+    style()
   }
   
   required init?(coder aDecoder: NSCoder) {
@@ -93,6 +93,18 @@ class ListErrorView: UIView {
       messageLabel.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor, constant: 32),
       messageLabel.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -32),
       ])
+  }
+  
+  private func style() {
+    reloadButton.layer.borderColor = UIColor.appLabel.cgColor
+  }
+  
+  override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+    super.traitCollectionDidChange(previousTraitCollection)
+    
+    if traitCollection.userInterfaceStyle != previousTraitCollection?.userInterfaceStyle {
+      style()
+    }
   }
   
   @objc

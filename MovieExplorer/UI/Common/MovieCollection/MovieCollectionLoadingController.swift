@@ -20,7 +20,13 @@ class MovieCollectionLoadingController: NSObject, UICollectionViewDataSource, UI
   
   private func configureCollectionView() {
     guard let cv = collectionView else { return }
+    guard let layout = cv.collectionViewLayout as? UICollectionViewFlowLayout else {
+      fatalError("Expecting UICollectionViewFlowLayout. Got \(cv.collectionViewLayout)")
+    }
     
+    layout.minimumInteritemSpacing = 0
+    layout.minimumLineSpacing = 0
+
     cv.register(MovieSkeletonCell.self,
                 forCellWithReuseIdentifier: MovieSkeletonCell.defaultReuseIdentifier)
 

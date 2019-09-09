@@ -12,7 +12,7 @@ extension UILabel.Style {
   @discardableResult
   static func releaseYear(_ label: UILabel) -> UILabel {
     label.textAlignment = .center
-    label.layer.borderColor = UIColor(white: 151.0 / 255.0, alpha: 1.0).cgColor
+    label.layer.borderColor = UIColor.appSeparator.cgColor
     label.layer.borderWidth = 0.5
     label.layer.cornerRadius = 2
     return label

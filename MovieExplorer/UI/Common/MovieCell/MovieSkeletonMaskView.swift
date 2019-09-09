@@ -10,10 +10,10 @@ import UIKit
 
 class MovieSkeletonMaskView: UIView {
   
-  private let imageStub = UIView.black
-  private let titleStub = UIView.black
-  private let yearStub = UIView.black
-  private let textLinesStubs = (0..<7).map { _ in UIView.black }
+  let imageStub = UIView.black
+  let titleStub = UIView.black
+  let yearStub = UIView.black
+  let textLinesStubs = (0..<7).map { _ in UIView.black }
 
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -53,28 +53,31 @@ private struct Layout {
   let yearFrame: CGRect
   let textLinesFrames: [CGRect]
   
+  private static let titleLeftTop = 6 as CGFloat
   private static let titleLeftOffset = 12 as CGFloat
   private static let titleRightOffset = 32 as CGFloat
   private static let titleHeight = 20 as CGFloat
   private static let yearSize = CGSize(width: 60, height: 20)
+  private static let yearRightOffset = 20 as CGFloat
+  private static let yearBottomOffset = 8 as CGFloat
   private static let textLineSpacing = 5 as CGFloat
-  private static let textLineRightOffset = 16 as CGFloat
+  private static let textLineRightOffset = 20 as CGFloat
   private static let textLineVerticalOffset = 16 as CGFloat
 
   static func layout(for size: CGSize) -> Layout {
-    let imageSize = CGSize(width: 125, height: 188)
+    let imageSize = CGSize(width: 125, height: 186)
     let imageOrigin = CGPoint(x: 0, y: (size.height - imageSize.height)/2)
     let imageFrame = CGRect(origin: imageOrigin, size: imageSize)
     
     let titleOrigin = CGPoint(x: imageFrame.maxX + Layout.titleLeftOffset,
-                              y: imageOrigin.y)
+                              y: titleLeftTop)
     let titleSize = CGSize(width: size.width - titleOrigin.x - Layout.titleRightOffset,
                            height: Layout.titleHeight)
     let titleFrame = CGRect(origin: titleOrigin, size: titleSize)
 
-    let yearOrigin = CGPoint(x: titleOrigin.x,
-                             y: imageFrame.maxY - Layout.yearSize.height)
-    let yearFrame = CGRect(origin: yearOrigin, size: Layout.yearSize)
+    let yearOrigin = CGPoint(x: size.width - yearSize.width - yearRightOffset,
+                             y: imageFrame.maxY - yearSize.height - yearBottomOffset)
+    let yearFrame = CGRect(origin: yearOrigin, size: yearSize)
     
     let textOriginY = titleFrame.maxY + Layout.textLineVerticalOffset
     let textHeight = yearFrame.minY - titleFrame.maxY - 2*Layout.textLineVerticalOffset

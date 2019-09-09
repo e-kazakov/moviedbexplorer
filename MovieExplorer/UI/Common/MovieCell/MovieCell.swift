@@ -14,7 +14,7 @@ class MovieCell: UICollectionViewCell {
   
   private let separatorView: UIView = {
     let separator = UIView()
-    separator.backgroundColor = UIColor.black.withAlphaComponent(0.25)
+    separator.backgroundColor = .appSeparator
     return separator
   }()
   private let disclosureImageView = UIImageView(image: UIImage.tmdb.angleRight)
@@ -38,7 +38,6 @@ class MovieCell: UICollectionViewCell {
   }()
   private let releaseYearLabel: UILabel = {
     let label = UILabel()
-    UILabel.Style.releaseYear(label)
     return label
   }()
 
@@ -48,6 +47,7 @@ class MovieCell: UICollectionViewCell {
     super.init(frame: frame)
 
     setupSubviews()
+    style()
   }
 
   required init?(coder: NSCoder) {
@@ -101,7 +101,13 @@ class MovieCell: UICollectionViewCell {
       separatorView.heightAnchor.constraint(equalToConstant: 1.0/UIScreen.main.scale),
       separatorView.leftAnchor.constraint(equalTo: nameLabel.leftAnchor),
       separatorView.rightAnchor.constraint(equalTo: contentView.rightAnchor),
+      separatorView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
     ])
+  }
+  
+  private func style() {
+    backgroundColor = .appBackground
+    UILabel.Style.releaseYear(releaseYearLabel)
   }
   
   override func prepareForReuse() {
@@ -128,6 +134,14 @@ class MovieCell: UICollectionViewCell {
     posterImageView.tmdb.setImage(remote: viewModel.image)
 
     viewModel.image?.load()
+  }
+  
+  override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+    super.traitCollectionDidChange(previousTraitCollection)
+    
+    if traitCollection.userInterfaceStyle != previousTraitCollection?.userInterfaceStyle {
+      style()
+    }
   }
 }
 

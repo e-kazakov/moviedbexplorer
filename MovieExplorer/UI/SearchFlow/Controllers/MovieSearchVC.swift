@@ -139,21 +139,21 @@ class MovieSearchVC: UIViewController {
       contentView.showLastSearches()
       return
     }
-    
+
     switch viewModel.status {
     case .initial:
       contentView.showInitial()
-      
+
     case .loading:
       contentView.showList()
-      
+
     case .loaded, .loadingNext, .failedToLoadNext:
       if viewModel.movies.isEmpty {
         contentView.showEmpty()
       } else {
         contentView.showList()
       }
-      
+
     case .failedToLoad:
       contentView.showError()
     }
@@ -247,7 +247,7 @@ private extension MovieCollectionViewModel {
     default:
       status = .loaded
     }
-    
+
     movies = moviesList.movies
   }
 }

@@ -74,15 +74,15 @@ class ExploreVC: UIViewController {
     switch viewModel.status {
     case .initial:
       break
-    
+
     case .loading:
       contentView.showList()
       configureForLoading()
-    
+
     case .loaded, .loadingNext, .failedToLoadNext:
       contentView.showList()
       configureForLoaded()
-    
+
     case .failedToLoad:
       contentView.showError()
     }

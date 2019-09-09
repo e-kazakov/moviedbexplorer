@@ -13,24 +13,26 @@ class MovieSkeletonCell: UICollectionViewCell {
   static let preferredHeight = CGFloat(188)
   static let duration = 1.0
   
-  private let skeletonColor = UIColor(rgb: 0xF7F7F7)
+  private let skeletonColor = UIColor.appSkeleton
+  
+  private let separatorView = UIView(color: .appSeparator)
+  
+  private let animatingViewMask = MovieSkeletonMaskView()
   
   private lazy var animatingView: UIView = {
     let view = UIView()
     view.backgroundColor = skeletonColor
-    view.mask = MovieSkeletonMaskView()
+    view.mask = animatingViewMask
     view.layer.addSublayer(gradientLayer)
     return view
   }()
 
   private lazy var gradientLayer: CAGradientLayer = {
     let gradientLayer = CAGradientLayer()
-    gradientLayer.colors = [skeletonColor.cgColor,
-                            skeletonColor.darker(by: 0.025).cgColor,
-                            skeletonColor.cgColor]
     gradientLayer.startPoint = CGPoint(x: 0, y: 0.5)
     gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.5)
     gradientLayer.isHidden = true
+    configureSkeletonColors(gradientLayer)
     return gradientLayer
   }()
   
@@ -38,6 +40,7 @@ class MovieSkeletonCell: UICollectionViewCell {
     super.init(frame: frame)
 
     contentView.addSubview(animatingView)
+    contentView.addSubview(separatorView)
   }
   
   required init?(coder aDecoder: NSCoder) {
@@ -46,9 +49,26 @@ class MovieSkeletonCell: UICollectionViewCell {
   
   override func layoutSubviews() {
     super.layoutSubviews()
-    
+
     animatingView.frame = contentView.bounds
     animatingView.mask?.frame = animatingView.bounds
+    
+    animatingView.layoutIfNeeded()
+    let titleFrame = convert(animatingViewMask.titleStub.frame, from: animatingViewMask)
+    
+    let separatorOffset = titleFrame.origin.x
+    let separatorWidth = bounds.width - separatorOffset
+    let separatorHeight = 1.0/UIScreen.main.scale
+    separatorView.frame = CGRect(
+      origin: CGPoint(
+        x: separatorOffset,
+        y: bounds.height - separatorHeight
+      ),
+      size: CGSize(
+        width: separatorWidth,
+        height: separatorHeight
+      )
+    )
     
     if gradientLayer.frame != animatingView.layer.bounds {
       gradientLayer.frame = animatingView.layer.bounds
@@ -63,6 +83,36 @@ class MovieSkeletonCell: UICollectionViewCell {
     super.prepareForReuse()
     
     stopAnimation()
+  }
+  
+  override func didMoveToWindow() {
+    super.didMoveToWindow()
+
+    if let _ = window {
+      startAnimation()
+    } else {
+      stopAnimation()
+    }
+  }
+  
+  override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+    super.traitCollectionDidChange(previousTraitCollection)
+    
+    if traitCollection.userInterfaceStyle != previousTraitCollection?.userInterfaceStyle {
+      stopAnimation()
+      configureSkeletonColors(gradientLayer)
+      startAnimation()
+    }
+  }
+  
+  private func configureSkeletonColors(_ gradientLayer: CAGradientLayer) {
+    gradientLayer.colors = [
+      skeletonColor.cgColor,
+      traitCollection.userInterfaceStyle == .dark
+        ? skeletonColor.lighter(by: 0.05).cgColor
+        : skeletonColor.darker(by: 0.025).cgColor,
+      skeletonColor.cgColor
+    ]
   }
   
   func stopAnimation() {
@@ -89,3 +139,13 @@ class MovieSkeletonCell: UICollectionViewCell {
 }
 
 extension MovieSkeletonCell: Reusable { }
+
+extension UIView {
+  
+  convenience init(color: UIColor) {
+    self.init()
+    
+    backgroundColor = color
+  }
+  
+}

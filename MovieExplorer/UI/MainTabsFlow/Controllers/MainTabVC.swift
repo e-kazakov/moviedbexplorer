@@ -23,7 +23,7 @@ class MainTabVC: UITabBarController, UITabBarControllerDelegate {
   override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
     super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
 
-    tabBar.tintColor = .black
+    tabBar.tintColor = .label
     delegate = self
   }
   
@@ -81,7 +81,7 @@ class MainTabVC: UITabBarController, UITabBarControllerDelegate {
 
   private func createNC() -> UINavigationController {
     let nc = UINavigationController()
-    nc.navigationBar.tintColor = .black
+    nc.navigationBar.tintColor = .label
     return nc
   }
 

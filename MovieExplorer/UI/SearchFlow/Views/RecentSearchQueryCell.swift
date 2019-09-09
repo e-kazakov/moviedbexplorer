@@ -24,7 +24,7 @@ class RecentSearchQueryCell: UICollectionViewCell {
   private let label = UILabel()
   private let separator: UIView = {
     let separator = UIView()
-    separator.backgroundColor = UIColor(white: 151.0 / 255.0, alpha: 1.0)
+    separator.backgroundColor = .appSeparator
     return separator
   }()
   

@@ -42,7 +42,7 @@ class MovieDetailsVC: UIViewController {
   }
   
   private func setupViews() {
-    self.view.backgroundColor = .white
+    self.view.backgroundColor = .appBackground
     
     let scrollView = UIScrollView()
     scrollView.translatesAutoresizingMaskIntoConstraints = false

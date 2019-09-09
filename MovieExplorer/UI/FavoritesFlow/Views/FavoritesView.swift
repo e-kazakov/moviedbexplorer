@@ -13,7 +13,7 @@ class FavoritesView: UIView {
   let moviesListView: UICollectionView = {
     let layout = UICollectionViewFlowLayout()
     let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
-    cv.backgroundColor = .white
+    cv.backgroundColor = .appBackground
     return cv
   }()
   

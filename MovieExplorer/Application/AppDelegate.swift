@@ -21,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     let window = UIWindow(frame: UIScreen.main.bounds)
     // Fixes dark spot artefact during push when navigation bar is translucent
     // and `hidesBottomBarWhenPushed` set to `true` on pushed controller.
-    window.backgroundColor = UIColor.white
+    window.backgroundColor = .systemBackground
 
     let appCoordinator = AppCoordinator(window: window)
 

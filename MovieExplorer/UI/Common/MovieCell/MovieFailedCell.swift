@@ -17,8 +17,8 @@ class MovieFailedCell: UICollectionViewCell {
   private let retryButton: UIButton = {
     let button = UIButton(type: .system)
     button.setTitle("Retry", for: .normal)
-    button.setTitleColor(.black, for: .normal)
-    button.tintColor = .black
+    button.setTitleColor(.appLabel, for: .normal)
+    button.tintColor = .label
     return button
   }()
   

@@ -13,13 +13,13 @@ class MovieSearchView: UIView {
   let moviesListView: UICollectionView = {
     let layout = UICollectionViewFlowLayout()
     let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
-    cv.backgroundColor = .white
+    cv.backgroundColor = .appBackground
     return cv
   }()
   let recentSearchesListView: UICollectionView = {
     let layout = UICollectionViewFlowLayout()
     let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
-    cv.backgroundColor = .white
+    cv.backgroundColor = .appSecondaryBackground
     return cv
   }()
   
@@ -35,6 +35,8 @@ class MovieSearchView: UIView {
 
   override init(frame: CGRect) {
     super.init(frame: frame)
+    
+    backgroundColor = .appBackground
     
     setupSubviews()
     hideAll(except: initialView)
