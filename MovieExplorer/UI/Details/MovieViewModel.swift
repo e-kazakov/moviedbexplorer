@@ -13,7 +13,7 @@ protocol MovieViewModel: class {
   var overview: String? { get }
   var releaseYear: String { get }
   var isFavorite: Bool { get }
-  var image: RemoteImageViewModelProtocol? { get }
+  var image: ImageViewModelProtocol? { get }
   
   var onChanged: (() -> Void)? { get set }
 
@@ -26,7 +26,7 @@ class MovieViewModelImpl: MovieViewModel {
   let overview: String?
   let releaseYear: String
   private(set) var isFavorite: Bool = false
-  let image: RemoteImageViewModelProtocol?
+  let image: ImageViewModelProtocol?
   
   var onChanged: (() -> Void)?
 
@@ -44,12 +44,17 @@ class MovieViewModelImpl: MovieViewModel {
     self.imageFetcher = imageFetcher
     self.favorites = favorites
     
-    let releaseYear = movie.releaseDate.split(separator: "-").first.map(String.init) ?? ""
-    title = movie.title
+    let releaseYear = movie.releaseDate?.split(separator: "-").first.map(String.init) ?? "N/A"
+    title = movie.title ?? ""
     overview = movie.overview
     self.releaseYear = releaseYear
-    let url = movie.posterPath.map { api.posterURL(path: $0, size: .w780) }
-    image = url.map { RemoteImageViewModel(url: $0, fetcher: imageFetcher) }
+    
+    let placeholder = UIImage.tmdb.posterPlaceholder
+    if let url = movie.posterPath.map({ api.posterURL(path: $0, size: .w780) }) {
+      image = RemoteImageViewModel(url: url, placeholder: placeholder, fetcher: imageFetcher)
+    } else {
+      image = StaticImageViewModel(image: placeholder)
+    }
 
     update(favorites.store.state)
     

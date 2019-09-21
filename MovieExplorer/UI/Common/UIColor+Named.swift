@@ -30,4 +30,7 @@ extension UIColor {
     return UIColor(named: "AppSkeleton")!
   }
   
+  static var appPlaceholder: UIColor {
+    return UIColor(named: "AppPlaceholder")!
+  }
 }

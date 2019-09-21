@@ -108,6 +108,7 @@ class MovieCell: UICollectionViewCell {
   private func style() {
     backgroundColor = .appBackground
     UILabel.Style.releaseYear(releaseYearLabel)
+    posterImageView.tintColor = .appPlaceholder
   }
   
   override func prepareForReuse() {
@@ -131,7 +132,7 @@ class MovieCell: UICollectionViewCell {
     overviewLabel.text = viewModel.overview
     releaseYearLabel.text = viewModel.releaseYear
 
-    posterImageView.tmdb.setImage(remote: viewModel.image)
+    posterImageView.tmdb.setImage(viewModel.image)
 
     viewModel.image?.load()
   }

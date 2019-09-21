@@ -12,7 +12,7 @@ protocol MovieCellViewModel {
   var title: String { get }
   var overview: String? { get }
   var releaseYear: String { get }
-  var image: RemoteImageViewModelProtocol? { get }
+  var image: ImageViewModelProtocol? { get }
   
   func select()
 }
@@ -22,7 +22,7 @@ class MovieCellViewModelImpl: MovieCellViewModel {
   let title: String
   let overview: String?
   let releaseYear: String
-  let image: RemoteImageViewModelProtocol?
+  let image: ImageViewModelProtocol?
   
   private let movie: Movie
   private let apiClient: APIClient
@@ -35,12 +35,17 @@ class MovieCellViewModelImpl: MovieCellViewModel {
     self.apiClient = api
     self.imageFetcher = imageFetcher
     
-    let releaseYear = movie.releaseDate.split(separator: "-").first.map(String.init) ?? ""
-    title = movie.title
+    let releaseYear = movie.releaseDate?.split(separator: "-").first.map(String.init) ?? "N/A"
+    title = movie.title ?? ""
     overview = movie.overview
     self.releaseYear = releaseYear
-    let url = movie.posterPath.map { api.posterURL(path: $0, size: .w780) }
-    image = url.map { RemoteImageViewModel(url: $0, fetcher: imageFetcher) }
+
+    let placeholder = UIImage.tmdb.posterPlaceholder
+    if let url = movie.posterPath.map({ api.posterURL(path: $0, size: .w780) }) {
+      image = RemoteImageViewModel(url: url, placeholder: placeholder, fetcher: imageFetcher)
+    } else {
+      image = StaticImageViewModel(image: placeholder)
+    }
   }
   
   func select() {

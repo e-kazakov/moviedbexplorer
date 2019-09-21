@@ -8,9 +8,10 @@
 
 import Foundation
 import class UIKit.UIImage
+import class UIKit.UIView
 
-protocol RemoteImageViewModelProtocol: class {
-  var placeholder: UIImage? { get }
+
+protocol ImageViewModelProtocol: class {
   var image: UIImage? { get }
   
   var onChanged: (() -> Void)? { get set }
@@ -19,9 +20,8 @@ protocol RemoteImageViewModelProtocol: class {
   func cancel()
 }
 
-class RemoteImageViewModel: RemoteImageViewModelProtocol {
+class RemoteImageViewModel: ImageViewModelProtocol {
   
-  let placeholder: UIImage?
   private(set) var image: UIImage? {
     didSet {
       onChanged?()
@@ -30,12 +30,12 @@ class RemoteImageViewModel: RemoteImageViewModelProtocol {
   
   var onChanged: (() -> Void)?
   
+  private let placeholder: UIImage?
   private let url: URL
-  
-  private var imageTask: URLSessionDataTaskProtocol?
-  
   private let fetcher: ImageFetcher
-  
+
+  private var imageTask: URLSessionDataTaskProtocol?
+    
   init(url: URL, placeholder: UIImage? = nil, fetcher: ImageFetcher) {
     self.url = url
     self.placeholder = placeholder
@@ -45,15 +45,17 @@ class RemoteImageViewModel: RemoteImageViewModelProtocol {
   func load() {
     guard imageTask == nil else { return }
     imageTask = fetcher.fetch(from: url) { result in
+      self.imageTask = nil
+      
       switch result {
       case .success(let data):
         let image = UIImage(data: data)?.decoded()
         DispatchQueue.main.async {
           self.image = image
         }
-      case .failure(let error):
-        if !error.isCancelledRequestError {
-          print("Failed to load remote image. \(error)")
+      case .failure:
+        DispatchQueue.main.async {
+          self.image = self.placeholder
         }
       }
     }
@@ -62,5 +64,23 @@ class RemoteImageViewModel: RemoteImageViewModelProtocol {
   func cancel() {
     imageTask?.cancel()
     imageTask = nil
+  }
+}
+
+class StaticImageViewModel: ImageViewModelProtocol {
+  
+  let image: UIImage?
+  var onChanged: (() -> Void)?
+  
+  init(image: UIImage) {
+    self.image = image
+  }
+  
+  func load() {
+    // no-op
+  }
+
+  func cancel() {
+    // no-op
   }
 }

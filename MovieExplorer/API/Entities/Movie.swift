@@ -12,9 +12,9 @@ struct Movie: Codable, Equatable {
   
   let id: Int
   let posterPath: String?
-  let title: String
-  let releaseDate: String
-  let overview: String
+  let title: String?
+  let releaseDate: String?
+  let overview: String?
   
   private enum CodingKeys: String, CodingKey {
     case id = "id"

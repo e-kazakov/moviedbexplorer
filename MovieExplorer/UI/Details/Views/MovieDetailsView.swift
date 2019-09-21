@@ -10,7 +10,12 @@ import UIKit
 
 class MovieDetailsView: UIView {
   
-  let posterImageView = UIImageView()
+  let posterImageView: UIImageView = {
+    let imageView = UIImageView()
+    imageView.contentMode = .scaleAspectFill
+    imageView.clipsToBounds = true
+    return imageView
+  }()
   let nameLabel = UILabel.Style.title(UILabel())
   let overviewLabel = UILabel.Style.info(UILabel())
   let releaseYearLabel = UILabel.Style.releaseYear(UILabel())
@@ -61,6 +66,7 @@ class MovieDetailsView: UIView {
   private func style() {
     backgroundColor = .appBackground
     UILabel.Style.releaseYear(releaseYearLabel)
+    posterImageView.tintColor = .appPlaceholder
   }
   
   override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {

@@ -41,4 +41,8 @@ extension TMDB where Base: UIImage {
   static var angleRight: UIImage {
     return UIImage(named: "angle_right-ic")!
   }
+  
+  static var posterPlaceholder: UIImage {
+    return UIImage(named: "poster-placholder")!
+  }
 }

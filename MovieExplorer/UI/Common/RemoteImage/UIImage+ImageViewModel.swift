@@ -10,26 +10,22 @@ import UIKit
 
 extension TMDB where Base: UIImageView {
   
-  func setImage(remote: RemoteImageViewModelProtocol?) {
+  func setImage(_ image: ImageViewModelProtocol?) {
     
-    guard let imageVM = remote else {
+    guard let imageVM = image else {
       base.image = nil
       return
     }
     
-    base.image = imageVM.image ?? imageVM.placeholder
-    base.alpha = imageVM.image == nil ? 0 : 1.0
-    
+    base.image = imageVM.image
+
     imageVM.onChanged = { [weak base, unowned imageVM] in
       guard let base = base else { return }
       
-      if let image = imageVM.image {
-        base.image = image
-        if base.alpha < CGFloat(1.0) {
-          UIView.animate(withDuration: 0.3) { base.alpha = 1.0 }
-        }
+      self.crossDissolveTransition {
+        base.image = imageVM.image
       }
     }
   }
-  
+
 }

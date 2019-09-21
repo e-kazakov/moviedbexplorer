@@ -85,7 +85,7 @@ class MovieDetailsVC: UIViewController {
     detailsView.overviewLabel.text = viewModel.overview
     detailsView.releaseYearLabel.text = viewModel.releaseYear
     
-    detailsView.posterImageView.tmdb.setImage(remote: viewModel.image)
+    detailsView.posterImageView.tmdb.setImage(viewModel.image)
     
     let favButton = UIBarButtonItem(
       image: viewModel.isFavorite ? UIImage.tmdb.starFilled : UIImage.tmdb.starO,

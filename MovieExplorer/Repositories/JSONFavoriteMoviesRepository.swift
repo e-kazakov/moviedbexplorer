@@ -23,7 +23,7 @@ class JSONFavoriteMoviesRepository: FavoriteMoviesRepository {
   private var cachedFavorites: FavoritesList?
   
   init(fileStorage: FileStorable = FileStorage.favoritesFile) {
-    self.fileStorage = fileStorage;
+    self.fileStorage = fileStorage
   }
   
   func movies() -> [Movie] {

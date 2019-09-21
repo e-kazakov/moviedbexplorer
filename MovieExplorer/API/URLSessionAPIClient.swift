@@ -17,7 +17,6 @@ struct MovieDBServerConfig {
 func createSession() -> URLSessionProtocol {
   let config = URLSessionConfiguration.default
   config.urlCache = createCache()
-  config.requestCachePolicy = .reloadIgnoringLocalCacheData
   return URLSession(configuration: config)
 }
 
