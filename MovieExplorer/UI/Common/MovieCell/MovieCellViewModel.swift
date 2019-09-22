@@ -25,14 +25,12 @@ class MovieCellViewModelImpl: MovieCellViewModel {
   let image: ImageViewModelProtocol?
   
   private let movie: Movie
-  private let apiClient: APIClient
   private let imageFetcher: ImageFetcher
   
   var onSelect: (() -> Void)?
   
-  init(movie: Movie, api: APIClient, imageFetcher: ImageFetcher) {
+  init(movie: Movie, imageFetcher: ImageFetcher) {
     self.movie = movie
-    self.apiClient = api
     self.imageFetcher = imageFetcher
     
     let releaseYear = movie.releaseDate?.split(separator: "-").first.map(String.init) ?? "N/A"
@@ -41,7 +39,7 @@ class MovieCellViewModelImpl: MovieCellViewModel {
     self.releaseYear = releaseYear
 
     let placeholder = UIImage.tmdb.posterPlaceholder
-    if let url = movie.posterPath.map({ api.posterURL(path: $0, size: .w780) }) {
+    if let url = movie.posterPath.map({ imageFetcher.posterURL(path: $0, size: .w780) }) {
       image = RemoteImageViewModel(url: url, placeholder: placeholder, fetcher: imageFetcher)
     } else {
       image = StaticImageViewModel(image: placeholder)

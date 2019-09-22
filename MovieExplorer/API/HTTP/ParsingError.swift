@@ -10,4 +10,5 @@ import Foundation
 
 enum ParsingError: Error {
   case jsonDecoding(inner: Error)
+  case noData
 }

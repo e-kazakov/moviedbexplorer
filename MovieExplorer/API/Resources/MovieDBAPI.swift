@@ -13,29 +13,30 @@ struct MovieDBAPI {
   private init() { }
   
   private static let pageQueryParameter = "page"
+  private static let searchQueryParameter = "query"
   
-  static func explore(page: Int? = nil) -> HTTPResource<APIPaginatedRes<Movie>> {
+  static func explore(page: Int? = nil) -> HTTPResource<APIPaginatedResponse<Movie>> {
     var queryParams: [String: String] = [:]
     queryParams[pageQueryParameter] = page.map(String.init)
     
     return HTTPResource(
-      path: "discover/movie",
+      path: "3/discover/movie",
       method: .get,
       parameters: URLQueryParameters(queryParams),
-      parse: mapObject
+      parse: mapJSON
     )
   }
   
-  static func search(query: String, page: Int? = nil) -> HTTPResource<APIPaginatedRes<Movie>> {
+  static func search(query: String, page: Int? = nil) -> HTTPResource<APIPaginatedResponse<Movie>> {
     var queryParams: [String: String] = [:]
     queryParams[pageQueryParameter] = page.map(String.init)
-    queryParams["query"] = query
+    queryParams[searchQueryParameter] = query
     
     return HTTPResource(
-      path: "search/movie",
+      path: "3/search/movie",
       method: .get,
       parameters: URLQueryParameters(queryParams),
-      parse: mapObject
+      parse: mapJSON
     )
   }
   

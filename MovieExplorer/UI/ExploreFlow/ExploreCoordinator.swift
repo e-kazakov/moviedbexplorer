@@ -27,7 +27,6 @@ class ExploreCoordinator: BaseCoordinator {
     
     let moviesListViewModel = MoviesListViewModelImpl(
       moviesList: TMDBMoviesList(api: apiClient),
-      api: apiClient,
       imageFetcher: imageFetcher
     )
     let vc = ExploreVC(viewModel: moviesListViewModel)
@@ -38,7 +37,7 @@ class ExploreCoordinator: BaseCoordinator {
   }
   
   private func showDetails(_ movie: Movie) {
-    let vm = MovieViewModelImpl(movie: movie, favorites: favorites, imageFetcher: imageFetcher, api: apiClient)
+    let vm = MovieViewModelImpl(movie: movie, favorites: favorites, imageFetcher: imageFetcher)
     let detailsVC = MovieDetailsVC(viewModel: vm)
     navigation.pushViewController(detailsVC, animated: true)
   }

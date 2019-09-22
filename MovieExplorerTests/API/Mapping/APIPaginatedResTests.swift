@@ -15,7 +15,7 @@ class APIPaginatedResTests: XCTestCase {
     do {
       let decoder = JSONDecoder()
       let jsonData = try ResourceReader().read(named: "paginated_movies", with: "json")
-      _ = try decoder.decode(APIPaginatedRes<Movie>.self, from: jsonData)
+      _ = try decoder.decode(APIPaginatedResponse<Movie>.self, from: jsonData)
     } catch {
       XCTFail("Failed to parse movie json. \(error)")
     }

@@ -9,6 +9,16 @@
 import Foundation
 import class UIKit.UIImage
 
+enum PosterSize: String {
+  case w92 = "w92"
+  case w185 = "w185"
+  case w500 = "w500"
+  case w780 = "w780"
+}
+
 protocol ImageFetcher {
-  func fetch(from url: URL, callback: @escaping (Result<Data, APIError>) -> Void) -> URLSessionDataTaskProtocol
+  
+  func posterURL(path: String, size: PosterSize) -> URL
+  
+  func fetch(from url: URL, callback: @escaping (Result<UIImage, APIError>) -> Void) -> Disposable
 }

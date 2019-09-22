@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct APIPaginatedRes<Wrapped: Codable>: Codable {
+struct APIPaginatedResponse<Wrapped: Codable>: Codable {
   
   let page: Int
   let results: [Wrapped]
@@ -23,7 +23,7 @@ struct APIPaginatedRes<Wrapped: Codable>: Codable {
   }
 }
 
-extension APIPaginatedRes {
+extension APIPaginatedResponse {
   var nextPage: Int? {
     let nextPage = page + 1
     if nextPage <= totalPages {

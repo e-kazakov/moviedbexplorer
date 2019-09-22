@@ -13,13 +13,14 @@ struct HTTPResource<T> {
   let path: String
   let method: HTTPMethod
   let parameters: HTTPResourceParameters?
-  let parse: (Data) -> Result<T, ParsingError>
   
+  let parse: (Data?) -> Result<T, ParsingError>
+
   init(
     path: String,
     method: HTTPMethod,
     parameters: HTTPResourceParameters? = nil,
-    parse: @escaping (Data) -> Result<T, ParsingError>
+    parse: @escaping (Data?) -> Result<T, ParsingError>
   ) {
     self.path = path
     self.method = method

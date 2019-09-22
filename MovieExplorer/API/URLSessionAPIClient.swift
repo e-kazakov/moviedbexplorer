@@ -14,33 +14,16 @@ struct MovieDBServerConfig {
   let apiKey: String
 }
 
-func createSession() -> URLSessionProtocol {
-  let config = URLSessionConfiguration.default
-  config.urlCache = createCache()
-  return URLSession(configuration: config)
-}
-
-func createCache() -> URLCache {
-  let mem = 100 * 1024 * 1024
-  let disk = 500 * 1024 * 1024
-  return URLCache(memoryCapacity: mem, diskCapacity: disk, diskPath: "urlcache")
-}
-
 class URLSessionAPIClient: APIClient {
 
-  private let urlSession: URLSessionProtocol
-  
-  private let serverConfig: MovieDBServerConfig
-
   static let apiKeyQueryItemName = "api_key"
+
+  private let urlSession: URLSessionProtocol
+  private let serverConfig: MovieDBServerConfig
   
   init(serverConfig: MovieDBServerConfig, urlSession: URLSessionProtocol) {
     self.serverConfig = serverConfig
     self.urlSession = urlSession
-  }
-  
-  func posterURL(path: String, size: PosterSize) -> URL {
-    return serverConfig.imageBase.appendingPathComponent(size.rawValue).appendingPathComponent(path)
   }
   
   @discardableResult
@@ -69,14 +52,8 @@ class URLSessionAPIClient: APIClient {
       if let error = error {
         callback(.failure(.network(inner: error)))
       } else {
-        if let data = data {
-          let parsingResult = resource.parse(data)
-          callback(
-            parsingResult.mapError({ .jsonMapping(inner: $0) })
-          )
-        } else {
-          callback(.failure(.noData))
-        }
+        let parsingResult = resource.parse(data).mapError(APIError.parsing(inner:))
+        callback(parsingResult)
       }
     }
   }

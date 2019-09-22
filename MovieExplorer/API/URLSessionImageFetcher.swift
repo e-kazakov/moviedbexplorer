@@ -11,27 +11,39 @@ import class UIKit.UIImage
 
 class URLSessionImageFetcher: ImageFetcher {
   
-  private let session: URLSessionProtocol
+  private let urlSession: URLSessionProtocol
+  private let serverConfig: MovieDBServerConfig
   
-  init(session: URLSessionProtocol) {
-    self.session = session
+  init(serverConfig: MovieDBServerConfig, urlSession: URLSessionProtocol) {
+    self.serverConfig = serverConfig
+    self.urlSession = urlSession
   }
   
-  func fetch(from url: URL, callback: @escaping (Result<Data, APIError>) -> Void) -> URLSessionDataTaskProtocol {
+  func posterURL(path: String, size: PosterSize) -> URL {
+    return serverConfig.imageBase.appendingPathComponent(size.rawValue).appendingPathComponent(path)
+  }
+  
+  func fetch(from url: URL, callback: @escaping (Result<UIImage, APIError>) -> Void) -> Disposable {
     let request = URLRequest(url: url)
-    let task = session.dataTask(with: request) { data, response, error in
+    let isCancelled = Atomic(value: false)
+
+    let task = urlSession.dataTask(with: request) { data, response, error in
+      guard !isCancelled.value else { return }
+      
       if let error = error {
         callback(.failure(.network(inner: error)))
+      } else if let data = data, let image = UIImage(data: data)?.decoded() {
+        callback(.success(image))
       } else {
-        if let data = data {
-          callback(.success(data))
-        } else {
-          callback(.failure(.noData))
-        }
+        callback(.failure(.invalidResponse))
       }
     }
     task.resume()
-    return task
+    
+    return ClosureDisposable {
+      isCancelled.set(true)
+      task.cancel()
+    }
   }
 
 }

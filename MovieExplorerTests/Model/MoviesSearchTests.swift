@@ -553,8 +553,8 @@ class MoviesSearchTests: XCTestCase {
 
 // MARK: - Factories
 
-private func make_singlepageResponse() -> APIPaginatedRes<Movie> {
-  return APIPaginatedRes<Movie>(
+private func make_singlepageResponse() -> APIPaginatedResponse<Movie> {
+  return APIPaginatedResponse<Movie>(
     page: 1,
     results: [Movie.random],
     totalResults: 1,
@@ -562,8 +562,8 @@ private func make_singlepageResponse() -> APIPaginatedRes<Movie> {
   )
 }
 
-private func make_multipageResponseFirstPage() -> APIPaginatedRes<Movie> {
-  return APIPaginatedRes<Movie>(
+private func make_multipageResponseFirstPage() -> APIPaginatedResponse<Movie> {
+  return APIPaginatedResponse<Movie>(
     page: 1,
     results: [Movie.random],
     totalResults: 2,
@@ -571,8 +571,8 @@ private func make_multipageResponseFirstPage() -> APIPaginatedRes<Movie> {
   )
 }
 
-private func make_multipageResponseSecondPage() -> APIPaginatedRes<Movie> {
-  return APIPaginatedRes<Movie>(
+private func make_multipageResponseSecondPage() -> APIPaginatedResponse<Movie> {
+  return APIPaginatedResponse<Movie>(
     page: 2,
     results: [Movie.random],
     totalResults: 2,

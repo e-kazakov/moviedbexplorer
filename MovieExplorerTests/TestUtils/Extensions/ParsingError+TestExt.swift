@@ -14,6 +14,8 @@ extension ParsingError {
     switch self {
     case .jsonDecoding:
       return true
+    default:
+      return false
     }
   }
   
@@ -21,6 +23,8 @@ extension ParsingError {
     switch self {
     case .jsonDecoding(let inner):
       return inner
+    case .noData:
+      return nil
     }
   }
 }

@@ -39,7 +39,7 @@ class MovieViewModelImpl: MovieViewModel {
     disposable?.dispose()
   }
   
-  init(movie: Movie, favorites: FavoriteMovies, imageFetcher: ImageFetcher, api: APIClient) {
+  init(movie: Movie, favorites: FavoriteMovies, imageFetcher: ImageFetcher) {
     self.movie = movie
     self.imageFetcher = imageFetcher
     self.favorites = favorites
@@ -50,7 +50,7 @@ class MovieViewModelImpl: MovieViewModel {
     self.releaseYear = releaseYear
     
     let placeholder = UIImage.tmdb.posterPlaceholder
-    if let url = movie.posterPath.map({ api.posterURL(path: $0, size: .w780) }) {
+    if let url = movie.posterPath.map({ imageFetcher.posterURL(path: $0, size: .w780) }) {
       image = RemoteImageViewModel(url: url, placeholder: placeholder, fetcher: imageFetcher)
     } else {
       image = StaticImageViewModel(image: placeholder)

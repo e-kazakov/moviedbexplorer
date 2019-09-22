@@ -24,7 +24,9 @@ class RemoteImageViewModel: ImageViewModelProtocol {
   
   private(set) var image: UIImage? {
     didSet {
-      onChanged?()
+      notifyQueue.async {
+        self.onChanged?()
+      }
     }
   }
   
@@ -34,7 +36,9 @@ class RemoteImageViewModel: ImageViewModelProtocol {
   private let url: URL
   private let fetcher: ImageFetcher
 
-  private var imageTask: URLSessionDataTaskProtocol?
+  private var fetchDisposable: Disposable?
+  
+  private let notifyQueue = DispatchQueue.main
     
   init(url: URL, placeholder: UIImage? = nil, fetcher: ImageFetcher) {
     self.url = url
@@ -43,27 +47,27 @@ class RemoteImageViewModel: ImageViewModelProtocol {
   }
   
   func load() {
-    guard imageTask == nil else { return }
-    imageTask = fetcher.fetch(from: url) { result in
-      self.imageTask = nil
-      
-      switch result {
-      case .success(let data):
-        let image = UIImage(data: data)?.decoded()
-        DispatchQueue.main.async {
-          self.image = image
-        }
-      case .failure:
-        DispatchQueue.main.async {
-          self.image = self.placeholder
-        }
-      }
+    guard fetchDisposable == nil else { return }
+    
+    fetchDisposable = fetcher.fetch(from: url) { [weak self] result in
+      self?.handleFetchResult(result)
     }
   }
   
   func cancel() {
-    imageTask?.cancel()
-    imageTask = nil
+    fetchDisposable?.dispose()
+    fetchDisposable = nil
+  }
+  
+  private func handleFetchResult(_ result: Result<UIImage, APIError>) {
+    fetchDisposable = nil
+    
+    switch result {
+    case .success(let image):
+      self.image = image
+    case .failure:
+      image = placeholder
+    }
   }
 }
 

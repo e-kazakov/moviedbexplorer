@@ -36,7 +36,6 @@ class MovieSearchViewModelImpl: MovieSearchViewModel {
   var onGoToDetails: ((Movie) -> Void)?
   
   private let moviesSearch: MoviesSearch
-  private let apiClient: APIClient
   private let imageFetcher: ImageFetcher
   private var disposable: Disposable?
   
@@ -44,9 +43,8 @@ class MovieSearchViewModelImpl: MovieSearchViewModel {
     disposable?.dispose()
   }
   
-  init(moviesSearch: MoviesSearch, api: APIClient, imageFetcher: ImageFetcher) {
+  init(moviesSearch: MoviesSearch, imageFetcher: ImageFetcher) {
     self.moviesSearch = moviesSearch
-    self.apiClient = api
     self.imageFetcher = imageFetcher
     
     update(with: moviesSearch.store.state)
@@ -95,7 +93,7 @@ class MovieSearchViewModelImpl: MovieSearchViewModel {
   }
   
   private func createMovieViewModel(_ movie: Movie) -> MovieCellViewModel {
-    let vm = MovieCellViewModelImpl(movie: movie, api: apiClient, imageFetcher: imageFetcher)
+    let vm = MovieCellViewModelImpl(movie: movie, imageFetcher: imageFetcher)
     vm.onSelect = { [weak self] in self?.onGoToDetails?(movie) }
     return vm
   }

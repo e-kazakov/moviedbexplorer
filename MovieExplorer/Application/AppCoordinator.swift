@@ -8,6 +8,18 @@
 
 import UIKit
 
+private func createSession() -> URLSessionProtocol {
+  let config = URLSessionConfiguration.default
+  config.urlCache = createCache()
+  return URLSession(configuration: config)
+}
+
+private func createCache() -> URLCache {
+  let mem = 100 * 1024 * 1024
+  let disk = 500 * 1024 * 1024
+  return URLCache(memoryCapacity: mem, diskCapacity: disk, diskPath: "urlcache")
+}
+
 class AppCoordinator: BaseCoordinator {
   
   private let window: UIWindow
@@ -18,18 +30,19 @@ class AppCoordinator: BaseCoordinator {
   }()
   
   private lazy var urlSession = createSession()
-  
+
+  private let serverConfig = MovieDBServerConfig(
+    apiBase: URL(string: "https://api.themoviedb.org/")!,
+    imageBase: URL(string: "https://image.tmdb.org/t/p/")!,
+    apiKey: "8ce5ac519ae011454741f33c416274e2"
+  )
+
   private lazy var apiClient: APIClient = {
-    let serverConfig = MovieDBServerConfig(
-      apiBase: URL(string: "https://api.themoviedb.org/3/")!,
-      imageBase: URL(string: "https://image.tmdb.org/t/p/")!,
-      apiKey: "8ce5ac519ae011454741f33c416274e2"
-    )
     return URLSessionAPIClient(serverConfig: serverConfig, urlSession: urlSession)
   }()
   
   private lazy var imageFetcher: ImageFetcher = {
-    return URLSessionImageFetcher(session: urlSession)
+    return URLSessionImageFetcher(serverConfig: serverConfig, urlSession: urlSession)
   }()
   
   init(window: UIWindow) {

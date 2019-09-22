@@ -9,7 +9,7 @@
 import XCTest
 @testable import MovieExplorer
 
-let testServerConfig = MovieDBServerConfig(
+private let testServerConfig = MovieDBServerConfig(
   apiBase: URL(string: "http://api.example.com")!,
   imageBase: URL(string: "http://image.example.com")!,
   apiKey: "a test api key"
@@ -24,17 +24,6 @@ class URLSessionAPIClientTests: XCTestCase {
     super.setUp()
     sessionMock = FakeURLSession()
     client = URLSessionAPIClient(serverConfig: testServerConfig, urlSession: sessionMock)
-  }
-  
-  func testPosterURL_Get_ReturnsCorrectURL() {
-    // given
-    let expectedPosterURL = URL(string: "http://image.example.com/w780/42")!
-
-    // when
-    let posterURL = client.posterURL(path: "42", size: .w780)
-    
-    // then
-    XCTAssertEqual(expectedPosterURL, posterURL)
   }
   
   func testFetch_Resource_ConstructsRequestWithCorrectHTTPMethod() {
@@ -176,7 +165,7 @@ private struct TestAPI {
     return HTTPResource(
       path: "movie",
       method: .get,
-      parse: mapObject
+      parse: mapJSON
     )
   }
   
@@ -184,7 +173,7 @@ private struct TestAPI {
     return HTTPResource(
       path: "movie",
       method: .post,
-      parse: mapObject
+      parse: mapJSON
     )
   }
 

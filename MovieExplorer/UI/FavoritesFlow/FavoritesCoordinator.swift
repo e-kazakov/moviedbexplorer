@@ -11,13 +11,11 @@ import UIKit
 class FavoritesCoordinator: BaseCoordinator {
     
   private let navigation: UINavigationController
-  private let apiClient: APIClient
   private let imageFetcher: ImageFetcher
   private let favorites: FavoriteMovies
   
-  init(navigation: UINavigationController, apiClient: APIClient, imageFetcher: ImageFetcher, favorites: FavoriteMovies) {
+  init(navigation: UINavigationController, imageFetcher: ImageFetcher, favorites: FavoriteMovies) {
     self.navigation = navigation
-    self.apiClient = apiClient
     self.imageFetcher = imageFetcher
     self.favorites = favorites
   }
@@ -27,7 +25,6 @@ class FavoritesCoordinator: BaseCoordinator {
     
     let favoritesListViewModel = FavoritesViewModelImpl(
       favorites: favorites,
-      api: apiClient,
       imageFetcher: imageFetcher
     )
     let vc = FavoritesVC(viewModel: favoritesListViewModel)
@@ -38,7 +35,7 @@ class FavoritesCoordinator: BaseCoordinator {
   }
   
   private func showDetails(_ movie: Movie) {
-    let vm = MovieViewModelImpl(movie: movie, favorites: favorites, imageFetcher: imageFetcher, api: apiClient)
+    let vm = MovieViewModelImpl(movie: movie, favorites: favorites, imageFetcher: imageFetcher)
     let detailsVC = MovieDetailsVC(viewModel: vm)
     navigation.pushViewController(detailsVC, animated: true)
   }

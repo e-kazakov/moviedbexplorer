@@ -31,7 +31,6 @@ class SearchCoordinator: BaseCoordinator {
         api: apiClient,
         recentSearchesRepository: recentSearchesRepository
       ),
-      api: apiClient,
       imageFetcher: imageFetcher
     )
     
@@ -43,7 +42,7 @@ class SearchCoordinator: BaseCoordinator {
   }
   
   private func showDetails(_ movie: Movie) {
-    let vm = MovieViewModelImpl(movie: movie, favorites: favorites, imageFetcher: imageFetcher, api: apiClient)
+    let vm = MovieViewModelImpl(movie: movie, favorites: favorites, imageFetcher: imageFetcher)
     let detailsVC = MovieDetailsVC(viewModel: vm)
     navigation.pushViewController(detailsVC, animated: true)
   }

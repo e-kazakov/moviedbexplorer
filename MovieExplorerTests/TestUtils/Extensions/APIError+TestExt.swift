@@ -29,7 +29,7 @@ extension APIError {
   
   var isJSONMappingError: Bool {
     switch self {
-    case .jsonMapping:
+    case .parsing:
       return true
     default:
       return false
@@ -38,7 +38,7 @@ extension APIError {
   
   var jsonMappingInnerError: ParsingError? {
     switch self {
-    case .jsonMapping(let inner):
+    case .parsing(let inner):
       return inner
     default:
       return nil

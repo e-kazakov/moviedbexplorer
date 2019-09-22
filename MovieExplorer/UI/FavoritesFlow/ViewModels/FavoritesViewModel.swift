@@ -25,7 +25,6 @@ class FavoritesViewModelImpl: FavoritesViewModel {
   var onGoToDetails: ((Movie) -> Void)?
   
   private let favorites: FavoriteMovies
-  private let apiClient: APIClient
   private let imageFetcher: ImageFetcher
   private var disposable: Disposable?
   
@@ -33,9 +32,8 @@ class FavoritesViewModelImpl: FavoritesViewModel {
     disposable?.dispose()
   }
   
-  init(favorites: FavoriteMovies, api: APIClient, imageFetcher: ImageFetcher) {
+  init(favorites: FavoriteMovies, imageFetcher: ImageFetcher) {
     self.favorites = favorites
-    self.apiClient = api
     self.imageFetcher = imageFetcher
     
     update(with: favorites.store.state)
@@ -62,7 +60,7 @@ class FavoritesViewModelImpl: FavoritesViewModel {
   }
   
   private func createMovieViewModel(_ movie: Movie) -> MovieCellViewModel {
-    let vm = MovieCellViewModelImpl(movie: movie, api: apiClient, imageFetcher: imageFetcher)
+    let vm = MovieCellViewModelImpl(movie: movie, imageFetcher: imageFetcher)
     vm.onSelect = { [weak self] in self?.onGoToDetails?(movie) }
     return vm
   }
