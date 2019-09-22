@@ -11,7 +11,7 @@ import Foundation
 extension URL {
   
   func appendingQueryItems<S>(_ queryItems: S) -> URL where S: Sequence, S.Element == URLQueryItem {
-    guard var components = URLComponents(url: self, resolvingAgainstBaseURL: false) else {
+    guard var components = URLComponents(url: self, resolvingAgainstBaseURL: true) else {
       return self
     }
     

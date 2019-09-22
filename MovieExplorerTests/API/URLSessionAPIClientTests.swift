@@ -14,6 +14,9 @@ private let testServerConfig = MovieDBServerConfig(
   imageBase: URL(string: "http://image.example.com")!,
   apiKey: "a test api key"
 )
+private let apiKeyQueryParameter = "api_key"
+private let apiKeyQueryItem = URLQueryItem(name: apiKeyQueryParameter,
+                                           value: testServerConfig.apiKey)
 
 class URLSessionAPIClientTests: XCTestCase {
   
@@ -26,25 +29,29 @@ class URLSessionAPIClientTests: XCTestCase {
     client = URLSessionAPIClient(serverConfig: testServerConfig, urlSession: sessionMock)
   }
   
-  func testFetch_Resource_ConstructsRequestWithCorrectHTTPMethod() {
+  func testFetch_Request_AppendsPathToApiBase() {
     // given
-    let resource = TestAPI.find()
+    let path = "/v3/url"
+    let req = URLRequest(path: path)
+    var expectedResult = URLRequest(url: testServerConfig.apiBase.appendingPathComponent(path))
+    expectedResult.appendQueryItem(apiKeyQueryItem)
     
     // when
-    client.fetch(resource: resource) { _ in }
-    
+    client.fetch(request: req) { _ in }
+    let actualResult = sessionMock.dataTaskInvocations.last!
+
     // then
-    XCTAssertNotNil(sessionMock.lastRequest)
-    XCTAssertEqual(resource.method.rawValue, sessionMock.lastRequest!.httpMethod)
+    XCTAssertEqual(expectedResult, actualResult)
   }
   
-  func testFetch_Resource_ResumesTheDataTask() {
+  func testFetch_Request_ReturnsResumedDataTask() {
     // given
+    let req = URLRequest(path: "/v3/url")
     let dataTask = FakeURLSessionDataTask()
     sessionMock.nextDataTask = dataTask
     
     // when
-    client.fetch(resource: TestAPI.movie()) { _ in }
+    client.fetch(request: req) { _ in }
     
     // then
     XCTAssertTrue(dataTask.isResumed, "Data task should be resumed.")
@@ -52,28 +59,56 @@ class URLSessionAPIClientTests: XCTestCase {
   
   func testFetch_Dispose_CancelsDataTask() {
     // given
+    let req = URLRequest(path: "/v3/url")
     let dataTask = FakeURLSessionDataTask()
     sessionMock.nextDataTask = dataTask
 
     // when
-    var disposable = client.fetch(resource: TestAPI.movie()) { _ in }
+    var disposable = client.fetch(request: req) { _ in }
     disposable.dispose()
 
     // then
     XCTAssertTrue(dataTask.isCancelled)
   }
   
+  func testFetch_Dispose_CallbackNotCalled() {
+    // given
+    let path = "/v3/url"
+    let req = URLRequest(path: path)
+    var fullReq = URLRequest(url: testServerConfig.apiBase.appendingPathComponent(path))
+    fullReq.appendQueryItem(apiKeyQueryItem)
+    
+    let dataTask = FakeURLSessionDataTask()
+    sessionMock.nextDataTask = dataTask
+    let resolver = AsyncResolver<FakeURLSession.DataTaskParameters, FakeURLSession.DataTaskResult>(results: [
+      fullReq: .empty
+    ])
+    sessionMock.dataTaskResolver = resolver
+    
+    // when
+    var disposable = client.fetch(request: req) { _ in
+      XCTFail("Callback should not be called for disposed fetch request")
+    }
+    disposable.dispose()
+    resolver.executeAll()
+
+    // then
+    XCTAssertTrue(dataTask.isCancelled)
+  }
+
   func testFetch_Resource_AppendsApiKeyQueryItem() {
     // given
+    let req = URLRequest(path: "/v3/url")
     let apiKeyQueryItem = URLQueryItem(name: URLSessionAPIClient.apiKeyQueryItemName, value: testServerConfig.apiKey)
 
     // when
-    client.fetch(resource: TestAPI.movie()) { _ in }
-    
+    client.fetch(request: req) { _ in }
+
     // then
-    XCTAssertNotNil(sessionMock.lastRequest)
-    
-    let components = URLComponents(url: sessionMock.lastRequest!.url!,
+    let lastDataTaskRequest = sessionMock.dataTaskInvocations.last
+    XCTAssertNotNil(lastDataTaskRequest)
+
+    let components = URLComponents(url: lastDataTaskRequest!.url!,
                                    resolvingAgainstBaseURL: false)!
     let queryItems = components.queryItems ?? []
     XCTAssertTrue(
@@ -81,19 +116,20 @@ class URLSessionAPIClientTests: XCTestCase {
       "Query part of the request URL should contain api key."
     )
   }
-  
+
   func testFetch_ResourceWithResponseData_ParsesReturnedData() {
     // given
+    let req = URLRequest(path: "/v3/url")
     let movie = TestAPIMovie(name: "Avengers")
     let jsonString = "{ \"name\": \"Avengers\" }"
     let jsonData = jsonString.data(using: .utf8)!
-    
-    sessionMock.nextResponse = FakeResponse(data: jsonData)
-    
+
+    sessionMock.dataTaskResolver = SingleSyncResolver(result: .init(data: jsonData))
+
     // when
     var result: Result<TestAPIMovie, APIError>?
     let exp = expectation(description: "fetch")
-    client.fetch(resource: TestAPI.movie()) { response in
+    client.fetch(request: req) { (response: Result<TestAPIMovie, APIError>) in
       result = response
       exp.fulfill()
     }
@@ -103,44 +139,45 @@ class URLSessionAPIClientTests: XCTestCase {
     XCTAssertTrue(result!.isSuccess)
     XCTAssertEqual(movie, result?.tryGetValue())
   }
-  
+
   func testFetch_DataTaskError_ReturnsFailureWithNetworkError() {
     // given
+    let req = URLRequest(path: "/v3/url")
     let requestError = TestAPIError.anError
-    sessionMock.nextResponse = FakeResponse(error: requestError)
+    sessionMock.dataTaskResolver = SingleSyncResolver(result: .init(error: requestError))
 
     // when
     var result: Result<TestAPIMovie, APIError>?
     let exp = expectation(description: "fetch")
-    client.fetch(resource: TestAPI.movie()) { response in
+    client.fetch(request: req) { (response: Result<TestAPIMovie, APIError>) in
       result = response
       exp.fulfill()
     }
-    
+
     // then
     waitForExpectations(timeout: 1.0)
-    
+
     XCTAssertTrue(result!.isFailure)
     let error = result!.tryGetError()!
     XCTAssertTrue(error.isNetworkError)
     let innerError = error.networkInnerError! as? TestAPIError
     XCTAssertEqual(requestError, innerError)
   }
-  
+
   func testFetch_ParsingError_ReturnsFailureWithMappingError() {
     // given
-    sessionMock.nextResponse = FakeResponse(data: Data())
-    let parsingInnerError = TestAPIError.anError
-    let parsingError = ParsingError.jsonDecoding(inner: parsingInnerError)
-    
+    let req = URLRequest(path: "/v3/url")
+    let nonJSONData = Data()
+    sessionMock.dataTaskResolver = SingleSyncResolver(result: .init(data: nonJSONData))
+
     // when
     var result: Result<TestAPIMovie, APIError>?
     let exp = expectation(description: "fetch")
-    client.fetch(resource: TestAPI.movie(failure: parsingError)) { response in
+    client.fetch(request: req) { (response: Result<TestAPIMovie, APIError>) in
       result = response
       exp.fulfill()
     }
-    
+
     // then
     waitForExpectations(timeout: 1.0)
     XCTAssertTrue(result!.isFailure)
@@ -148,48 +185,31 @@ class URLSessionAPIClientTests: XCTestCase {
     XCTAssertTrue(error.isJSONMappingError)
     let innerError = error.jsonMappingInnerError!
     XCTAssertTrue(innerError.isJSONDecondingError)
-    let actualParsingError = innerError.jsonDecondingInnerError as? TestAPIError
-    XCTAssertEqual(parsingInnerError, actualParsingError)
   }
-  
+
+  func testFetch_JSONMappingNoData_ReturnsFailureWithNoDataError() {
+    // given
+    let req = URLRequest(path: "/v3/url")
+    sessionMock.dataTaskResolver = SingleSyncResolver(result: .empty)
+
+    // when
+    var result: Result<TestAPIMovie, APIError>?
+    let exp = expectation(description: "fetch")
+    client.fetch(request: req) { (response: Result<TestAPIMovie, APIError>) in
+      result = response
+      exp.fulfill()
+    }
+
+    // then
+    waitForExpectations(timeout: 1.0)
+    XCTAssertTrue(result!.isFailure)
+    let error = result!.tryGetError()!
+    XCTAssertTrue(error.isJSONMappingError)
+    let innerError = error.jsonMappingInnerError!
+    XCTAssertTrue(innerError.isNoDataError)
+  }
 }
 
 private struct TestAPIMovie: Codable, Equatable {
   let name: String
-}
-
-private struct TestAPI {
-  private init() { }
-
-  static func movie() -> HTTPResource<TestAPIMovie> {
-    return HTTPResource(
-      path: "movie",
-      method: .get,
-      parse: mapJSON
-    )
-  }
-  
-  static func find() -> HTTPResource<TestAPIMovie> {
-    return HTTPResource(
-      path: "movie",
-      method: .post,
-      parse: mapJSON
-    )
-  }
-
-  static func movie(responseObject: TestAPIMovie) -> HTTPResource<TestAPIMovie> {
-    return HTTPResource(
-      path: "movie",
-      method: .get,
-      parse: { _ in .success(responseObject) }
-    )
-  }
-  
-  static func movie(failure error: ParsingError) -> HTTPResource<TestAPIMovie> {
-    return HTTPResource(
-      path: "movie",
-      method: .get,
-      parse: { _ in .failure(error) }
-    )
-  }
 }

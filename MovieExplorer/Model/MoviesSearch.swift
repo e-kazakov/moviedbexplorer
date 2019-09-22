@@ -35,7 +35,7 @@ protocol MoviesSearch {
 class TMDBMoviesSearch: MoviesSearch {
   let store = Store<MoviesSearchState>(.initial)
   
-  private let api: APIClient
+  private let service: SearchAPIService
   private let recentSearchesRepository: RecentSearchesRepository
   private var searchTerm: String?
   private var isFirstPageLoaded = false
@@ -44,11 +44,11 @@ class TMDBMoviesSearch: MoviesSearch {
   private let maxRecentSearchesCount: Int
   private static let defaultMaxRecentSearchesCount = 10
   
-  init(api: APIClient,
+  init(service: SearchAPIService,
        recentSearchesRepository: RecentSearchesRepository,
        maxRecentSearchesCount: Int = TMDBMoviesSearch.defaultMaxRecentSearchesCount
   ) {
-    self.api = api
+    self.service = service
     self.recentSearchesRepository = recentSearchesRepository
     self.maxRecentSearchesCount = maxRecentSearchesCount
     
@@ -118,7 +118,7 @@ class TMDBMoviesSearch: MoviesSearch {
     guard !store.state.status.isLoading else { return }
     
     startLoading()
-    fetchDisposable = api.fetch(resource: MovieDBAPI.search(query: query, page: page)) { [weak self] result in
+    fetchDisposable = service.search(query: query, page: page) { [weak self] result in
       switch result {
       case .success(let paginatedResponse):
         self?.loaded(movies: paginatedResponse.results, nextPage: paginatedResponse.nextPage)

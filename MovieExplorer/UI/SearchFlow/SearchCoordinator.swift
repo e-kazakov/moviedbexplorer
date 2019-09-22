@@ -28,7 +28,7 @@ class SearchCoordinator: BaseCoordinator {
     let recentSearchesRepository = DefaultsRecentSearchesRepository(defaults: UserDefaults.standard)
     let searchViewModel = MovieSearchViewModelImpl(
       moviesSearch: TMDBMoviesSearch(
-        api: apiClient,
+        service: SearchAPIServiceImpl(client: apiClient),
         recentSearchesRepository: recentSearchesRepository
       ),
       imageFetcher: imageFetcher

@@ -96,6 +96,7 @@ class ListErrorView: UIView {
   }
   
   private func style() {
+    backgroundColor = .appBackground
     reloadButton.layer.borderColor = UIColor.appLabel.cgColor
   }
   

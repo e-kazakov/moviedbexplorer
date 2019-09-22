@@ -37,13 +37,11 @@ class AppCoordinator: BaseCoordinator {
     apiKey: "8ce5ac519ae011454741f33c416274e2"
   )
 
-  private lazy var apiClient: APIClient = {
-    return URLSessionAPIClient(serverConfig: serverConfig, urlSession: urlSession)
-  }()
+  private lazy var apiClient = URLSessionAPIClient(serverConfig: serverConfig, urlSession: urlSession)
   
-  private lazy var imageFetcher: ImageFetcher = {
-    return URLSessionImageFetcher(serverConfig: serverConfig, urlSession: urlSession)
-  }()
+  private lazy var apiClientModern = URLSessionAPIClient(serverConfig: serverConfig, urlSession: urlSession)
+  
+  private lazy var imageFetcher = URLSessionImageFetcher(serverConfig: serverConfig, urlSession: urlSession)
   
   init(window: UIWindow) {
     self.window = window
@@ -61,7 +59,7 @@ class AppCoordinator: BaseCoordinator {
   private func startMainTabsFlow() {
     let mainTabsCoordinator = MainTabsCoordinator(
       navigation: navigationController,
-      apiClient: apiClient,
+      apiClient: apiClientModern,
       imageFetcher: imageFetcher,
       favorites: TMDBFavoriteMovies(repository: JSONFavoriteMoviesRepository())
     )

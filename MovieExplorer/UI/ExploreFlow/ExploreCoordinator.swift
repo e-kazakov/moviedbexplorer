@@ -26,7 +26,7 @@ class ExploreCoordinator: BaseCoordinator {
     super.start()
     
     let moviesListViewModel = MoviesListViewModelImpl(
-      moviesList: TMDBMoviesList(api: apiClient),
+      moviesList: TMDBMoviesList(service: DiscoverAPIServiceImpl(client: apiClient)),
       imageFetcher: imageFetcher
     )
     let vc = ExploreVC(viewModel: moviesListViewModel)

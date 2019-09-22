@@ -12,17 +12,17 @@ import XCTest
 class MoviesListTests: XCTestCase {
   
   private var moviesList: TMDBMoviesList!
-  private var fakeAPIClient: FakeAPIClient!
+  private var fakeAPIService: FakeDisoverAPIService!
   
   override func setUp() {
     super.setUp()
     
-    fakeAPIClient = FakeAPIClient()
-    moviesList = TMDBMoviesList(api: fakeAPIClient)
+    fakeAPIService = FakeDisoverAPIService()
+    moviesList = TMDBMoviesList(service: fakeAPIService)
   }
   
   override func tearDown() {
-    fakeAPIClient = nil
+    fakeAPIService = nil
     moviesList = nil
     
     super.tearDown()
@@ -34,7 +34,7 @@ class MoviesListTests: XCTestCase {
     // given
 
     // when
-    let moviesList = TMDBMoviesList(api: FakeAPIClient())
+    let moviesList = TMDBMoviesList(service: FakeDisoverAPIService())
     let state = moviesList.store.state
     
     // then
@@ -59,7 +59,7 @@ class MoviesListTests: XCTestCase {
   func testLoadNext_Response_SetsLoadedState() {
     // given
     let stubResponse = make_singlepageResponse()
-    fakeAPIClient.nextFetchResultResolver = SingleSyncFakeAPIClientResultResolver(result: .success(stubResponse))
+    fakeAPIService.discoverResolver = SingleSyncResolver(result: .success(stubResponse))
 
     // when
     moviesList.loadNext()
@@ -72,7 +72,7 @@ class MoviesListTests: XCTestCase {
   func testLoadNext_Response_UpdatesMovies() {
     // given
     let stubResponse = make_singlepageResponse()
-    fakeAPIClient.nextFetchResultResolver = SingleSyncFakeAPIClientResultResolver(result: .success(stubResponse))
+    fakeAPIService.discoverResolver = SingleSyncResolver(result: .success(stubResponse))
 
     let expectedMovies = stubResponse.results
 
@@ -87,7 +87,7 @@ class MoviesListTests: XCTestCase {
   func testLoadNext_SinglePageResponse_HasMoreReturnsFalse() {
     // given
     let stubResponse = make_singlepageResponse()
-    fakeAPIClient.nextFetchResultResolver = SingleSyncFakeAPIClientResultResolver(result: .success(stubResponse))
+    fakeAPIService.discoverResolver = SingleSyncResolver(result: .success(stubResponse))
     
     // when
     moviesList.loadNext()
@@ -100,7 +100,7 @@ class MoviesListTests: XCTestCase {
   func testLoadNext_MultipageFirstPageResponse_HasMoreReturnsTrue() {
     // given
     let stubResponse = make_multipageResponseFirstPage()
-    fakeAPIClient.nextFetchResultResolver = SingleSyncFakeAPIClientResultResolver(result: .success(stubResponse))
+    fakeAPIService.discoverResolver = SingleSyncResolver(result: .success(stubResponse))
     
     // when
     moviesList.loadNext()
@@ -112,7 +112,7 @@ class MoviesListTests: XCTestCase {
   
   func testLoadNext_FailedResponse_UpdatesStateWithErrorStatus() {
     // given
-    fakeAPIClient.nextFetchResultResolver = SingleSyncFakeAPIClientResultResolver(result: .failure(.invalidResponse))
+    fakeAPIService.discoverResolver = SingleSyncResolver(result: .failure(.invalidResponse))
 
     // when
     moviesList.loadNext()
@@ -121,19 +121,17 @@ class MoviesListTests: XCTestCase {
     // then
     XCTAssertTrue(state.status.isError)
   }
-  
+
   // MARK: LoadNext subsequent load tests
   
   func testLoadNext_SecondLoadSinglepage_NoSecondFetch() {
     // given
-    let resourceFirstPage = MovieDBAPI.explore().asTestResource
-    let resourceSecondPage = MovieDBAPI.explore(page: 2).asTestResource
     let responseFirstPage = make_singlepageResponse()
     let responseSecondPage = make_multipageResponseFirstPage()
     
-    fakeAPIClient.nextFetchResultResolver = SyncFakeAPIClientResultResolver(results: [
-      resourceFirstPage: .success(responseFirstPage),
-      resourceSecondPage: .success(responseSecondPage),
+    fakeAPIService.discoverResolver = SyncResolver(results: [
+      .init(page: nil): .success(responseFirstPage),
+      .init(page: 2): .success(responseSecondPage),
     ])
     
     let expectedMovies = responseFirstPage.results
@@ -150,11 +148,10 @@ class MoviesListTests: XCTestCase {
   
   func testLoadNext_SecondLoadMultipage_SetsLoadingState() {
     // given
-    let resourceFirstPage = MovieDBAPI.explore().asTestResource
     let responseFirstPage = make_multipageResponseFirstPage()
     
-    fakeAPIClient.nextFetchResultResolver = SyncFakeAPIClientResultResolver(results: [
-      resourceFirstPage: .success(responseFirstPage),
+    fakeAPIService.discoverResolver = SyncResolver(results: [
+      .init(page: nil): .success(responseFirstPage),
     ])
     
     // when
@@ -169,14 +166,12 @@ class MoviesListTests: XCTestCase {
 
   func testLoadNext_LastLoadMultipage_HasMoreReturnsFalse() {
     // given
-    let resourceFirstPage = MovieDBAPI.explore().asTestResource
-    let resourceSecondPage = MovieDBAPI.explore(page: 2).asTestResource
     let responseFirstPage = make_multipageResponseFirstPage()
     let responseSecondPage = make_multipageResponseSecondPage()
     
-    fakeAPIClient.nextFetchResultResolver = SyncFakeAPIClientResultResolver(results: [
-      resourceFirstPage: .success(responseFirstPage),
-      resourceSecondPage: .success(responseSecondPage),
+    fakeAPIService.discoverResolver = SyncResolver(results: [
+      .init(page: nil): .success(responseFirstPage),
+      .init(page: 2): .success(responseSecondPage),
     ])
     
     // when
@@ -191,14 +186,12 @@ class MoviesListTests: XCTestCase {
   
   func testLoadNext_SecondLoadMultipage_AppendsMovies() {
     // given
-    let resourceFirstPage = MovieDBAPI.explore().asTestResource
-    let resourceSecondPage = MovieDBAPI.explore(page: 2).asTestResource
     let responseFirstPage = make_multipageResponseFirstPage()
     let responseSecondPage = make_multipageResponseSecondPage()
     
-    fakeAPIClient.nextFetchResultResolver = SyncFakeAPIClientResultResolver(results: [
-      resourceFirstPage: .success(responseFirstPage),
-      resourceSecondPage: .success(responseSecondPage),
+    fakeAPIService.discoverResolver = SyncResolver(results: [
+      .init(page: nil): .success(responseFirstPage),
+      .init(page: 2): .success(responseSecondPage),
     ])
     
     let expectedMovies = responseFirstPage.results + responseSecondPage.results

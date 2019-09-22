@@ -9,6 +9,7 @@
 import Foundation
 
 extension URLRequest {
+  
   mutating func appendQueryItem(_ queryItem: URLQueryItem) {
     appendQueryItems([queryItem])
   }
@@ -16,5 +17,13 @@ extension URLRequest {
   mutating func appendQueryItems<S>(_ queryItems: S) where S: Sequence, S.Element == URLQueryItem {
     url = url?.appendingQueryItems(queryItems)
   }
+
 }
 
+extension URLRequest {
+  
+  init(path: String) {
+    self.init(url: URL(string: path)!)
+  }
+
+}

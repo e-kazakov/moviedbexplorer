@@ -10,11 +10,18 @@
 
 extension ParsingError {
 
-  var isJSONDecondingError: Bool {
-    switch self {
-    case .jsonDecoding:
+  var isNoDataError: Bool {
+    if case .noData = self {
       return true
-    default:
+    } else {
+      return false
+    }
+  }
+  
+  var isJSONDecondingError: Bool {
+    if case .jsonDecoding = self {
+      return true
+    } else {
       return false
     }
   }
@@ -23,7 +30,7 @@ extension ParsingError {
     switch self {
     case .jsonDecoding(let inner):
       return inner
-    case .noData:
+    default:
       return nil
     }
   }
