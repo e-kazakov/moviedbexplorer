@@ -166,7 +166,7 @@ class MovieSearchVC: UIViewController {
       
       moviesListView.isUserInteractionEnabled = false
       moviesCollectionLoadingController.collectionView = moviesListView
-      moviesListView.tmdb.crossDissolveTransition { }
+      moviesListView.mve.crossDissolveTransition { }
     }
   }
   
@@ -179,7 +179,7 @@ class MovieSearchVC: UIViewController {
 
       moviesListView.isUserInteractionEnabled = true
       moviesCollectionController.collectionView = moviesListView
-      moviesListView.tmdb.crossDissolveTransition { }
+      moviesListView.mve.crossDissolveTransition { }
     }
   }
   

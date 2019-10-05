@@ -58,13 +58,13 @@ class ExploreView: UIView {
   }
   
   func showError() {
-    errorView.tmdb.crossDissolveTransition {
+    errorView.mve.crossDissolveTransition {
       self.errorView.isHidden = false
     }
   }
   
   func showList() {
-    errorView.tmdb.crossDissolveTransition {
+    errorView.mve.crossDissolveTransition {
       self.errorView.isHidden = true
     }
   }

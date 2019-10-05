@@ -17,7 +17,7 @@ class MovieCell: UICollectionViewCell {
     separator.backgroundColor = .appSeparator
     return separator
   }()
-  private let disclosureImageView = UIImageView(image: UIImage.tmdb.angleRight)
+  private let disclosureImageView = UIImageView(image: UIImage.mve.angleRight)
   private let posterImageView: UIImageView = {
     let imageView = UIImageView()
     imageView.contentMode = .scaleAspectFill
@@ -132,7 +132,7 @@ class MovieCell: UICollectionViewCell {
     overviewLabel.text = viewModel.overview
     releaseYearLabel.text = viewModel.releaseYear
 
-    posterImageView.tmdb.setImage(viewModel.image)
+    posterImageView.mve.setImage(viewModel.image)
 
     viewModel.image?.load()
   }

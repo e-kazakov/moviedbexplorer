@@ -101,7 +101,7 @@ class ExploreVC: UIViewController {
     if moviesCollectionController.collectionView !== collectionView {
       collectionView.isUserInteractionEnabled = true
       moviesCollectionController.collectionView = collectionView
-      collectionView.tmdb.crossDissolveTransition { }
+      collectionView.mve.crossDissolveTransition { }
     }
   }
 

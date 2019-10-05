@@ -8,7 +8,7 @@
 
 import UIKit
 
-extension TMDB where Base: UIView {
+extension MVE where Base: UIView {
   
   func crossDissolveTransition(
     duration: TimeInterval = CATransaction.animationDuration(),

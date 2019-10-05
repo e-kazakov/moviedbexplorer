@@ -8,7 +8,7 @@
 
 import UIKit
 
-extension TMDB where Base: UIImage {
+extension MVE where Base: UIImage {
 
   static var starFilled: UIImage {
     return UIImage(named: "star-filled-ic")!

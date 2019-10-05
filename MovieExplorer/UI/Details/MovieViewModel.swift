@@ -49,7 +49,7 @@ class MovieViewModelImpl: MovieViewModel {
     overview = movie.overview
     self.releaseYear = releaseYear
     
-    let placeholder = UIImage.tmdb.posterPlaceholder
+    let placeholder = UIImage.mve.posterPlaceholder
     if let url = movie.posterPath.map({ imageFetcher.posterURL(path: $0, size: .w780) }) {
       image = RemoteImageViewModel(url: url, placeholder: placeholder, fetcher: imageFetcher)
     } else {

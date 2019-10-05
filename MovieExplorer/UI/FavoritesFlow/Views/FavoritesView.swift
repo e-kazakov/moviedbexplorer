@@ -43,7 +43,7 @@ class FavoritesView: UIView {
   }
   
   private func hideAll(except toShow: UIView) {
-    tmdb.crossDissolveTransition {
+    mve.crossDissolveTransition {
       self.subviews.forEach { subview in
         subview.isHidden = true
       }

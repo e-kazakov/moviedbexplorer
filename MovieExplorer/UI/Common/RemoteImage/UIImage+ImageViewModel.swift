@@ -8,7 +8,7 @@
 
 import UIKit
 
-extension TMDB where Base: UIImageView {
+extension MVE where Base: UIImageView {
   
   func setImage(_ image: ImageViewModelProtocol?) {
     

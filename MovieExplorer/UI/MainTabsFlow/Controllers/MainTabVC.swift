@@ -58,24 +58,24 @@ class MainTabVC: UITabBarController, UITabBarControllerDelegate {
   private func createExplore() -> UINavigationController {
     let nc = createNC()
     nc.tabBarItem.title = "Explore"
-    nc.tabBarItem.image = UIImage.tmdb.popcornO
-    nc.tabBarItem.selectedImage = UIImage.tmdb.popcornFilled
+    nc.tabBarItem.image = UIImage.mve.popcornO
+    nc.tabBarItem.selectedImage = UIImage.mve.popcornFilled
     return nc
   }
   
   private func createFavorites() -> UINavigationController {
     let nc = createNC()
     nc.tabBarItem.title = "Favorites"
-    nc.tabBarItem.image = UIImage.tmdb.starO
-    nc.tabBarItem.selectedImage = UIImage.tmdb.startFilled
+    nc.tabBarItem.image = UIImage.mve.starO
+    nc.tabBarItem.selectedImage = UIImage.mve.startFilled
     return nc
   }
 
   private func createSearch() -> UINavigationController {
     let nc = createNC()
     nc.tabBarItem.title = "Search"
-    nc.tabBarItem.image = UIImage.tmdb.magnifyingGlass
-    nc.tabBarItem.selectedImage = UIImage.tmdb.magnifyingGlassThick
+    nc.tabBarItem.image = UIImage.mve.magnifyingGlass
+    nc.tabBarItem.selectedImage = UIImage.mve.magnifyingGlassThick
     return nc
   }
 

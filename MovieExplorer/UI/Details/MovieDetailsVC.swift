@@ -35,7 +35,7 @@ class MovieDetailsVC: UIViewController {
   }
   
   private func configureNavigationItem() {
-    navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage.tmdb.starO,
+    navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage.mve.starO,
                                                         style: .plain,
                                                         target: self,
                                                         action: #selector(onToggleFavorite))
@@ -85,10 +85,10 @@ class MovieDetailsVC: UIViewController {
     detailsView.overviewLabel.text = viewModel.overview
     detailsView.releaseYearLabel.text = viewModel.releaseYear
     
-    detailsView.posterImageView.tmdb.setImage(viewModel.image)
+    detailsView.posterImageView.mve.setImage(viewModel.image)
     
     let favButton = UIBarButtonItem(
-      image: viewModel.isFavorite ? UIImage.tmdb.starFilled : UIImage.tmdb.starO,
+      image: viewModel.isFavorite ? UIImage.mve.starFilled : UIImage.mve.starO,
       style: .plain,
       target: self,
       action: #selector(onToggleFavorite)
