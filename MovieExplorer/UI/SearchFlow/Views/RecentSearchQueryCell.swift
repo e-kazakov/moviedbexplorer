@@ -8,7 +8,7 @@
 
 import UIKit
 
-class RecentSearchQueryCell: UICollectionViewCell {
+final class RecentSearchQueryCell: UICollectionViewCell {
   
   var text: String? {
     get {
@@ -20,16 +20,13 @@ class RecentSearchQueryCell: UICollectionViewCell {
   }
   
   private let label = UILabel()
-  private let separator: UIView = {
-    let separator = UIView()
-    separator.backgroundColor = .appSeparator
-    return separator
-  }()
+  private let separator = UIView()
   
   override init(frame: CGRect) {
     super.init(frame: frame)
     
     setupSubviews()
+    style()
   }
   
   required init?(coder aDecoder: NSCoder) {
@@ -55,10 +52,62 @@ class RecentSearchQueryCell: UICollectionViewCell {
       separator.rightAnchor.constraint(equalTo: rightAnchor),
     ])
   }
+  
+  private func style() {
+    backgroundColor = .appSecondaryBackground
+    separator.backgroundColor = .appSeparator
+  }
 }
-
 extension RecentSearchQueryCell: SizePreferrable {
   static func preferredSize(inContainer containerSize: CGSize) -> CGSize {
     CGSize(width: containerSize.width, height: 50)
   }
 }
+  
+#if DEBUG
+import SwiftUI
+
+struct RecentSearchQueryCellPreview: UIViewRepresentable {
+  
+  let state: String
+  
+  func makeUIView(context: Context) -> RecentSearchQueryCell {
+    let cell = RecentSearchQueryCell()
+    cell.text = state
+    return cell
+  }
+  
+  func updateUIView(_ uiView: RecentSearchQueryCell, context: Context) {
+  }
+
+}
+
+struct RecentSearchQueryCell_PreviewProvider: PreviewProvider {
+  
+  static var previews: some View {
+    Group {
+      Group {
+        VStack(alignment: .leading, spacing: 0) {
+          RecentSearchQueryCellPreview(state: "Avengers")
+          RecentSearchQueryCellPreview(state: "Matrix")
+        }
+        .previewLayout(.fixed(width: 375,
+                              height: 2 * RecentSearchQueryCell.preferredSize(inContainer: .zero).height))
+      }
+      .previewDisplayName("Light")
+
+      Group {
+        VStack(alignment: .leading, spacing: 0) {
+          RecentSearchQueryCellPreview(state: "Avengers")
+          RecentSearchQueryCellPreview(state: "Matrix")
+        }
+        .previewLayout(.fixed(width: 375,
+                              height: 2 * RecentSearchQueryCell.preferredSize(inContainer: .zero).height))
+      }
+      .colorScheme(.dark)
+      .previewDisplayName("Dark")
+    }
+  }
+}
+
+#endif

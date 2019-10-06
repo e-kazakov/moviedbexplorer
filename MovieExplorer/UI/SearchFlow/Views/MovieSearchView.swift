@@ -127,3 +127,65 @@ class MovieSearchView: UIView {
   }
   
 }
+
+#if DEBUG
+import SwiftUI
+
+struct MovieSearchViewPreview: UIViewRepresentable {
+  
+  enum State {
+    case initial, empty, error, list, recentSearches
+  }
+  
+  private let state: State
+  
+  init(state: State) {
+    self.state = state
+  }
+  
+  func makeUIView(context: Context) -> MovieSearchView {
+    return MovieSearchView()
+  }
+  
+  func updateUIView(_ uiView: MovieSearchView, context: Context) {
+    switch state {
+    case .initial: uiView.showInitial()
+    case .empty: uiView.showEmpty()
+    case .error: uiView.showError()
+    case .list: uiView.showList()
+    case .recentSearches: uiView.showLastSearches()
+    }
+  }
+  
+}
+
+struct MovieSearchView_PreviewProvider: PreviewProvider {
+  
+  static var previews: some View {
+    Group {
+      Group {
+        MovieSearchViewPreview(state: .initial)
+          .previewLayout(.sizeThatFits)
+        MovieSearchViewPreview(state: .empty)
+          .previewLayout(.sizeThatFits)
+        MovieSearchViewPreview(state: .error)
+          .previewLayout(.sizeThatFits)
+      }
+      .previewDisplayName("Light")
+      
+      Group {
+        MovieSearchViewPreview(state: .initial)
+          .previewLayout(.sizeThatFits)
+        MovieSearchViewPreview(state: .empty)
+          .previewLayout(.sizeThatFits)
+        MovieSearchViewPreview(state: .error)
+          .previewLayout(.sizeThatFits)
+      }
+      .colorScheme(.dark)
+      .previewDisplayName("Dark")
+    }
+  }
+  
+}
+
+#endif

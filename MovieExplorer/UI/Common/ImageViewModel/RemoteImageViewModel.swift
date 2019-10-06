@@ -2,43 +2,13 @@
 //  RemoteImageViewModel.swift
 //  MovieExplorer
 //
-//  Created by Evgeny Kazakov on 9/18/18.
-//  Copyright © 2018 Evgeny Kazakov. All rights reserved.
+//  Created by Evgeny Kazakov on 1/8/20.
+//  Copyright © 2020 Evgeny Kazakov. All rights reserved.
 //
 
-import Foundation
-import class UIKit.UIImage
-import class UIKit.UIView
-
-
-protocol ImageViewModel: class {
-//  var image: UIImage? { get }
-//
-//  var onChanged: (() -> Void)? { get set }
-//
-  func image(_ callback: @escaping (UIImage?) -> Void) -> Disposable
-
-  func load()
-//  func cancel()
-}
+import UIKit
 
 class RemoteImageViewModel: ImageViewModel {
-  
-//  var image: UIImage? {
-//    get {
-//      imageStorage
-//    }
-//    set {
-//      imageStorage = newValue
-//      notifyQueue.async {
-//        self.onChanged?()
-//      }
-//    }
-//  }
-  
-//  private weak var imageStorage: UIImage?
-  
-//  var onChanged: (() -> Void)?
   
   private let notifyQueue = DispatchQueue.main
   private let placeholder: UIImage?
@@ -76,23 +46,5 @@ class RemoteImageViewModel: ImageViewModel {
 
   func load() {
     _ = fetcher.fetch(from: url) { _ in }
-  }
-}
-
-class StaticImageViewModel: ImageViewModel {
-  
-  let image: UIImage?
-
-  init(image: UIImage) {
-    self.image = image
-  }
-  
-  func image(_ callback: @escaping (UIImage?) -> Void) -> Disposable {
-    callback(image)
-    return NoOpDisposable()
-  }
-
-  func load() {
-    // no-op
   }
 }

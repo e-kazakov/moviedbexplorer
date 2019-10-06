@@ -21,6 +21,7 @@ class MovieSearchEmptyView: UIView {
     super.init(frame: frame)
     
     setupSubviews()
+    style()
     
     messageLabel.text = "No movies found"
   }
@@ -41,4 +42,38 @@ class MovieSearchEmptyView: UIView {
     ])
   }
   
+  private func style() {
+    backgroundColor = .appBackground
+  }
+  
 }
+
+#if DEBUG
+import SwiftUI
+
+struct MovieSearchEmptyViewPreview: UIViewRepresentable {
+  
+  func makeUIView(context: Context) -> MovieSearchEmptyView {
+    return MovieSearchEmptyView()
+  }
+  
+  func updateUIView(_ uiView: MovieSearchEmptyView, context: Context) {
+  }
+  
+}
+
+struct MovieSearchEmptyView_PreviewProvider: PreviewProvider {
+  
+  static var previews: some View {
+    Group {
+      MovieSearchEmptyViewPreview()
+        .edgesIgnoringSafeArea([.top, .bottom])
+      MovieSearchEmptyViewPreview()
+        .edgesIgnoringSafeArea([.top, .bottom])
+        .colorScheme(.dark)
+    }
+  }
+  
+}
+
+#endif

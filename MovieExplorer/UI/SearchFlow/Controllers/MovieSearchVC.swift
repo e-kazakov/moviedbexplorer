@@ -238,3 +238,126 @@ extension UIScrollView {
     scrollIndicatorInsets = contentInset
   }
 }
+
+#if DEBUG
+import SwiftUI
+
+struct MovieSearchVCPreview: UIViewControllerRepresentable {
+  
+  let vm: MovieSearchViewModel
+  
+  func makeUIViewController(context: Context) -> UINavigationController {
+    return UINavigationController(rootViewController: MovieSearchVC(viewModel: vm))
+  }
+
+  func updateUIViewController(_ uiViewController: UINavigationController, context: Context) {
+  }
+
+}
+
+struct MovieSearchVC_PreviewProvider: PreviewProvider {
+  
+  static var previews: some View {
+    Group {
+      createPreviews()
+      .previewDisplayName("Light")
+      
+      createPreviews()
+      .colorScheme(.dark)
+      .previewDisplayName("Dark")
+    }
+  }
+  
+}
+
+private func createPreviews() -> some View {
+  Group {
+    MovieSearchVCPreview(vm: makeInitialVM())
+      .edgesIgnoringSafeArea([.top, .bottom])
+    MovieSearchVCPreview(vm: makeEmptyVM())
+      .edgesIgnoringSafeArea([.top, .bottom])
+    MovieSearchVCPreview(vm: makeErrorVM())
+      .edgesIgnoringSafeArea([.top, .bottom])
+    MovieSearchVCPreview(vm: makeLoadingVM())
+      .edgesIgnoringSafeArea([.top, .bottom])
+    MovieSearchVCPreview(vm: makeResultVM())
+      .edgesIgnoringSafeArea([.top, .bottom])
+    MovieSearchVCPreview(vm: makeLoadingMoreVM())
+      .edgesIgnoringSafeArea([.top, .bottom])
+  }
+}
+
+struct MovieSearchPreviewViewModel: MovieSearchViewModel {
+  var searchQuery: String?
+  var status: MoviesListViewModelStatus
+  var movies: [MovieCellViewModel]
+  var recentSearches: [String]
+
+  var onChanged: (() -> Void)? = nil
+  var onGoToDetails: ((Movie) -> Void)? = nil
+  
+  func search(query: String) { }
+  func cancel() { }
+  func loadNext() { }
+  func retry() { }
+}
+
+struct MovieCellPreviewViewModel: MovieCellViewModel {
+  var title: String
+  var overview: String?
+  var releaseYear: String
+  var image: ImageViewModel?
+
+  func select() { }
+}
+
+private func makeInitialVM() -> MovieSearchViewModel {
+  MovieSearchPreviewViewModel(searchQuery: nil,
+                              status: .initial,
+                              movies: [],
+                              recentSearches: [])
+}
+
+private func makeEmptyVM() -> MovieSearchViewModel {
+  MovieSearchPreviewViewModel(searchQuery: "Shmatrix",
+                              status: .loaded,
+                              movies: [],
+                              recentSearches: ["Shmatrix"])
+}
+
+private func makeErrorVM() -> MovieSearchViewModel {
+  MovieSearchPreviewViewModel(searchQuery: "Shmatrix",
+                              status: .failedToLoad,
+                              movies: [],
+                              recentSearches: ["Shmatrix"])
+}
+
+private func makeLoadingVM() -> MovieSearchViewModel {
+  MovieSearchPreviewViewModel(searchQuery: "Matrix",
+                              status: .loading,
+                              movies: [],
+                              recentSearches: ["Avengers", "Matrix"])
+}
+
+private func makeResultVM() -> MovieSearchViewModel {
+  MovieSearchPreviewViewModel(searchQuery: "Matrix",
+                              status: .loaded,
+                              movies: [makeMovieVM()],
+                              recentSearches: ["Avengers", "Matrix"])
+}
+
+private func makeLoadingMoreVM() -> MovieSearchViewModel {
+  MovieSearchPreviewViewModel(searchQuery: "Matrix",
+                              status: .loadingNext,
+                              movies: [makeMovieVM()],
+                              recentSearches: ["Avengers", "Matrix"])
+}
+
+private func makeMovieVM() -> MovieCellPreviewViewModel {
+  MovieCellPreviewViewModel(title: "Matrix",
+                            overview: "Set in the 22nd century, The Matrix tells the story of a computer hacker who joins a group of underground insurgents fighting the vast and powerful computers who now rule the earth.",
+                            releaseYear: "1999",
+                            image: StaticImageViewModel(image: UIImage(named: "poster.matrix")!))
+}
+
+#endif

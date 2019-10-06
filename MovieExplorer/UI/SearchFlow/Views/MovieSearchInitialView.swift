@@ -21,6 +21,7 @@ class MovieSearchInitialView: UIView {
     super.init(frame: frame)
     
     setupSubviews()
+    style()
     
     messageLabel.text = "Search movies"
   }
@@ -41,4 +42,38 @@ class MovieSearchInitialView: UIView {
     ])
   }
   
+  private func style() {
+    backgroundColor = .appBackground
+  }
+  
 }
+
+#if DEBUG
+import SwiftUI
+
+struct MovieSearchInitialViewPreview: UIViewRepresentable {
+  
+  func makeUIView(context: Context) -> MovieSearchInitialView {
+    return MovieSearchInitialView()
+  }
+  
+  func updateUIView(_ uiView: MovieSearchInitialView, context: Context) {
+  }
+  
+}
+
+struct MovieSearchInitialView_PreviewProvider: PreviewProvider {
+  
+  static var previews: some View {
+    Group {
+      MovieSearchInitialViewPreview()
+        .edgesIgnoringSafeArea([.top, .bottom])
+      MovieSearchInitialViewPreview()
+        .edgesIgnoringSafeArea([.top, .bottom])
+        .colorScheme(.dark)
+    }
+  }
+  
+}
+
+#endif
