@@ -10,7 +10,7 @@ import UIKit
 
 extension MVE where Base: UIImageView {
   
-  func setImage(_ image: ImageViewModelProtocol?) {
+  func setImage(_ image: ImageViewModel?) {
     
     guard let imageVM = image else {
       base.image = nil

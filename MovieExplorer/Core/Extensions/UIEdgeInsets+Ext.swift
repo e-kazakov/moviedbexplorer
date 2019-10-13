@@ -17,3 +17,13 @@ extension UIEdgeInsets {
     return top + bottom
   }
 }
+
+extension UIEdgeInsets {
+  static func horizontal(_ inset: CGFloat) -> UIEdgeInsets {
+    return UIEdgeInsets(top: 0, left: inset, bottom: 0, right: inset)
+  }
+
+  static func vertical(_ inset: CGFloat) -> UIEdgeInsets {
+    return UIEdgeInsets(top: inset, left: 0, bottom: inset, right: 0)
+  }
+}

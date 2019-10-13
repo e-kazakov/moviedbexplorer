@@ -10,16 +10,20 @@ import UIKit
 
 class MovieDetailsView: UIView {
   
-  let posterImageView: UIImageView = {
-    let imageView = UIImageView()
-    imageView.contentMode = .scaleAspectFill
-    imageView.clipsToBounds = true
-    return imageView
+  let infoView = MovieDetailsInfoView()
+  let errorView: ListErrorView = {
+    let errorView = ListErrorView()
+    errorView.title = "Failed to load movie"
+    return errorView
   }()
-  let nameLabel = UILabel.Style.title(UILabel())
-  let overviewLabel = UILabel.Style.info(UILabel())
-  let releaseYearLabel = UILabel.Style.releaseYear(UILabel())
-  
+  let loadingView = MovieDetailsLoadingView()
+
+  private let scrollView: UIScrollView = {
+    let scrollView = UIScrollView()
+    scrollView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 16, right: 0)
+    return scrollView
+  }()
+
   override init(frame: CGRect) {
     super.init(frame: frame)
     
@@ -32,48 +36,65 @@ class MovieDetailsView: UIView {
   }
   
   private func setupSubviews() {
-    posterImageView.translatesAutoresizingMaskIntoConstraints = false
-    nameLabel.translatesAutoresizingMaskIntoConstraints = false
-    overviewLabel.translatesAutoresizingMaskIntoConstraints = false
-    releaseYearLabel.translatesAutoresizingMaskIntoConstraints = false
+    scrollView.translatesAutoresizingMaskIntoConstraints = false
+    infoView.translatesAutoresizingMaskIntoConstraints = false
+    errorView.translatesAutoresizingMaskIntoConstraints = false
+    loadingView.translatesAutoresizingMaskIntoConstraints = false
     
-    addSubview(posterImageView)
-    addSubview(nameLabel)
-    addSubview(overviewLabel)
-    addSubview(releaseYearLabel)
+    scrollView.addSubview(infoView)
+    addSubview(scrollView)
+    addSubview(errorView)
+    addSubview(loadingView)
+    
+    errorView.isHidden = true
+    loadingView.isHidden = true
     
     NSLayoutConstraint.activate([
-      posterImageView.topAnchor.constraint(equalTo: self.topAnchor),
-      posterImageView.leftAnchor.constraint(equalTo: self.leftAnchor),
-      posterImageView.rightAnchor.constraint(equalTo: self.rightAnchor),
-      posterImageView.heightAnchor.constraint(equalTo: posterImageView.widthAnchor, multiplier: 1.5),
+      scrollView.topAnchor.constraint(equalTo: topAnchor),
+      scrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
+      scrollView.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor),
+      scrollView.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor),
+
+      infoView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+      infoView.leftAnchor.constraint(equalTo: scrollView.leftAnchor),
+      infoView.rightAnchor.constraint(equalTo: scrollView.rightAnchor),
+      infoView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+      infoView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
       
-      nameLabel.topAnchor.constraint(equalTo: posterImageView.bottomAnchor, constant: 16),
-      nameLabel.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 16),
-      nameLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -16),
-      
-      overviewLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8),
-      overviewLabel.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 16),
-      overviewLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -16),
-      
-      releaseYearLabel.topAnchor.constraint(equalTo: overviewLabel.bottomAnchor, constant: 30),
-      releaseYearLabel.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 16),
-      releaseYearLabel.widthAnchor.constraint(equalToConstant: 60),
-      releaseYearLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -16),
+      errorView.topAnchor.constraint(equalTo: topAnchor),
+      errorView.bottomAnchor.constraint(equalTo: bottomAnchor),
+      errorView.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor),
+      errorView.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor),
+
+      loadingView.topAnchor.constraint(equalTo: topAnchor),
+      loadingView.bottomAnchor.constraint(equalTo: bottomAnchor),
+      loadingView.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor),
+      loadingView.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor),
     ])
   }
   
   private func style() {
     backgroundColor = .appBackground
-    UILabel.Style.releaseYear(releaseYearLabel)
-    posterImageView.tintColor = .appPlaceholder
   }
   
-  override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-    super.traitCollectionDidChange(previousTraitCollection)
-    
-    if traitCollection.userInterfaceStyle != previousTraitCollection?.userInterfaceStyle {
-      style()
+  func showLoading() {
+    mve.crossDissolveTransition {
+      self.errorView.isHidden = true
+      self.loadingView.isHidden = false
+    }
+  }
+  
+  func showContent() {
+    mve.crossDissolveTransition {
+      self.errorView.isHidden = true
+      self.loadingView.isHidden = true
+    }
+  }
+  
+  func showError() {
+    mve.crossDissolveTransition {
+      self.errorView.isHidden = false
+      self.loadingView.isHidden = true
     }
   }
   

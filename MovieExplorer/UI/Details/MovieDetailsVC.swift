@@ -10,11 +10,11 @@ import UIKit
 
 class MovieDetailsVC: UIViewController {
   
-  private let viewModel: MovieViewModel
+  private let viewModel: MovieDetailsViewModel
 
   private let detailsView = MovieDetailsView()
 
-  init(viewModel: MovieViewModel) {
+  init(viewModel: MovieDetailsViewModel) {
     self.viewModel = viewModel
     
     super.init(nibName: nil, bundle: nil)
@@ -26,9 +26,13 @@ class MovieDetailsVC: UIViewController {
     fatalError("init(coder:) has not been implemented")
   }
   
+  override func loadView() {
+    view = detailsView
+  }
+  
   override func viewDidLoad() {
     super.viewDidLoad()
-    setupViews()
+    
     bind()
     load()
     update()
@@ -39,30 +43,6 @@ class MovieDetailsVC: UIViewController {
                                                         style: .plain,
                                                         target: self,
                                                         action: #selector(onToggleFavorite))
-  }
-  
-  private func setupViews() {
-    self.view.backgroundColor = .appBackground
-    
-    let scrollView = UIScrollView()
-    scrollView.translatesAutoresizingMaskIntoConstraints = false
-    detailsView.translatesAutoresizingMaskIntoConstraints = false
-
-    view.addSubview(scrollView)
-    scrollView.addSubview(detailsView)
-    
-    NSLayoutConstraint.activate([
-      scrollView.topAnchor.constraint(equalTo: view.topAnchor),
-      scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-      scrollView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor),
-      scrollView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor),
-
-      detailsView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-      detailsView.leftAnchor.constraint(equalTo: scrollView.leftAnchor),
-      detailsView.rightAnchor.constraint(equalTo: scrollView.rightAnchor),
-      detailsView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-      detailsView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-    ])
   }
 
   private func bind() {
@@ -77,15 +57,29 @@ class MovieDetailsVC: UIViewController {
   }
   
   private func bindInputs() {
+    detailsView.errorView.onRetry = viewModel.load
   }
   
   private func update() {
-    title = viewModel.title
-    detailsView.nameLabel.text = viewModel.title
-    detailsView.overviewLabel.text = viewModel.overview
-    detailsView.releaseYearLabel.text = viewModel.releaseYear
+    switch viewModel.status {
+    case .initial, .loading:
+      detailsView.showLoading()
+    case .loaded:
+      detailsView.showContent()
+    case .error:
+      detailsView.showError()
+    }
     
-    detailsView.posterImageView.mve.setImage(viewModel.image)
+    title = viewModel.title
+    detailsView.infoView.nameLabel.text = viewModel.title
+    detailsView.infoView.overviewLabel.text = viewModel.overview
+    detailsView.infoView.releaseYearLabel.text = viewModel.releaseYear
+    detailsView.infoView.durationLabel.text = viewModel.duration
+    detailsView.infoView.taglineLabel.text = viewModel.tagline
+    detailsView.infoView.taglineLabel.isHidden = viewModel.tagline == nil
+    detailsView.infoView.genresLabel.text = viewModel.genres
+    detailsView.infoView.posters = viewModel.posters
+    detailsView.infoView.images = viewModel.images
     
     let favButton = UIBarButtonItem(
       image: viewModel.isFavorite ? UIImage.mve.starFilled : UIImage.mve.starO,
@@ -97,9 +91,9 @@ class MovieDetailsVC: UIViewController {
   }
   
   private func load() {
-    viewModel.image?.load()
+    viewModel.load()
   }
-  
+
   // MARK: Actions
   
   @objc

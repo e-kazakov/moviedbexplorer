@@ -13,11 +13,13 @@ class FavoritesCoordinator: BaseCoordinator {
   private let navigation: UINavigationController
   private let imageFetcher: ImageFetcher
   private let favorites: FavoriteMovies
+  private let apiClient: APIClient
   
-  init(navigation: UINavigationController, imageFetcher: ImageFetcher, favorites: FavoriteMovies) {
+  init(navigation: UINavigationController, imageFetcher: ImageFetcher, favorites: FavoriteMovies, apiClient: APIClient) {
     self.navigation = navigation
     self.imageFetcher = imageFetcher
     self.favorites = favorites
+    self.apiClient = apiClient
   }
   
   override func start() {
@@ -35,7 +37,8 @@ class FavoritesCoordinator: BaseCoordinator {
   }
   
   private func showDetails(_ movie: Movie) {
-    let vm = MovieViewModelImpl(movie: movie, favorites: favorites, imageFetcher: imageFetcher)
+    let service = MovieDetailsAPIServiceImpl(client: apiClient)
+    let vm = MovieDetailsViewModelImpl(movie: movie, movieDetailsService: service, favorites: favorites, imageFetcher: imageFetcher)
     let detailsVC = MovieDetailsVC(viewModel: vm)
     navigation.pushViewController(detailsVC, animated: true)
   }

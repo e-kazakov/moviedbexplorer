@@ -13,11 +13,10 @@ extension UIImage {
     guard let cgImage = self.cgImage else { return self }
     
     let size = CGSize(width: cgImage.width, height: cgImage.height)
-    UIGraphicsBeginImageContextWithOptions(size, false, 1.0)
-    defer { UIGraphicsEndImageContext() }
-    
-    let rect = CGRect(origin: .zero, size: size)
-    draw(in: rect)
-    return UIGraphicsGetImageFromCurrentImageContext() ?? self
+
+    let renderer = UIGraphicsImageRenderer(size: size, format: imageRendererFormat)
+    return renderer.image { _ in
+      draw(in: CGRect(origin: .zero, size: size))
+    }
   }
 }

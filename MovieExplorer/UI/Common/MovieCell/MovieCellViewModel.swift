@@ -12,7 +12,7 @@ protocol MovieCellViewModel {
   var title: String { get }
   var overview: String? { get }
   var releaseYear: String { get }
-  var image: ImageViewModelProtocol? { get }
+  var image: ImageViewModel? { get }
   
   func select()
 }
@@ -22,7 +22,7 @@ class MovieCellViewModelImpl: MovieCellViewModel {
   let title: String
   let overview: String?
   let releaseYear: String
-  let image: ImageViewModelProtocol?
+  let image: ImageViewModel?
   
   private let movie: Movie
   private let imageFetcher: ImageFetcher
@@ -39,7 +39,7 @@ class MovieCellViewModelImpl: MovieCellViewModel {
     self.releaseYear = releaseYear
 
     let placeholder = UIImage.mve.posterPlaceholder
-    if let url = movie.posterPath.map({ imageFetcher.posterURL(path: $0, size: .w780) }) {
+    if let url = movie.posterPath.map({ imageFetcher.posterURL(path: $0, size: .w500) }) {
       image = RemoteImageViewModel(url: url, placeholder: placeholder, fetcher: imageFetcher)
     } else {
       image = StaticImageViewModel(image: placeholder)

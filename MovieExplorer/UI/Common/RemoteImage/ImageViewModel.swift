@@ -11,7 +11,7 @@ import class UIKit.UIImage
 import class UIKit.UIView
 
 
-protocol ImageViewModelProtocol: class {
+protocol ImageViewModel: class {
   var image: UIImage? { get }
   
   var onChanged: (() -> Void)? { get set }
@@ -20,7 +20,7 @@ protocol ImageViewModelProtocol: class {
   func cancel()
 }
 
-class RemoteImageViewModel: ImageViewModelProtocol {
+class RemoteImageViewModel: ImageViewModel {
   
   private(set) var image: UIImage? {
     didSet {
@@ -71,7 +71,7 @@ class RemoteImageViewModel: ImageViewModelProtocol {
   }
 }
 
-class StaticImageViewModel: ImageViewModelProtocol {
+class StaticImageViewModel: ImageViewModel {
   
   let image: UIImage?
   var onChanged: (() -> Void)?

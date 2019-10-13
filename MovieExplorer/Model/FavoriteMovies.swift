@@ -29,6 +29,10 @@ extension FavoriteMoviesState {
   func isFavorite(_ movie: Movie) -> Bool {
     return ids.contains(movie.id)
   }
+  
+  func isFavorite(id: Int) -> Bool {
+    return ids.contains(id)
+  }
 }
 
 protocol FavoriteMovies {

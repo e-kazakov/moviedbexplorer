@@ -42,7 +42,8 @@ class SearchCoordinator: BaseCoordinator {
   }
   
   private func showDetails(_ movie: Movie) {
-    let vm = MovieViewModelImpl(movie: movie, favorites: favorites, imageFetcher: imageFetcher)
+    let service = MovieDetailsAPIServiceImpl(client: apiClient)
+    let vm = MovieDetailsViewModelImpl(movie: movie, movieDetailsService: service, favorites: favorites, imageFetcher: imageFetcher)
     let detailsVC = MovieDetailsVC(viewModel: vm)
     navigation.pushViewController(detailsVC, animated: true)
   }

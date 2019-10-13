@@ -27,7 +27,7 @@ extension UILabel.Style {
   
   @discardableResult
   static func info(_ label: UILabel) -> UILabel {
-    label.font = UIFont.systemFont(ofSize: 15, weight: .light)
+    label.font = UIFont.systemFont(ofSize: 17, weight: .light)
     label.numberOfLines = 0
     return label
   }

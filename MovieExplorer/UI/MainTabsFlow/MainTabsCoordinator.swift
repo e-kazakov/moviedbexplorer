@@ -54,7 +54,7 @@ class MainTabsCoordinator: BaseCoordinator {
   private func startFavoritesFlow(navigation nc: UINavigationController) {
     guard favoritesCoordinator == nil else { return }
 
-    let favoritesCoordinator = FavoritesCoordinator(navigation: nc, imageFetcher: imageFetcher, favorites: favorites)
+    let favoritesCoordinator = FavoritesCoordinator(navigation: nc, imageFetcher: imageFetcher, favorites: favorites, apiClient: apiClient)
     self.favoritesCoordinator = favoritesCoordinator
     
     startSubflow(favoritesCoordinator)

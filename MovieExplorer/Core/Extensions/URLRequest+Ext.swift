@@ -17,6 +17,10 @@ extension URLRequest {
   mutating func appendQueryItems<S>(_ queryItems: S) where S: Sequence, S.Element == URLQueryItem {
     url = url?.appendingQueryItems(queryItems)
   }
+  
+  mutating func appendRawQueryItems(_ rawItem: [String: String]) {
+    appendQueryItems(rawItem.map(URLQueryItem.init))
+  }
 
 }
 
