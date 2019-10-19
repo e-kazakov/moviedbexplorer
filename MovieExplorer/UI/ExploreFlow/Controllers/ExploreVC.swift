@@ -18,9 +18,11 @@ class ExploreVC: UIViewController {
   private var collectionView: UICollectionView {
     return contentView.moviesListView
   }
+
+  private let moviesCollectionController = ListController()
+  private let moviesAdapter = MoviesAdapter()
   
-  private let moviesCollectionController = MovieCollectionController()
-  private let moviesCollectionLoadingController = MovieCollectionLoadingController()
+  private var isLoading: Bool?
   
   init (viewModel: MoviesListViewModel) {
     self.viewModel = viewModel
@@ -41,6 +43,8 @@ class ExploreVC: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
+    moviesCollectionController.collectionView = collectionView
+
     bind()
     viewModel.loadNext()
   }
@@ -67,7 +71,7 @@ class ExploreVC: UIViewController {
   private func bindInputs() {
     contentView.errorView.onRetry = viewModel.retry
     moviesCollectionController.onCloseToEnd = viewModel.loadNext
-    moviesCollectionController.onRetry = viewModel.retry
+    moviesAdapter.onRetry = viewModel.retry
   }
   
   private func update() {
@@ -89,35 +93,21 @@ class ExploreVC: UIViewController {
   }
   
   private func configureForLoading() {
-    if moviesCollectionLoadingController.collectionView !== collectionView {
+    moviesCollectionController.list = moviesAdapter.list(movies: viewModel.movies, status: viewModel.status)
+    
+    if isLoading != true {
+      isLoading = true
       collectionView.isUserInteractionEnabled = false
-      moviesCollectionLoadingController.collectionView = collectionView
     }
   }
   
   private func configureForLoaded() {
-    moviesCollectionController.viewModel = MovieCollectionViewModel(from: viewModel)
+    moviesCollectionController.list = moviesAdapter.list(movies: viewModel.movies, status: viewModel.status)
     
-    if moviesCollectionController.collectionView !== collectionView {
+    if isLoading != false {
+      isLoading = false
       collectionView.isUserInteractionEnabled = true
-      moviesCollectionController.collectionView = collectionView
       collectionView.mve.crossDissolveTransition { }
     }
-  }
-
-}
-
-extension MovieCollectionViewModel {
-  init(from moviesList: MoviesListViewModel) {
-    switch moviesList.status {
-    case .loadingNext:
-      status = .loadingNext
-    case .failedToLoadNext:
-      status = .failedToLoadNext
-    default:
-      status = .loaded
-    }
-    
-    movies = moviesList.movies
   }
 }

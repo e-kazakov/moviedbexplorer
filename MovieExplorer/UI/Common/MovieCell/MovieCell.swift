@@ -10,8 +10,6 @@ import UIKit
 
 class MovieCell: UICollectionViewCell {
 
-  static let preferredHeight = CGFloat(188)
-  
   private let separatorView: UIView = {
     let separator = UIView()
     separator.backgroundColor = .appSeparator
@@ -146,4 +144,8 @@ class MovieCell: UICollectionViewCell {
   }
 }
 
-extension MovieCell: Reusable { }
+extension MovieCell: SizePreferrable {
+  static func preferredSize(inContainer containerSize: CGSize) -> CGSize {
+    CGSize(width: containerSize.width, height: 180)
+  }
+}

@@ -10,7 +10,6 @@ import UIKit
 
 class MovieSkeletonCell: UICollectionViewCell {
   
-  static let preferredHeight = CGFloat(188)
   static let duration = 1.0
   
   private let skeletonColor = UIColor.appSkeleton
@@ -135,10 +134,13 @@ class MovieSkeletonCell: UICollectionViewCell {
     
     gradientLayer.add(gradientMove, forKey: "skeleton")
   }
-  
 }
 
-extension MovieSkeletonCell: Reusable { }
+extension MovieSkeletonCell: SizePreferrable {
+  static func preferredSize(inContainer containerSize: CGSize) -> CGSize {
+    CGSize(width: containerSize.width, height: 180)
+  }
+}
 
 extension UIView {
   

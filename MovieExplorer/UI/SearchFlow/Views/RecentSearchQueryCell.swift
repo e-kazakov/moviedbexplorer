@@ -10,8 +10,6 @@ import UIKit
 
 class RecentSearchQueryCell: UICollectionViewCell {
   
-  static let preferredHeight: CGFloat = 50
-  
   var text: String? {
     get {
       return label.text
@@ -59,4 +57,8 @@ class RecentSearchQueryCell: UICollectionViewCell {
   }
 }
 
-extension RecentSearchQueryCell: Reusable { }
+extension RecentSearchQueryCell: SizePreferrable {
+  static func preferredSize(inContainer containerSize: CGSize) -> CGSize {
+    CGSize(width: containerSize.width, height: 50)
+  }
+}

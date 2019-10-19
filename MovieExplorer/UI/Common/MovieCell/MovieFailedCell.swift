@@ -10,8 +10,6 @@ import UIKit
 
 class MovieFailedCell: UICollectionViewCell {
   
-  static let preferredHeight = CGFloat(198)
-  
   var onRetry: (() -> Void)?
   
   private let retryButton: UIButton = {
@@ -66,4 +64,8 @@ class MovieFailedCell: UICollectionViewCell {
   }
 }
 
-extension MovieFailedCell: Reusable { }
+extension MovieFailedCell: SizePreferrable {
+  static func preferredSize(inContainer containerSize: CGSize) -> CGSize {
+    CGSize(width: containerSize.width, height: 198)
+  }
+}

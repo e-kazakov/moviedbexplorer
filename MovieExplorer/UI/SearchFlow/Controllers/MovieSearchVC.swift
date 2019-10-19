@@ -20,9 +20,12 @@ class MovieSearchVC: UIViewController {
     return contentView.moviesListView
   }
   
-  private let moviesCollectionController = MovieCollectionController()
-  private let moviesCollectionLoadingController = MovieCollectionLoadingController()
-  private let recentSearchesCollectionController = RecentSearchesCollectionController()
+  private let moviesCollectionController = ListController()
+  private let moviesAdapter = MoviesAdapter()
+  private let recentSearchesCollectionController = ListController()
+  private let recentSearchesAdapter = RecentSearchesListAdapter()
+  
+  private var isLoading: Bool? = false
   
   private let keyboardObserver = KeyboardObserver(notificationCenter: .default)
   
@@ -56,6 +59,7 @@ class MovieSearchVC: UIViewController {
     configureKeyboardObserver()
     
     recentSearchesCollectionController.collectionView = contentView.recentSearchesListView
+    moviesCollectionController.collectionView = contentView.moviesListView
 
     bind()
     update()
@@ -100,9 +104,9 @@ class MovieSearchVC: UIViewController {
   private func bindInputs() {
     contentView.errorView.onRetry = viewModel.retry
     moviesCollectionController.onCloseToEnd = viewModel.loadNext
-    moviesCollectionController.onRetry = viewModel.retry
+    moviesAdapter.onRetry = viewModel.retry
     
-    recentSearchesCollectionController.onSelect = { [weak self] query in
+    recentSearchesAdapter.onSelect = { [weak self] query in
       guard let self = self else { return }
       
       self.searchBarEndEditing()
@@ -120,7 +124,7 @@ class MovieSearchVC: UIViewController {
   }
   
   func updateLists() {
-    recentSearchesCollectionController.recentSearches = viewModel.recentSearches
+    recentSearchesCollectionController.list = recentSearchesAdapter.list(from: viewModel.recentSearches)
     
     switch viewModel.status {
     case .loading:
@@ -160,25 +164,23 @@ class MovieSearchVC: UIViewController {
   }
   
   private func configureForLoading() {
-    if moviesCollectionLoadingController.collectionView !== moviesListView {
-      moviesCollectionController.collectionView = nil
+    moviesCollectionController.list = moviesAdapter.loadingList()
+    
+    if isLoading != true {
+      isLoading = true
       moviesListView.scrollToTop()
-      
       moviesListView.isUserInteractionEnabled = false
-      moviesCollectionLoadingController.collectionView = moviesListView
       moviesListView.mve.crossDissolveTransition { }
     }
   }
   
   private func configureForLoaded() {
-    moviesCollectionController.viewModel = MovieCollectionViewModel(from: viewModel)
+    moviesCollectionController.list = moviesAdapter.list(movies: viewModel.movies, status: viewModel.status)
     
-    if moviesCollectionController.collectionView !== moviesListView {
-      moviesCollectionLoadingController.collectionView = nil
+    if isLoading != false {
+      isLoading = false
       moviesListView.scrollToTop()
-
       moviesListView.isUserInteractionEnabled = true
-      moviesCollectionController.collectionView = moviesListView
       moviesListView.mve.crossDissolveTransition { }
     }
   }
@@ -234,20 +236,5 @@ extension UIScrollView {
     let bottomInset = kbHeight - safeAreaInsets.bottom
     contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
     scrollIndicatorInsets = contentInset
-  }
-}
-
-private extension MovieCollectionViewModel {
-  init(from moviesList: MovieSearchViewModel) {
-    switch moviesList.status {
-    case .loadingNext:
-      status = .loadingNext
-    case .failedToLoadNext:
-      status = .failedToLoadNext
-    default:
-      status = .loaded
-    }
-
-    movies = moviesList.movies
   }
 }

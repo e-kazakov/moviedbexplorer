@@ -19,8 +19,8 @@ class FavoritesVC: UIViewController {
     return contentView.moviesListView
   }
 
-  private let moviesCollectionController = MovieCollectionController()
-  private let moviesCollectionLoadingController = MovieCollectionLoadingController()
+  private let moviesCollectionController = ListController()
+  private let moviesAdapter = MoviesAdapter()
   
   init (viewModel: FavoritesViewModel) {
     self.viewModel = viewModel
@@ -66,7 +66,7 @@ class FavoritesVC: UIViewController {
   }
   
   private func update() {
-    moviesCollectionController.viewModel = MovieCollectionViewModel(from: viewModel)
+    moviesCollectionController.list = moviesAdapter.list(movies: viewModel.movies, status: .loaded)
     
     if viewModel.movies.isEmpty {
       contentView.showInitial()
@@ -75,11 +75,4 @@ class FavoritesVC: UIViewController {
     }
   }
 
-}
-
-extension MovieCollectionViewModel {
-  init(from moviesList: FavoritesViewModel) {
-    status = .loaded
-    movies = moviesList.movies
-  }
 }
