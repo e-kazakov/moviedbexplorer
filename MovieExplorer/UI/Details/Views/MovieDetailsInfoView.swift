@@ -8,6 +8,28 @@
 
 import UIKit
 
+extension UICollectionViewFlowLayout {
+  static var horizontal: UICollectionViewFlowLayout {
+    let layout = UICollectionViewFlowLayout()
+    layout.scrollDirection = .horizontal
+    return layout
+  }
+  
+  static var vertical: UICollectionViewFlowLayout {
+    UICollectionViewFlowLayout()
+  }
+}
+
+extension UICollectionView {
+  static var horizontalList: UICollectionView {
+    UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout.horizontal)
+  }
+
+  static var verticalList: UICollectionView {
+    UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout.vertical)
+  }
+}
+
 class MovieDetailsInfoView: UIView {
   
   var posters: [ImageViewModel] = [] {
@@ -21,6 +43,19 @@ class MovieDetailsInfoView: UIView {
       updateImages()
     }
   }
+  
+  let crewListView: UICollectionView = {
+    let listView = UICollectionView.horizontalList
+    listView.contentInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+    listView.backgroundColor = .appBackground
+    return listView
+  }()
+  let castListView: UICollectionView = {
+    let listView = UICollectionView.horizontalList
+    listView.contentInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+    listView.backgroundColor = .appBackground
+    return listView
+  }()
   
   private let postersScrollView: UIScrollView = {
     let scrollView = UIScrollView()
@@ -87,6 +122,8 @@ class MovieDetailsInfoView: UIView {
     overviewLabel.translatesAutoresizingMaskIntoConstraints = false
     releaseYearLabel.translatesAutoresizingMaskIntoConstraints = false
     durationLabel.translatesAutoresizingMaskIntoConstraints = false
+    castListView.translatesAutoresizingMaskIntoConstraints = false
+    crewListView.translatesAutoresizingMaskIntoConstraints = false
     
     let overviewStack = UIStackView(arrangedSubviews: [taglineLabel, overviewLabel])
     overviewStack.translatesAutoresizingMaskIntoConstraints = false
@@ -96,7 +133,9 @@ class MovieDetailsInfoView: UIView {
     let contentStack = UIStackView(arrangedSubviews: [
       BoxView(nameLabel, inset: .horizontal(16)),
       BoxView(overviewStack, inset: .horizontal(16)),
-      backdropsImagesScrollView
+      backdropsImagesScrollView,
+      castListView,
+      crewListView
     ])
     contentStack.translatesAutoresizingMaskIntoConstraints = false
     contentStack.axis = .vertical
@@ -144,6 +183,9 @@ class MovieDetailsInfoView: UIView {
       backdropsStackView.bottomAnchor.constraint(equalTo: backdropsImagesScrollView.bottomAnchor),
       backdropsStackView.leftAnchor.constraint(equalTo: backdropsImagesScrollView.leftAnchor),
       backdropsStackView.rightAnchor.constraint(equalTo: backdropsImagesScrollView.rightAnchor),
+      
+      castListView.heightAnchor.constraint(equalToConstant: 240),
+      crewListView.heightAnchor.constraint(equalToConstant: 240),
     ])
   }
   

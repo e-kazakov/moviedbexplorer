@@ -13,6 +13,10 @@ class MovieDetailsVC: UIViewController {
   private let viewModel: MovieDetailsViewModel
 
   private let detailsView = MovieDetailsView()
+  
+  private let personelAdapter = MovieDetailsMemberListAdapter()
+  private let castListController = ListController()
+  private let crewListController = ListController()
 
   init(viewModel: MovieDetailsViewModel) {
     self.viewModel = viewModel
@@ -33,6 +37,9 @@ class MovieDetailsVC: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
+    castListController.collectionView = detailsView.infoView.castListView
+    crewListController.collectionView = detailsView.infoView.crewListView
+
     bind()
     load()
     update()
@@ -81,6 +88,9 @@ class MovieDetailsVC: UIViewController {
     detailsView.infoView.posters = viewModel.posters
     detailsView.infoView.images = viewModel.images
     
+    castListController.list = personelAdapter.list(viewModel.cast)
+    crewListController.list = personelAdapter.list(viewModel.crew)
+
     let favButton = UIBarButtonItem(
       image: viewModel.isFavorite ? UIImage.mve.starFilled : UIImage.mve.starO,
       style: .plain,

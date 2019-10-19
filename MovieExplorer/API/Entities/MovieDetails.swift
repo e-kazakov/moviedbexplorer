@@ -18,12 +18,27 @@ struct MovieDetails: Codable, Equatable {
   struct CastMember: Codable, Equatable {
     let character: String
     let name: String
+    let profilePhotoPath: String?
+    
+    private enum CodingKeys: String, CodingKey {
+      case character = "character"
+      case name = "name"
+      case profilePhotoPath = "profile_path"
+    }
   }
   
   struct CrewMember: Codable, Equatable {
     let name: String
     let job: String
     let department: String
+    let profilePhotoPath: String?
+    
+    private enum CodingKeys: String, CodingKey {
+      case name = "name"
+      case job = "job"
+      case department = "department"
+      case profilePhotoPath = "profile_path"
+    }
   }
   
   struct Credits: Codable, Equatable {

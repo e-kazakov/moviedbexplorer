@@ -28,6 +28,9 @@ protocol MovieDetailsViewModel: class {
   var images: [ImageViewModel] { get }
   var genres: String { get }
   
+  var cast: [MoviePersonellMemberViewModel] { get }
+  var crew: [MoviePersonellMemberViewModel] { get }
+
   var onChanged: (() -> Void)? { get set }
 
   func load()
@@ -45,9 +48,9 @@ class MovieDetailsViewModelImpl: MovieDetailsViewModel {
   private(set) var isFavorite: Bool = false
   private(set) var posters: [ImageViewModel] = []
   private(set) var images: [ImageViewModel] = []
-  private(set) var cast: [Any] = []
-  private(set) var crew: [Any] = []
   private(set) var genres: String = ""
+  private(set) var cast: [MoviePersonellMemberViewModel] = []
+  private(set) var crew: [MoviePersonellMemberViewModel] = []
 
   var onChanged: (() -> Void)?
 
@@ -139,6 +142,28 @@ class MovieDetailsViewModelImpl: MovieDetailsViewModel {
         .map { RemoteImageViewModel(url: $0, placeholder: placeholder, fetcher: imageFetcher) }
     }
     
+    crew = details.credits.crew.map { member -> MoviePersonellMemberViewModel in
+      let photoViewModel: ImageViewModel
+      if let photoPath = member.profilePhotoPath {
+        let photoURL = imageFetcher.posterURL(path: photoPath, size: .w500)
+        photoViewModel = RemoteImageViewModel(url: photoURL, placeholder: placeholder, fetcher: imageFetcher)
+      } else {
+        photoViewModel = StaticImageViewModel(image: placeholder)
+      }
+      return MoviePersonellMemberViewModelImpl(name: member.name, occupation: member.job, photo: photoViewModel)
+    }
+    
+    cast = details.credits.cast.map { member -> MoviePersonellMemberViewModel in
+      let photoViewModel: ImageViewModel
+      if let photoPath = member.profilePhotoPath {
+        let photoURL = imageFetcher.posterURL(path: photoPath, size: .w500)
+        photoViewModel = RemoteImageViewModel(url: photoURL, placeholder: placeholder, fetcher: imageFetcher)
+      } else {
+        photoViewModel = StaticImageViewModel(image: placeholder)
+      }
+      return MoviePersonellMemberViewModelImpl(name: member.name, occupation: member.character, photo: photoViewModel)
+    }
+
     images = details.images.backdrops
       .map { imageFetcher.posterURL(path: $0.path, size: .w780) }
       .map { RemoteImageViewModel(url: $0, placeholder: placeholder, fetcher: imageFetcher) }
