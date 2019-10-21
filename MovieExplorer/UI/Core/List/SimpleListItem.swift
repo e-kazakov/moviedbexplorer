@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SimpleListItem<T: UICollectionViewCell & Reusable & SizePreferrable>: ListItem {
+class SimpleListItem<T: UICollectionViewCell & SizePreferrable>: ListItem {
   
   func cell(in collectionView: UICollectionView, at indexPath: IndexPath) -> UICollectionViewCell {
     collectionView.dequeueReusableCell(T.self, for: indexPath)

@@ -15,6 +15,9 @@ class MovieDetailsVC: UIViewController {
   private let detailsView = MovieDetailsView()
   
   private let personelAdapter = MovieDetailsMemberListAdapter()
+  private let imagesAdapter = MovieDetailsImagesListAdapter()
+  private let postersListController = ListController()
+  private let backdropsListController = ListController()
   private let castListController = ListController()
   private let crewListController = ListController()
 
@@ -37,6 +40,8 @@ class MovieDetailsVC: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
+    postersListController.collectionView = detailsView.infoView.postersListView
+    backdropsListController.collectionView = detailsView.infoView.backdropsListView
     castListController.collectionView = detailsView.infoView.castListView
     crewListController.collectionView = detailsView.infoView.crewListView
 
@@ -85,9 +90,11 @@ class MovieDetailsVC: UIViewController {
     detailsView.infoView.taglineLabel.text = viewModel.tagline
     detailsView.infoView.taglineLabel.isHidden = viewModel.tagline == nil
     detailsView.infoView.genresLabel.text = viewModel.genres
-    detailsView.infoView.posters = viewModel.posters
-    detailsView.infoView.images = viewModel.images
     
+    detailsView.infoView.backdropsListView.isHidden = viewModel.images.isEmpty
+    
+    postersListController.list = imagesAdapter.postersList(images: viewModel.posters)
+    backdropsListController.list = imagesAdapter.backdropsList(images: viewModel.images)
     castListController.list = personelAdapter.list(viewModel.cast)
     crewListController.list = personelAdapter.list(viewModel.crew)
 

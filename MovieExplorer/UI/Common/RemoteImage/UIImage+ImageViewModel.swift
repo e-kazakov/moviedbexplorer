@@ -10,11 +10,12 @@ import UIKit
 
 extension MVE where Base: UIImageView {
   
-  func setImage(_ image: ImageViewModel?) {
+  @discardableResult
+  func setImage(_ image: ImageViewModel?) -> Disposable {
     
     guard let imageVM = image else {
       base.image = nil
-      return
+      return NoOpDisposable()
     }
     
     base.image = imageVM.image
@@ -26,6 +27,8 @@ extension MVE where Base: UIImageView {
         base.image = imageVM.image
       }
     }
+    
+    return ClosureDisposable { [weak image] in image?.onChanged = nil }
   }
 
 }

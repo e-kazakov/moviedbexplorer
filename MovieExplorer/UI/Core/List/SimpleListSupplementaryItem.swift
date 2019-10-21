@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SimpleListSupplementaryItem<T: UICollectionReusableView & Reusable & SizePreferrable>: ListSupplementaryItem {
+class SimpleListSupplementaryItem<T: UICollectionReusableView & SizePreferrable>: ListSupplementaryItem {
  
   func view(
     in collectionView: UICollectionView,

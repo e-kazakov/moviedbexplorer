@@ -6,8 +6,6 @@
 //  Copyright © 2019 Evgeny Kazakov. All rights reserved.
 //
 
-import Foundation
-
 class MovieDetailsMemberListAdapter {
   func list(_ members: [MoviePersonellMemberViewModel]) -> List {
     var section = ListSection(members.map(memberListItem))

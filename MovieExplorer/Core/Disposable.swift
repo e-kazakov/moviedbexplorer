@@ -32,3 +32,9 @@ struct ClosureDisposable: Disposable {
     disposeBlock = nil
   }
 }
+
+struct NoOpDisposable: Disposable {
+  let isDisposed = true
+  
+  mutating func dispose() { }
+}
