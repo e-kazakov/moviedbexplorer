@@ -8,16 +8,24 @@
 
 import UIKit
 
+typealias ImageCache = NSCache<NSURL, UIImage>
+
 private func createSession() -> URLSessionProtocol {
   let config = URLSessionConfiguration.default
-  config.urlCache = createCache()
+  config.urlCache = createURLSessionCache()
   return URLSession(configuration: config)
 }
 
-private func createCache() -> URLCache {
-  let mem = 100 * 1024 * 1024
+private func createURLSessionCache() -> URLCache {
+  let mem = 50 * 1024 * 1024
   let disk = 500 * 1024 * 1024
   return URLCache(memoryCapacity: mem, diskCapacity: disk, diskPath: "urlcache")
+}
+
+private func createImageCache() -> ImageCache {
+  let cache = ImageCache()
+  cache.countLimit = 200
+  return cache
 }
 
 class AppCoordinator: BaseCoordinator {
@@ -41,10 +49,18 @@ class AppCoordinator: BaseCoordinator {
   
   private lazy var apiClientModern = URLSessionAPIClient(serverConfig: serverConfig, urlSession: urlSession)
   
-  private lazy var imageFetcher = URLSessionImageFetcher(serverConfig: serverConfig, urlSession: urlSession)
+  private lazy var imageFetcher = URLSessionImageFetcher(serverConfig: serverConfig, urlSession: urlSession, cache: imageCache)
+  private lazy var imageCache = createImageCache()
   
   init(window: UIWindow) {
     self.window = window
+
+    super.init()
+    
+    NotificationCenter.default.addObserver(self,
+                                           selector: #selector(memoryWarning),
+                                           name: UIApplication.didReceiveMemoryWarningNotification,
+                                           object: nil)
   }
   
   override func start() {
@@ -66,4 +82,9 @@ class AppCoordinator: BaseCoordinator {
     startSubflow(mainTabsCoordinator)
   }
   
+  @objc
+  private func memoryWarning() {
+    debugPrint("Memory warning")
+    imageCache.removeAllObjects()
+  }  
 }

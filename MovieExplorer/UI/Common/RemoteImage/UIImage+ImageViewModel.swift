@@ -10,7 +10,6 @@ import UIKit
 
 extension MVE where Base: UIImageView {
   
-  @discardableResult
   func setImage(_ image: ImageViewModel?) -> Disposable {
     
     guard let imageVM = image else {
@@ -18,17 +17,20 @@ extension MVE where Base: UIImageView {
       return NoOpDisposable()
     }
     
-    base.image = imageVM.image
-
-    imageVM.onChanged = { [weak base, unowned imageVM] in
+    base.image = nil
+    
+    var animated = false
+    defer { animated = true }
+    
+    return imageVM.image { [weak base] image in
       guard let base = base else { return }
-      
-      self.crossDissolveTransition {
-        base.image = imageVM.image
+      if animated {
+        base.mve.crossDissolveTransition {
+          base.image = image
+        }
+      } else {
+        base.image = image
       }
     }
-    
-    return ClosureDisposable { [weak image] in image?.onChanged = nil }
   }
-
 }

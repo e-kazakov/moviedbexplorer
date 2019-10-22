@@ -46,5 +46,4 @@ class ImageCell: UICollectionViewCell {
     reuseDisposable?.dispose()
     reuseDisposable = nil
   }
-  
 }

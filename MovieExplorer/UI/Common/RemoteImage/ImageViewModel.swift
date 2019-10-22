@@ -12,79 +12,87 @@ import class UIKit.UIView
 
 
 protocol ImageViewModel: class {
-  var image: UIImage? { get }
-  
-  var onChanged: (() -> Void)? { get set }
-  
+//  var image: UIImage? { get }
+//
+//  var onChanged: (() -> Void)? { get set }
+//
+  func image(_ callback: @escaping (UIImage?) -> Void) -> Disposable
+
   func load()
-  func cancel()
+//  func cancel()
 }
 
 class RemoteImageViewModel: ImageViewModel {
   
-  private(set) var image: UIImage? {
-    didSet {
-      notifyQueue.async {
-        self.onChanged?()
-      }
-    }
-  }
+//  var image: UIImage? {
+//    get {
+//      imageStorage
+//    }
+//    set {
+//      imageStorage = newValue
+//      notifyQueue.async {
+//        self.onChanged?()
+//      }
+//    }
+//  }
   
-  var onChanged: (() -> Void)?
+//  private weak var imageStorage: UIImage?
   
+//  var onChanged: (() -> Void)?
+  
+  private let notifyQueue = DispatchQueue.main
   private let placeholder: UIImage?
   private let url: URL
   private let fetcher: ImageFetcher
 
   private var fetchDisposable: Disposable?
-  
-  private let notifyQueue = DispatchQueue.main
-    
+      
   init(url: URL, placeholder: UIImage? = nil, fetcher: ImageFetcher) {
     self.url = url
     self.placeholder = placeholder
     self.fetcher = fetcher
   }
   
+  func image(_ callback: @escaping (UIImage?) -> Void) -> Disposable {
+    return fetcher.fetch(from: url) { [weak self] result in
+      func handle() {
+        switch result {
+        case .success(let image):
+          callback(image)
+        case .failure:
+          callback(self?.placeholder)
+        }
+      }
+      
+      if Thread.isMainThread {
+        handle()
+      } else {
+        DispatchQueue.main.async {
+          handle()
+        }
+      }
+    }
+  }
+
   func load() {
-    guard fetchDisposable == nil else { return }
-    
-    fetchDisposable = fetcher.fetch(from: url) { [weak self] result in
-      self?.handleFetchResult(result)
-    }
-  }
-  
-  func cancel() {
-    fetchDisposable?.dispose()
-    fetchDisposable = nil
-  }
-  
-  private func handleFetchResult(_ result: Result<UIImage, APIError>) {
-    fetchDisposable = nil
-    
-    switch result {
-    case .success(let image):
-      self.image = image
-    case .failure:
-      image = placeholder
-    }
+    _ = fetcher.fetch(from: url) { _ in }
   }
 }
 
 class StaticImageViewModel: ImageViewModel {
   
   let image: UIImage?
-  var onChanged: (() -> Void)?
-  
+
   init(image: UIImage) {
     self.image = image
   }
   
-  func load() {
-    // no-op
+  func image(_ callback: @escaping (UIImage?) -> Void) -> Disposable {
+    callback(image)
+    return NoOpDisposable()
   }
 
-  func cancel() {
+  func load() {
     // no-op
   }
 }

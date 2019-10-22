@@ -15,7 +15,12 @@ class SearchCoordinator: BaseCoordinator {
   private let imageFetcher: ImageFetcher
   private let favorites: FavoriteMovies
   
-  init(navigation: UINavigationController, apiClient: APIClient, imageFetcher: ImageFetcher, favorites: FavoriteMovies) {
+  init(
+    navigation: UINavigationController,
+    apiClient: APIClient,
+    imageFetcher: ImageFetcher,
+    favorites: FavoriteMovies
+  ) {
     self.navigation = navigation
     self.apiClient = apiClient
     self.imageFetcher = imageFetcher

@@ -33,6 +33,7 @@ class MovieDetailsMemberCell: UICollectionViewCell {
   }()
   
   private var viewModel: MoviePersonellMemberViewModel?
+  private var reuseDisposable: Disposable?
   
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -76,7 +77,7 @@ class MovieDetailsMemberCell: UICollectionViewCell {
     
     nameLabel.text = viewModel.name
     occupationLabel.text = viewModel.occupation
-    imageView.mve.setImage(viewModel.photo)
+    reuseDisposable = imageView.mve.setImage(viewModel.photo)
     
     viewModel.photo.load()
   }
@@ -84,7 +85,8 @@ class MovieDetailsMemberCell: UICollectionViewCell {
   override func prepareForReuse() {
     super.prepareForReuse()
     
-    viewModel?.photo.onChanged = nil
+    reuseDisposable?.dispose()
+    reuseDisposable = nil
     imageView.layer.removeAllAnimations()
   }
 }
