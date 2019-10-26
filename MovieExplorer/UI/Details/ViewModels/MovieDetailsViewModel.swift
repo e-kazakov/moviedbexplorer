@@ -174,14 +174,3 @@ class MovieDetailsViewModelImpl: MovieDetailsViewModel {
     onChanged?()
   }
 }
-
-
-extension String {
-  var emptyAsNil: String? {
-    if isEmpty {
-      return nil
-    } else {
-      return self
-    }
-  }
-}

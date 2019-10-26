@@ -24,10 +24,9 @@ class MovieDetailsLoadingView: UIView {
   }
   
   private func setupSubviews() {
-    loadingIndicator.translatesAutoresizingMaskIntoConstraints = false
     loadingIndicator.startAnimating()
     
-    addSubview(loadingIndicator)
+    mve.addSubview(loadingIndicator)
     
     NSLayoutConstraint.activate([
       loadingIndicator.centerXAnchor.constraint(equalTo: centerXAnchor),

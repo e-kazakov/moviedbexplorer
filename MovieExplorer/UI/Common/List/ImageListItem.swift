@@ -1,32 +1,37 @@
 //
-//  MovieDetailsPosterListItem.swift
+//  ImageListItem.swift
 //  MovieExplorer
 //
-//  Created by Evgeny Kazakov on 10/22/19.
+//  Created by Evgeny Kazakov on 10/26/19.
 //  Copyright © 2019 Evgeny Kazakov. All rights reserved.
 //
 
 import UIKit
 
-class MovieDetailsPosterListItem: ListItem {
+class ImageListItem: ListItem {
+  
+  struct Style {
+    let aspectRatio: AspectRatio
+    let cornerRadius: CGFloat
+  }
   
   private let image: ImageViewModel
+  private let style: Style
   
-  private let aspectRatio = AspectRatio.poster
-  
-  init(image: ImageViewModel) {
+  init(image: ImageViewModel, style: Style) {
     self.image = image
+    self.style = style
   }
   
   func cell(in collectionView: UICollectionView, at indexPath: IndexPath) -> UICollectionViewCell {
     let cell = collectionView.dequeueReusableCell(ImageCell.self, for: indexPath)
     cell.configure(with: image)
-    cell.imageView.layer.cornerRadius = 8
+    cell.imageView.layer.cornerRadius = style.cornerRadius
     return cell
   }
   
   func size(containerSize: CGSize) -> CGSize {
-    aspectRatio.size(forHeight: containerSize.height)
+    style.aspectRatio.size(forHeight: containerSize.height)
   }
   
   func prefetch() {

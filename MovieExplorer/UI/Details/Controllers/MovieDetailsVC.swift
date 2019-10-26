@@ -13,13 +13,8 @@ class MovieDetailsVC: UIViewController {
   private let viewModel: MovieDetailsViewModel
 
   private let detailsView = MovieDetailsView()
-  
-  private let personelAdapter = MovieDetailsMemberListAdapter()
-  private let imagesAdapter = MovieDetailsImagesListAdapter()
-  private let postersListController = ListController()
-  private let backdropsListController = ListController()
-  private let castListController = ListController()
-  private let crewListController = ListController()
+  private let detailsListAdapter = MovieDetailsListAdapter()
+  private let detailsListController = ListController()
 
   init(viewModel: MovieDetailsViewModel) {
     self.viewModel = viewModel
@@ -40,10 +35,7 @@ class MovieDetailsVC: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    postersListController.collectionView = detailsView.infoView.postersListView
-    backdropsListController.collectionView = detailsView.infoView.backdropsListView
-    castListController.collectionView = detailsView.infoView.castListView
-    crewListController.collectionView = detailsView.infoView.crewListView
+    detailsListController.collectionView = detailsView.collectionView
 
     bind()
     load()
@@ -83,20 +75,8 @@ class MovieDetailsVC: UIViewController {
     }
     
     title = viewModel.title
-    detailsView.infoView.nameLabel.text = viewModel.title
-    detailsView.infoView.overviewLabel.text = viewModel.overview
-    detailsView.infoView.releaseYearLabel.text = viewModel.releaseYear
-    detailsView.infoView.durationLabel.text = viewModel.duration
-    detailsView.infoView.taglineLabel.text = viewModel.tagline
-    detailsView.infoView.taglineLabel.isHidden = viewModel.tagline == nil
-    detailsView.infoView.genresLabel.text = viewModel.genres
     
-    detailsView.infoView.backdropsListView.isHidden = viewModel.images.isEmpty
-    
-    postersListController.list = imagesAdapter.postersList(images: viewModel.posters)
-    backdropsListController.list = imagesAdapter.backdropsList(images: viewModel.images)
-    castListController.list = personelAdapter.list(viewModel.cast)
-    crewListController.list = personelAdapter.list(viewModel.crew)
+    detailsListController.list = detailsListAdapter.list(viewModel)
 
     let favButton = UIBarButtonItem(
       image: viewModel.isFavorite ? UIImage.mve.starFilled : UIImage.mve.starO,

@@ -91,13 +91,6 @@ class MovieDetailsMemberCell: UICollectionViewCell {
   }
 }
 
-extension MVE where Base: UIView {
-  func addSubview(_ subview: UIView) {
-    subview.translatesAutoresizingMaskIntoConstraints = false
-    base.addSubview(subview)
-  }
-}
-
 extension MovieDetailsMemberCell: SizePreferrable {
   static func preferredSize(inContainer containerSize: CGSize) -> CGSize {
     CGSize(width: 125, height: containerSize.height)

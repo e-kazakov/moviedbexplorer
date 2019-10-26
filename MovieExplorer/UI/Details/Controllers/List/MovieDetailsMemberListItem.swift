@@ -35,5 +35,4 @@ class MovieDetailsMemberListItem: ListItem {
   func select() {
     onSelect?()
   }
-  
 }

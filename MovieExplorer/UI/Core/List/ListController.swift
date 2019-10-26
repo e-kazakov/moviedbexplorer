@@ -91,7 +91,8 @@ extension ListController: UICollectionViewDelegateFlowLayout {
     layout collectionViewLayout: UICollectionViewLayout,
     sizeForItemAt indexPath: IndexPath
   ) -> CGSize {
-    let containerSize = collectionView.bounds.size
+    var containerSize = collectionView.bounds.size
+    containerSize.width -= list[indexPath.section].inset.horizontal
     return list[indexPath].size(containerSize: containerSize)
   }
   
