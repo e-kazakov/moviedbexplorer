@@ -17,7 +17,9 @@ class MovieDetailsListAdapter {
       titleSection(viewModel.title),
       overviewSection(tagline: viewModel.tagline, overview: viewModel.overview),
       imagesSection(viewModel.images),
+      castTitleSection(viewModel.cast),
       castSection(viewModel.cast),
+      crewTitleSection(viewModel.crew),
       crewSection(viewModel.crew),
       recommendedMoviesSection(),
       similarMoviesSection(),
@@ -81,10 +83,18 @@ class MovieDetailsListAdapter {
     return section
   }
   
+  private func castTitleSection(_ cast: [MoviePersonellMemberViewModel]) -> ListSection? {
+    return membersTitleSection(members: cast, title: "Cast")
+  }
+  
   private func castSection(_ cast: [MoviePersonellMemberViewModel]) -> ListSection? {
     membersSection(members: cast, identifier: "cast")
   }
 
+  private func crewTitleSection(_ cast: [MoviePersonellMemberViewModel]) -> ListSection? {
+    return membersTitleSection(members: cast, title: "Crew")
+  }
+  
   private func crewSection(_ crew: [MoviePersonellMemberViewModel]) -> ListSection? {
     membersSection(members: crew, identifier: "crew")
   }
@@ -92,12 +102,20 @@ class MovieDetailsListAdapter {
   private func membersSection(members: [MoviePersonellMemberViewModel], identifier: String) -> ListSection? {
     guard !members.isEmpty else { return nil }
     let listController = ListController()
-    listController.list = MovieDetailsMemberListAdapter().list(members)
+    listController.list = MovieDetailsMembersListAdapter().list(members)
     
     var section = ListSection([
       ListListItem(controller: listController, height: 240, reuseIdentifier: identifier)
     ])
     section.inset = UIEdgeInsets(top: 4, left: 0, bottom: 0, right: 0)
+    return section
+  }
+
+  private func membersTitleSection(members: [MoviePersonellMemberViewModel], title: String) -> ListSection? {
+    guard !members.isEmpty else { return nil }
+    
+    var section = ListSection([MovieDetailsMembersHeaderListItem(title: title)])
+    section.inset = UIEdgeInsets(top: 16, left: 16, bottom: 0, right: 16)
     return section
   }
   

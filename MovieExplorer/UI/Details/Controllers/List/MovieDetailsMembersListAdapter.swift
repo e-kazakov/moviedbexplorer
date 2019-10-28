@@ -8,18 +8,18 @@
 
 import UIKit
 
-class MovieDetailsMemberListAdapter {
+class MovieDetailsMembersListAdapter {
   
   func list(_ members: [MoviePersonellMemberViewModel]) -> List {
-    var section = ListSection(members.map(memberListItem))
+    var section = ListSection(members.map(membersListItem))
     section.minimumInteritemSpacing = 8
     section.minimumLineSpacing = 8
-    section.inset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+    section.inset = UIEdgeInsets(top: 8, left: 16, bottom: 0, right: 16)
 
     return List(sections: [section])
   }
   
-  private func memberListItem(_ member: MoviePersonellMemberViewModel) -> ListItem {
+  private func membersListItem(_ member: MoviePersonellMemberViewModel) -> ListItem {
     MovieDetailsMemberListItem(member: member)
   }
 }

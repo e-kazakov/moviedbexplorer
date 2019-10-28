@@ -39,4 +39,11 @@ extension LabelCell.Style {
       numberOfLines: 0
     )
   }
+  
+  static var movieDetailsMembersTitleStyle: LabelCell.Style {
+    LabelCell.Style(
+      font: UIFont.preferredFont(forTextStyle: UIFont.TextStyle.headline),
+      numberOfLines: 1
+    )
+  }
 }
