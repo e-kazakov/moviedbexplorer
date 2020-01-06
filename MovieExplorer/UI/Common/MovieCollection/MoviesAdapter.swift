@@ -6,8 +6,8 @@
 //  Copyright © 2019 Evgeny Kazakov. All rights reserved.
 //
 
-typealias MovieSkeletonListItem = SimpleListItem<MovieSkeletonCell>
-typealias MovieLoadingSupplementaryItem = SimpleListSupplementaryItem<MovieSkeletonCell>
+private typealias MovieSkeletonListItem = SimpleListItem<MovieSkeletonCell>
+private typealias MovieSkeletonSupplementaryItem = SimpleListSupplementaryItem<MovieSkeletonCell>
 
 class MoviesAdapter {
   
@@ -28,7 +28,7 @@ class MoviesAdapter {
   private func footer(_ status: MoviesListViewModelStatus) -> ListSupplementaryItem? {
     switch status {
     case .loadingNext:
-      return MovieLoadingSupplementaryItem()
+      return MovieSkeletonSupplementaryItem()
     
     case .failedToLoadNext:
       let failedFooter = MovieLoadingFailedSupplementaryItem()

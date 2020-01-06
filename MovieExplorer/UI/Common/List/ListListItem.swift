@@ -16,10 +16,18 @@ class ListListItem: ListItem {
   
   private let reuseIdentifier: String?
   
-  init(controller: ListController, height: CGFloat, reuseIdentifier: String? = nil) {
+  private let isScrollEnabled: Bool
+  
+  init(
+    controller: ListController,
+    height: CGFloat,
+    reuseIdentifier: String? = nil,
+    scrollEnabled: Bool = true
+  ) {
     listController = controller
     self.height = height
     self.reuseIdentifier = reuseIdentifier
+    isScrollEnabled = scrollEnabled
   }
   
   func cell(in collectionView: UICollectionView, at indexPath: IndexPath) -> UICollectionViewCell {
@@ -28,6 +36,7 @@ class ListListItem: ListItem {
       withReuseIdentifier: reuseIdentifier ?? ListCell.defaultReuseIdentifier,
       for: indexPath
     )
+    listCell.listView.isScrollEnabled = isScrollEnabled
     listController.collectionView = listCell.listView
     return configure(listCell)
   }

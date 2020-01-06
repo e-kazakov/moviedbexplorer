@@ -155,14 +155,25 @@ extension ListController: UICollectionViewDelegateFlowLayout {
   }
   
   private var distanceToEndThreshold: CGFloat {
-    guard let cv = collectionView else { return 0 }
+    guard
+      let cv = collectionView,
+      let layout = cv.collectionViewLayout as? UICollectionViewFlowLayout
+      else { return 0 }
     
-    return cv.bounds.height * screensOfContentToBeCloseToEnd
+    let screen = layout.scrollDirection == .vertical ? cv.bounds.height : cv.bounds.width
+    return screen * screensOfContentToBeCloseToEnd
   }
   
   private var distanceToEnd: CGFloat {
-    guard let cv = collectionView else { return 0 }
-
-    return cv.contentSize.height - cv.bounds.size.height - cv.contentOffset.y
+    guard
+      let cv = collectionView,
+      let layout = cv.collectionViewLayout as? UICollectionViewFlowLayout
+      else { return 0 }
+    
+    if layout.scrollDirection == .vertical {
+      return cv.contentSize.height - cv.bounds.size.height - cv.contentOffset.y
+    } else {
+      return cv.contentSize.width - cv.bounds.size.width - cv.contentOffset.x
+    }
   }
 }

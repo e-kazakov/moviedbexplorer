@@ -29,9 +29,9 @@ class TMDBMoviesList: MoviesList {
 
   private var isFirstPageLoaded = false
   private var nextPage: Int? = nil
-  private let service: DiscoverAPIService
+  private let service: MoviesLoader
 
-  init(service: DiscoverAPIService) {
+  init(service: MoviesLoader) {
     self.service = service
   }
   
@@ -56,7 +56,7 @@ class TMDBMoviesList: MoviesList {
     guard !store.state.status.isLoading else { return }
     
     startLoading()
-    _ = service.discover(page: page) { [weak self] result in
+    _ = service.load(page: page) { [weak self] result in
       switch result {
       case .success(let paginatedResponse):
         self?.loaded(movies: paginatedResponse.results, nextPage: paginatedResponse.nextPage)

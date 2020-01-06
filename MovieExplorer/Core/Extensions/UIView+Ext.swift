@@ -14,3 +14,13 @@ extension MVE where Base: UIView {
     base.addSubview(subview)
   }
 }
+
+extension UIView {
+  
+  convenience init(color: UIColor) {
+    self.init()
+    
+    backgroundColor = color
+  }
+  
+}

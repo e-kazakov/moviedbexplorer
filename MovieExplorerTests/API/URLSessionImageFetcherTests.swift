@@ -17,13 +17,17 @@ private let testServerConfig = MovieDBServerConfig(
 
 class URLSessionImageFetcherTests: XCTestCase {
   
+  private var cache = ImageCache()
   private var sessionMock = FakeURLSession()
-  private lazy var fetcher = URLSessionImageFetcher(serverConfig: testServerConfig, urlSession: sessionMock)
+  private lazy var fetcher = URLSessionImageFetcher(
+    serverConfig: testServerConfig, urlSession: sessionMock, cache: cache
+  )
 
   override func setUp() {
     super.setUp()
     sessionMock = FakeURLSession()
-    fetcher = URLSessionImageFetcher(serverConfig: testServerConfig, urlSession: sessionMock)
+    cache = ImageCache()
+    fetcher = URLSessionImageFetcher(serverConfig: testServerConfig, urlSession: sessionMock, cache: cache)
   }
 
   func testPosterURL_Get_ReturnsCorrectURL() {

@@ -10,11 +10,24 @@ import UIKit
 
 class MovieDetailsVC: UIViewController {
   
+  var goToMovieDetails: ((Movie) -> Void)?
+
   private let viewModel: MovieDetailsViewModel
 
   private let detailsView = MovieDetailsView()
-  private let detailsListAdapter = MovieDetailsListAdapter()
+  
+  private lazy var detailsListAdapter = MovieDetailsListAdapter(
+    similarMoviesAdapter: similarMoviesListAdapter,
+    similarMoviesController: similarMoviesListController,
+    recommendedMoviesAdapter: recommendedMoviesListAdapter,
+    recommendedMoviesController: recommendedMoviesListController
+  )
   private let detailsListController = ListController()
+  
+  private let similarMoviesListAdapter = MovieDetailsRelatedMoviesListAdapter()
+  private let similarMoviesListController = ListController()
+  private let recommendedMoviesListAdapter = MovieDetailsRelatedMoviesListAdapter()
+  private let recommendedMoviesListController = ListController()
 
   init(viewModel: MovieDetailsViewModel) {
     self.viewModel = viewModel
@@ -55,13 +68,29 @@ class MovieDetailsVC: UIViewController {
   }
   
   private func bindOutputs() {
-    viewModel.onChanged = { [weak self] in
+    let changeHandler: () -> Void = { [weak self] in
       self?.update()
     }
+    let navigateToDetails: (Movie) -> Void = { [weak self] movie in
+      self?.goToMovieDetails?(movie)
+    }
+    
+    viewModel.onChanged = changeHandler
+    viewModel.similarMovies.onChanged = changeHandler
+    viewModel.recommendedMovies.onChanged = changeHandler
+    
+    viewModel.similarMovies.onGoToDetails = navigateToDetails
+    viewModel.recommendedMovies.onGoToDetails = navigateToDetails
   }
   
   private func bindInputs() {
     detailsView.errorView.onRetry = viewModel.load
+    
+    recommendedMoviesListAdapter.onRetry = viewModel.recommendedMovies.retry
+    recommendedMoviesListController.onCloseToEnd = viewModel.recommendedMovies.loadNext
+    
+    similarMoviesListAdapter.onRetry = viewModel.similarMovies.retry
+    similarMoviesListController.onCloseToEnd = viewModel.similarMovies.loadNext
   }
   
   private func update() {
@@ -89,6 +118,8 @@ class MovieDetailsVC: UIViewController {
   
   private func load() {
     viewModel.load()
+    viewModel.recommendedMovies.loadNext()
+    viewModel.similarMovies.loadNext()
   }
 
   // MARK: Actions

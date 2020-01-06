@@ -10,10 +10,10 @@ import UIKit
 
 class MovieSkeletonMaskView: UIView {
   
-  let imageStub = UIView.black
-  let titleStub = UIView.black
-  let yearStub = UIView.black
-  let textLinesStubs = (0..<7).map { _ in UIView.black }
+  let imageStub = UIView(color: .black)
+  let titleStub = UIView(color: .black)
+  let yearStub = UIView(color: .black)
+  let textLinesStubs = (0..<7).map { _ in UIView(color: .black) }
 
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -26,11 +26,10 @@ class MovieSkeletonMaskView: UIView {
   }
   
   private func setupSubviews() {
-    self.addSubview(imageStub)
-    self.addSubview(imageStub)
-    self.addSubview(titleStub)
-    self.addSubview(yearStub)
-    textLinesStubs.forEach(self.addSubview)
+    addSubview(imageStub)
+    addSubview(titleStub)
+    addSubview(yearStub)
+    textLinesStubs.forEach(addSubview)
   }
   
   override func layoutSubviews() {
@@ -53,6 +52,7 @@ private struct Layout {
   let yearFrame: CGRect
   let textLinesFrames: [CGRect]
   
+  private static let imageSize = CGSize(width: 125, height: 186)
   private static let titleLeftTop = 6 as CGFloat
   private static let titleLeftOffset = 12 as CGFloat
   private static let titleRightOffset = 32 as CGFloat
@@ -65,9 +65,8 @@ private struct Layout {
   private static let textLineVerticalOffset = 16 as CGFloat
 
   static func layout(for size: CGSize) -> Layout {
-    let imageSize = CGSize(width: 125, height: 186)
-    let imageOrigin = CGPoint(x: 0, y: (size.height - imageSize.height)/2)
-    let imageFrame = CGRect(origin: imageOrigin, size: imageSize)
+    let imageOrigin = CGPoint(x: 0, y: (size.height - Layout.imageSize.height)/2)
+    let imageFrame = CGRect(origin: imageOrigin, size: Layout.imageSize)
     
     let titleOrigin = CGPoint(x: imageFrame.maxX + Layout.titleLeftOffset,
                               y: titleLeftTop)
@@ -94,14 +93,4 @@ private struct Layout {
                   textLinesFrames: textLinesFrames)
   }
 
-}
-
-private extension UIView {
-  
-  static var black: UIView {
-    let v = UIView()
-    v.backgroundColor = .black
-    return v
-  }
-  
 }

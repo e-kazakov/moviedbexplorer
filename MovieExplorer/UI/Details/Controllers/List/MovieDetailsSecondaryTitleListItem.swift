@@ -1,5 +1,5 @@
 //
-//  MovieDetailsMembersHeaderListItem.swift
+//  MovieDetailsSecondaryTitleListItem.swift
 //  MovieExplorer
 //
 //  Created by Evgeny Kazakov on 10/28/19.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MovieDetailsMembersHeaderListItem: ListItem {
+class MovieDetailsSecondaryTitleListItem: ListItem {
   
   private let style = LabelCell.Style.movieDetailsMembersTitleStyle
   private let title: String

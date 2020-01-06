@@ -12,8 +12,8 @@ class MovieDetailsMembersListAdapter {
   
   func list(_ members: [MoviePersonellMemberViewModel]) -> List {
     var section = ListSection(members.map(membersListItem))
-    section.minimumInteritemSpacing = 8
-    section.minimumLineSpacing = 8
+    section.minimumInteritemSpacing = 12
+    section.minimumLineSpacing = 12
     section.inset = UIEdgeInsets(top: 8, left: 16, bottom: 0, right: 16)
 
     return List(sections: [section])

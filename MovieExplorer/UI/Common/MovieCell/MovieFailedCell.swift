@@ -12,6 +12,15 @@ class MovieFailedCell: UICollectionViewCell {
   
   var onRetry: (() -> Void)?
   
+  var message: String? {
+    get {
+      messageLabel.text
+    }
+    set {
+      messageLabel.text = newValue
+    }
+  }
+  
   private let retryButton: UIButton = {
     let button = UIButton(type: .system)
     button.setTitle("Retry", for: .normal)

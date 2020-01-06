@@ -65,4 +65,10 @@ struct List {
 
 extension List {
   static let empty = List(sections: [])
+  
+  static func single(_ item: ListItem) -> List {
+    List(sections: [
+      ListSection([item])
+    ])
+  }
 }

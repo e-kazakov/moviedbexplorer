@@ -1,22 +1,20 @@
 //
-//  MovieSkeletonCell.swift
+//  MovieDetailsRelatedMovieSkeletonCell.swift
 //  MovieExplorer
 //
-//  Created by Evgeny Kazakov on 5/26/19.
-//  Copyright © 2019 Evgeny Kazakov. All rights reserved.
+//  Created by Evgeny Kazakov on 1/6/20.
+//  Copyright © 2020 Evgeny Kazakov. All rights reserved.
 //
 
 import UIKit
 
-class MovieSkeletonCell: UICollectionViewCell {
+class MovieDetailsRelatedMovieSkeletonCell: UICollectionViewCell {
   
   static let duration = 1.0
   
   private let skeletonColor = UIColor.appSkeleton
   
-  private let separatorView = UIView(color: .appSeparator)
-  
-  private let animatingViewMask = MovieSkeletonMaskView()
+  private let animatingViewMask = MovieDetailsRelatedMovieSkeletonMaskView()
   
   private lazy var animatingView: UIView = {
     let view = UIView()
@@ -39,7 +37,6 @@ class MovieSkeletonCell: UICollectionViewCell {
     super.init(frame: frame)
 
     contentView.addSubview(animatingView)
-    contentView.addSubview(separatorView)
   }
   
   required init?(coder aDecoder: NSCoder) {
@@ -51,24 +48,7 @@ class MovieSkeletonCell: UICollectionViewCell {
 
     animatingView.frame = contentView.bounds
     animatingView.mask?.frame = animatingView.bounds
-    
-    animatingView.layoutIfNeeded()
-    let titleFrame = convert(animatingViewMask.titleStub.frame, from: animatingViewMask)
-    
-    let separatorOffset = titleFrame.origin.x
-    let separatorWidth = bounds.width - separatorOffset
-    let separatorHeight = 1.0/UIScreen.main.scale
-    separatorView.frame = CGRect(
-      origin: CGPoint(
-        x: separatorOffset,
-        y: bounds.height - separatorHeight
-      ),
-      size: CGSize(
-        width: separatorWidth,
-        height: separatorHeight
-      )
-    )
-    
+
     if gradientLayer.frame != animatingView.layer.bounds {
       gradientLayer.frame = animatingView.layer.bounds
       if (!gradientLayer.isHidden) {
@@ -136,8 +116,8 @@ class MovieSkeletonCell: UICollectionViewCell {
   }
 }
 
-extension MovieSkeletonCell: SizePreferrable {
+extension MovieDetailsRelatedMovieSkeletonCell: SizePreferrable {
   static func preferredSize(inContainer containerSize: CGSize) -> CGSize {
-    CGSize(width: containerSize.width, height: 180)
+    CGSize(width: 125, height: containerSize.height)
   }
 }

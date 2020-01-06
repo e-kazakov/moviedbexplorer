@@ -50,6 +50,9 @@ class SearchCoordinator: BaseCoordinator {
     let service = MovieDetailsAPIServiceImpl(client: apiClient)
     let vm = MovieDetailsViewModelImpl(movie: movie, movieDetailsService: service, favorites: favorites, imageFetcher: imageFetcher)
     let detailsVC = MovieDetailsVC(viewModel: vm)
+    detailsVC.goToMovieDetails = { [weak self] movie in
+      self?.showDetails(movie)
+    }
     navigation.pushViewController(detailsVC, animated: true)
   }
 

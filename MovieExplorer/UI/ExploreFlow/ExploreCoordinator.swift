@@ -31,7 +31,7 @@ class ExploreCoordinator: BaseCoordinator {
     super.start()
     
     let moviesListViewModel = MoviesListViewModelImpl(
-      moviesList: TMDBMoviesList(service: DiscoverAPIServiceImpl(client: apiClient)),
+      moviesList: TMDBMoviesList(service: ExploreMoviesLoader(service: DiscoverAPIServiceImpl(client: apiClient))),
       imageFetcher: imageFetcher
     )
     let vc = ExploreVC(viewModel: moviesListViewModel)
@@ -45,6 +45,9 @@ class ExploreCoordinator: BaseCoordinator {
     let service = MovieDetailsAPIServiceImpl(client: apiClient)
     let vm = MovieDetailsViewModelImpl(movie: movie, movieDetailsService: service, favorites: favorites, imageFetcher: imageFetcher)
     let detailsVC = MovieDetailsVC(viewModel: vm)
+    detailsVC.goToMovieDetails = { [weak self] movie in
+      self?.showDetails(movie)
+    }
     navigation.pushViewController(detailsVC, animated: true)
   }
   

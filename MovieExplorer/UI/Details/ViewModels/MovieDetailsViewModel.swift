@@ -30,6 +30,9 @@ protocol MovieDetailsViewModel: class {
   
   var cast: [MoviePersonellMemberViewModel] { get }
   var crew: [MoviePersonellMemberViewModel] { get }
+  
+  var similarMovies: RelatedMoviesListViewModel { get }
+  var recommendedMovies: RelatedMoviesListViewModel { get }
 
   var onChanged: (() -> Void)? { get set }
 
@@ -51,6 +54,9 @@ class MovieDetailsViewModelImpl: MovieDetailsViewModel {
   private(set) var genres: String = ""
   private(set) var cast: [MoviePersonellMemberViewModel] = []
   private(set) var crew: [MoviePersonellMemberViewModel] = []
+  
+  let similarMovies: RelatedMoviesListViewModel
+  let recommendedMovies: RelatedMoviesListViewModel
 
   var onChanged: (() -> Void)?
 
@@ -74,11 +80,18 @@ class MovieDetailsViewModelImpl: MovieDetailsViewModel {
     self.movieDetailsService = movieDetailsService
     self.imageFetcher = imageFetcher
     self.favorites = favorites
+    self.similarMovies = RelatedMoviesListViewModelImpl(
+      moviesList: TMDBMoviesList(service: SimilarMoviesLoader(moviedId: movie.id, service: movieDetailsService)),
+      imageFetcher: imageFetcher
+    )
+    self.recommendedMovies = RelatedMoviesListViewModelImpl(
+      moviesList: TMDBMoviesList(service: RecommendedMoviesLoader(moviedId: movie.id, service: movieDetailsService)),
+      imageFetcher: imageFetcher
+    )
     
-    let releaseYear = movie.releaseDate?.split(separator: "-").first.map(String.init) ?? "N/A"
     title = movie.title ?? ""
     overview = movie.overview?.emptyAsNil
-    self.releaseYear = releaseYear
+    releaseYear = movie.releaseDate?.split(separator: "-").first.map(String.init) ?? "N/A"
 
     update(favorites.store.state)
     disposable = favorites.store.observe { [weak self] favoritesState in

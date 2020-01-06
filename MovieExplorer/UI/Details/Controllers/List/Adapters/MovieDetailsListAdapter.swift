@@ -10,6 +10,23 @@ import UIKit
 
 class MovieDetailsListAdapter {
   
+  private let similarMoviesAdapter: MovieDetailsRelatedMoviesListAdapter
+  private let similarMoviesController: ListController
+  private let recommendedMoviesAdapter: MovieDetailsRelatedMoviesListAdapter
+  private let recommendedMoviesController: ListController
+
+  init(
+    similarMoviesAdapter: MovieDetailsRelatedMoviesListAdapter,
+    similarMoviesController: ListController,
+    recommendedMoviesAdapter: MovieDetailsRelatedMoviesListAdapter,
+    recommendedMoviesController: ListController
+  ) {
+    self.similarMoviesAdapter = similarMoviesAdapter
+    self.similarMoviesController = similarMoviesController
+    self.recommendedMoviesAdapter = recommendedMoviesAdapter
+    self.recommendedMoviesController = recommendedMoviesController
+  }
+  
   func list(_ viewModel: MovieDetailsViewModel) -> List {
     let sections = [
       postersSection(viewModel.posters),
@@ -21,8 +38,10 @@ class MovieDetailsListAdapter {
       castSection(viewModel.cast),
       crewTitleSection(viewModel.crew),
       crewSection(viewModel.crew),
-      recommendedMoviesSection(),
-      similarMoviesSection(),
+      relatedMoviesTitleSection("Recommended"),
+      recommendedMoviesSection(viewModel.recommendedMovies),
+      relatedMoviesTitleSection("Similar"),
+      similarMoviesSection(viewModel.similarMovies),
     ]
     return List(sections: sections.compactMap({ $0 }))
   }
@@ -114,16 +133,57 @@ class MovieDetailsListAdapter {
   private func membersTitleSection(members: [MoviePersonellMemberViewModel], title: String) -> ListSection? {
     guard !members.isEmpty else { return nil }
     
-    var section = ListSection([MovieDetailsMembersHeaderListItem(title: title)])
+    var section = ListSection([MovieDetailsSecondaryTitleListItem(title: title)])
     section.inset = UIEdgeInsets(top: 16, left: 16, bottom: 0, right: 16)
     return section
   }
   
-  private func recommendedMoviesSection() -> ListSection? {
-    nil
+  private func relatedMoviesTitleSection(_ title: String) -> ListSection {
+    var section = ListSection([MovieDetailsSecondaryTitleListItem(title: title)])
+    section.inset = UIEdgeInsets(top: 16, left: 16, bottom: 0, right: 16)
+    return section
   }
   
-  private func similarMoviesSection() -> ListSection? {
-    nil
+  private func recommendedMoviesSection(_ movies: RelatedMoviesListViewModel) -> ListSection? {
+    relatedMoviesSection(
+      movies,
+      adapter: recommendedMoviesAdapter,
+      controller: recommendedMoviesController,
+      identifier: "recommended"
+    )
+  }
+  
+  private func similarMoviesSection(_ movies: RelatedMoviesListViewModel) -> ListSection? {
+    relatedMoviesSection(
+      movies,
+      adapter: similarMoviesAdapter,
+      controller: similarMoviesController,
+      identifier: "similar"
+    )
+  }
+  
+  private func relatedMoviesSection(
+    _ movies: RelatedMoviesListViewModel,
+    adapter: MovieDetailsRelatedMoviesListAdapter,
+    controller listController: ListController,
+    identifier: String
+  ) -> ListSection? {
+      
+    // TODO: Update inner collection without reloading outer one.
+//    movies.onChanged = { [weak listController, weak adapter] in
+//      guard let listController = listController, let adapter = adapter else { return }
+//      listController.list = adapter.list(movies)
+//      // enabled scrolling
+//    }
+
+    listController.list = adapter.list(movies)
+    
+    let isListScrollable = movies.status != .loading && movies.status != .failedToLoad
+    
+    var section = ListSection([
+      ListListItem(controller: listController, height: 240, reuseIdentifier: identifier, scrollEnabled: isListScrollable)
+    ])
+    section.inset = UIEdgeInsets(top: 4, left: 0, bottom: 0, right: 0)
+    return section
   }
 }
