@@ -36,17 +36,19 @@ class FavoriteMoviesTests: XCTestCase {
     let moviesIds = Set(movies.map({ $0.id }))
     let fakeFavoritesRepository = FakeFavoriteMoviesRepository(movies: movies)
 
+    let expectedMovies: [Movie] = movies.reversed()
+    
     // when
     let favorites = TMDBFavoriteMovies(repository: fakeFavoritesRepository)
 
     // then
-    XCTAssertEqual(movies, favorites.store.state.movies)
+    XCTAssertEqual(expectedMovies, favorites.store.state.movies)
     XCTAssertEqual(moviesIds, favorites.store.state.ids)
   }
   
   // MARK: Toggle tests
 
-  func testToggleFavorite_NotFavoriteMovie_UpdatesStateWithTheMovie() {
+  func testToggleFavorite_NotFavoriteMovieEmptyState_UpdatesStateWithTheMovie() {
     // given
     let movie = Movie.random
     let expectedFavoriteMovies = [movie]
@@ -57,6 +59,22 @@ class FavoriteMoviesTests: XCTestCase {
     
     // then
     XCTAssertEqual(expectedFavoriteMovies, actualFavoriteMovies)
+  }
+
+  func testToggleFavorite_NotFavoriteMovieNonEmptyState_UpdatesStateWithTheMovieAtTheBeginning() {
+    // given
+    let movie = Movie.random
+    let initialMovie = Movie.random
+    let fakeFavoritesRepository = FakeFavoriteMoviesRepository(movies: [initialMovie])
+
+    let expectedFavoriteMovies = [movie, initialMovie]
+    
+    // when
+    let favorites = TMDBFavoriteMovies(repository: fakeFavoritesRepository)
+    favorites.toggleFavorite(movie: movie)
+
+    // then
+    XCTAssertEqual(expectedFavoriteMovies, favorites.store.state.movies)
   }
 
   func testToggleFavorite_NotFavoriteMovie_SavesTheMovieInRepository() {
@@ -72,7 +90,7 @@ class FavoriteMoviesTests: XCTestCase {
     XCTAssertEqual(expectedSavedMovies, actualSavedMovies)
   }
   
-  func testToggleFavorite_FavoriteMovie_UpdatesStateWithRemovesMovie() {
+  func testToggleFavorite_FavoriteMovie_RemovesTheMovieFromState() {
     // given
     let movie = Movie.random
     let expectedFavorites: [Movie] = []
@@ -80,10 +98,10 @@ class FavoriteMoviesTests: XCTestCase {
     // when
     favorites.toggleFavorite(movie: movie)
     favorites.toggleFavorite(movie: movie)
-    let actualFavotites = favorites.store.state.movies
+    let actualFavorites = favorites.store.state.movies
     
     // then
-    XCTAssertEqual(expectedFavorites, actualFavotites)
+    XCTAssertEqual(expectedFavorites, actualFavorites)
   }
 
   func testToggleFavorite_FavoriteMovie_RemovesTheMovieFromRepository() {

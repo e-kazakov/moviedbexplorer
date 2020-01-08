@@ -17,7 +17,7 @@ struct FavoriteMoviesState {
 
 extension FavoriteMoviesState {
   mutating func add(movie: Movie) {
-    movies.append(movie)
+    movies.insert(movie, at: movies.startIndex)
     ids.insert(movie.id)
   }
   
@@ -72,7 +72,7 @@ class TMDBFavoriteMovies: FavoriteMovies {
   private func load() {
     store.update { state in
       let loaded = repository.movies()
-      state.movies = loaded
+      state.movies = loaded.reversed()
       state.ids = Set(loaded.map { $0.id })
     }
   }
