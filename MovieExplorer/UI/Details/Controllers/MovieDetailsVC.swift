@@ -76,9 +76,7 @@ class MovieDetailsVC: UIViewController {
     }
     
     viewModel.onChanged = changeHandler
-    viewModel.similarMovies.onChanged = changeHandler
-    viewModel.recommendedMovies.onChanged = changeHandler
-    
+
     viewModel.similarMovies.onGoToDetails = navigateToDetails
     viewModel.recommendedMovies.onGoToDetails = navigateToDetails
   }

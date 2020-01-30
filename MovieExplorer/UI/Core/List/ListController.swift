@@ -13,6 +13,12 @@ class ListController: NSObject {
   var onCloseToEnd: (() -> Void)?
   
   var screensOfContentToBeCloseToEnd: CGFloat = 1
+  
+  var isScrollable = true {
+    didSet {
+      collectionView?.isScrollEnabled = isScrollable
+    }
+  }
 
   var list: List = .empty {
     didSet {
@@ -32,6 +38,8 @@ class ListController: NSObject {
     collectionView.delegate = self
     collectionView.dataSource = self
     collectionView.prefetchDataSource = self
+    
+    collectionView.isScrollEnabled = isScrollable
   }
   
   private func reloadData() {

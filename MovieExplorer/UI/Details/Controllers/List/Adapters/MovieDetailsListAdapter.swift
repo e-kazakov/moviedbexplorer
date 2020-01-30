@@ -169,19 +169,17 @@ class MovieDetailsListAdapter {
     identifier: String
   ) -> ListSection? {
       
-    // TODO: Update inner collection without reloading outer one.
-//    movies.onChanged = { [weak listController, weak adapter] in
-//      guard let listController = listController, let adapter = adapter else { return }
-//      listController.list = adapter.list(movies)
-//      // enabled scrolling
-//    }
+    movies.onChanged = { [weak listController, weak adapter] in
+      guard let listController = listController, let adapter = adapter else { return }
+      listController.list = adapter.list(movies)
+      listController.isScrollable = true
+    }
 
     listController.list = adapter.list(movies)
-    
-    let isListScrollable = movies.status != .loading && movies.status != .failedToLoad
+    listController.isScrollable = movies.status != .loading && movies.status != .failedToLoad
     
     var section = ListSection([
-      ListListItem(controller: listController, height: 240, reuseIdentifier: identifier, scrollEnabled: isListScrollable)
+      ListListItem(controller: listController, height: 240, reuseIdentifier: identifier)
     ])
     section.inset = UIEdgeInsets(top: 4, left: 0, bottom: 0, right: 0)
     return section
