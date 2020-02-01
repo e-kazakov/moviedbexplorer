@@ -21,6 +21,7 @@ class MovieDetailsMemberListItem: ListItem {
   func cell(in collectionView: UICollectionView, at indexPath: IndexPath) -> UICollectionViewCell {
     let cell = collectionView.dequeueReusableCell(MovieDetailsMemberCell.self, for: indexPath)
     cell.configure(with: member)
+    member.photo?.load()
     return cell
   }
   
@@ -29,7 +30,7 @@ class MovieDetailsMemberListItem: ListItem {
   }
   
   func prefetch() {
-    member.photo.load()
+    member.photo?.load()
   }
   
   func select() {

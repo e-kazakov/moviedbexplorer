@@ -155,27 +155,8 @@ class MovieDetailsViewModelImpl: MovieDetailsViewModel {
         .map { RemoteImageViewModel(url: $0, placeholder: placeholder, fetcher: imageFetcher) }
     }
     
-    crew = details.credits.crew.map { member -> MoviePersonellMemberViewModel in
-      let photoViewModel: ImageViewModel
-      if let photoPath = member.profilePhotoPath {
-        let photoURL = imageFetcher.posterURL(path: photoPath, size: .w500)
-        photoViewModel = RemoteImageViewModel(url: photoURL, placeholder: placeholder, fetcher: imageFetcher)
-      } else {
-        photoViewModel = StaticImageViewModel(image: placeholder)
-      }
-      return MoviePersonellMemberViewModelImpl(name: member.name, occupation: member.job, photo: photoViewModel)
-    }
-    
-    cast = details.credits.cast.map { member -> MoviePersonellMemberViewModel in
-      let photoViewModel: ImageViewModel
-      if let photoPath = member.profilePhotoPath {
-        let photoURL = imageFetcher.posterURL(path: photoPath, size: .w500)
-        photoViewModel = RemoteImageViewModel(url: photoURL, placeholder: placeholder, fetcher: imageFetcher)
-      } else {
-        photoViewModel = StaticImageViewModel(image: placeholder)
-      }
-      return MoviePersonellMemberViewModelImpl(name: member.name, occupation: member.character, photo: photoViewModel)
-    }
+    crew = details.credits.crew.map(personellViewModel)
+    cast = details.credits.cast.map(personellViewModel)
 
     images = details.images.backdrops
       .map { imageFetcher.posterURL(path: $0.path, size: .w780) }
@@ -185,5 +166,33 @@ class MovieDetailsViewModelImpl: MovieDetailsViewModel {
   private func update(_ favorites: FavoriteMoviesState) {
     isFavorite = favorites.isFavorite(id: movie.id)
     onChanged?()
+  }
+
+  private func photoViewModel(for member: MovieDetailsPersonellMember) -> ImageViewModel? {
+    guard let photoPath = member.profilePhotoPath else { return nil }
+    
+    let photoURL = imageFetcher.posterURL(path: photoPath, size: .w500)
+    return RemoteImageViewModel(url: photoURL, fetcher: imageFetcher)
+  }
+
+  private func personellViewModel(for member: MovieDetailsPersonellMember) -> MoviePersonellMemberViewModel {
+    let profilePhotoViewModel = photoViewModel(for: member)
+    return MoviePersonellMemberViewModelImpl(
+      name: member.name,
+      occupation: member.occupation,
+      photo: profilePhotoViewModel,
+      initials: member.name.initials
+    )
+  }
+}
+
+private extension String {
+  var initials: String {
+    let namePartSeparator = CharacterSet.whitespaces.union(CharacterSet(charactersIn: "-"))
+    let nameParts = components(separatedBy: namePartSeparator)
+    return nameParts
+      .map({ $0.uppercased() })
+      .map({ $0.prefix(1) })
+      .joined()
   }
 }

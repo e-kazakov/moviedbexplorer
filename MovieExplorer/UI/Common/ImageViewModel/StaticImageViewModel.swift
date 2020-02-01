@@ -10,7 +10,7 @@ import UIKit
 
 class StaticImageViewModel: ImageViewModel {
   
-  let image: UIImage?
+  let image: UIImage
 
   init(image: UIImage) {
     self.image = image

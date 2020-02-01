@@ -8,6 +8,12 @@
 
 import Foundation
 
+protocol MovieDetailsPersonellMember {
+  var name: String { get }
+  var profilePhotoPath: String? { get }
+  var occupation: String { get }
+}
+
 struct MovieDetails: Codable, Equatable {
   
   struct Images: Codable, Equatable {
@@ -15,10 +21,12 @@ struct MovieDetails: Codable, Equatable {
     let posters: [Image]
   }
   
-  struct CastMember: Codable, Equatable {
+  struct CastMember: MovieDetailsPersonellMember, Codable, Equatable {
     let character: String
     let name: String
     let profilePhotoPath: String?
+    
+    var occupation: String { character }
     
     private enum CodingKeys: String, CodingKey {
       case character = "character"
@@ -27,12 +35,14 @@ struct MovieDetails: Codable, Equatable {
     }
   }
   
-  struct CrewMember: Codable, Equatable {
+  struct CrewMember: MovieDetailsPersonellMember, Codable, Equatable {
     let name: String
     let job: String
     let department: String
     let profilePhotoPath: String?
     
+    var occupation: String { job }
+
     private enum CodingKeys: String, CodingKey {
       case name = "name"
       case job = "job"

@@ -10,20 +10,22 @@ import Foundation
 
 protocol MoviePersonellMemberViewModel {
   var name: String { get }
+  var initials: String { get }
   var occupation: String { get }
-  var photo: ImageViewModel { get }
+  var photo: ImageViewModel? { get }
 }
 
 class MoviePersonellMemberViewModelImpl: MoviePersonellMemberViewModel {
   
   let name: String
   let occupation: String
-  let photo: ImageViewModel
+  let photo: ImageViewModel?
+  let initials: String
   
-  init(name: String, occupation: String, photo: ImageViewModel) {
+  init(name: String, occupation: String, photo: ImageViewModel?, initials: String) {
     self.name = name
     self.occupation = occupation
     self.photo = photo
+    self.initials = initials
   }
-  
 }

@@ -10,6 +10,16 @@ import UIKit
 
 class MovieDetailsMemberCell: UICollectionViewCell {
   
+  let initialsLabel: UILabel = {
+    let label = UILabel()
+    label.textColor = .appLabel
+    label.textAlignment = .center
+    label.font = UIFont.preferredFont(forTextStyle: .largeTitle)
+    label.backgroundColor = .appPlaceholder
+    label.layer.masksToBounds = true
+    label.layer.cornerRadius = 4
+    return label
+  }()
   let imageView: UIImageView = {
     let imageView = UIImageView()
     imageView.contentMode = .scaleAspectFill
@@ -47,6 +57,7 @@ class MovieDetailsMemberCell: UICollectionViewCell {
   }
   
   private func setupSubviews() {
+    contentView.mve.addSubview(initialsLabel)
     contentView.mve.addSubview(imageView)
     contentView.mve.addSubview(nameLabel)
     contentView.mve.addSubview(occupationLabel)
@@ -56,6 +67,11 @@ class MovieDetailsMemberCell: UICollectionViewCell {
       imageView.leftAnchor.constraint(equalTo: contentView.leftAnchor),
       imageView.rightAnchor.constraint(equalTo: contentView.rightAnchor),
       imageView.heightAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 1.5),
+      
+      initialsLabel.topAnchor.constraint(equalTo: imageView.topAnchor),
+      initialsLabel.leftAnchor.constraint(equalTo: imageView.leftAnchor),
+      initialsLabel.rightAnchor.constraint(equalTo: imageView.rightAnchor),
+      initialsLabel.heightAnchor.constraint(equalTo: imageView.heightAnchor),
 
       nameLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 8),
       nameLabel.leftAnchor.constraint(equalTo: contentView.leftAnchor),
@@ -76,10 +92,13 @@ class MovieDetailsMemberCell: UICollectionViewCell {
     self.viewModel = viewModel
     
     nameLabel.text = viewModel.name
+    initialsLabel.text = viewModel.initials
     occupationLabel.text = viewModel.occupation
-    reuseDisposable = imageView.mve.setImage(viewModel.photo)
-    
-    viewModel.photo.load()
+    if let photo = viewModel.photo {
+      reuseDisposable = imageView.mve.setImage(photo)
+    } else {
+      imageView.isHidden = true
+    }
   }
   
   override func prepareForReuse() {
@@ -88,6 +107,7 @@ class MovieDetailsMemberCell: UICollectionViewCell {
     reuseDisposable?.dispose()
     reuseDisposable = nil
     imageView.layer.removeAllAnimations()
+    imageView.isHidden = false
   }
 }
 
