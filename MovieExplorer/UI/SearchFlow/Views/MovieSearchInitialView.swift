@@ -10,6 +10,10 @@ import UIKit
 
 class MovieSearchInitialView: UIView {
   
+  private struct Strings {
+    static let message = "search_initial_message".localized
+  }
+  
   private let messageLabel: UILabel = {
     let label = UILabel()
     label.font = UIFont.preferredFont(forTextStyle: .title1)
@@ -23,7 +27,7 @@ class MovieSearchInitialView: UIView {
     setupSubviews()
     style()
     
-    messageLabel.text = "Search movies"
+    messageLabel.text = Strings.message
   }
   
   required init?(coder aDecoder: NSCoder) {

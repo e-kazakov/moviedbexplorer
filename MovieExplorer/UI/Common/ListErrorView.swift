@@ -10,6 +10,10 @@ import UIKit
 
 class ListErrorView: UIView {
   
+  private struct Strings {
+    static let reloadButton = "movies_error_retry_button".localized
+  }
+  
   var onRetry: (() -> Void)?
   
   var title: String? {
@@ -41,7 +45,7 @@ class ListErrorView: UIView {
   
   private let reloadButton: UIButton = {
     let button = UIButton(type: .system)
-    button.setTitle("Retry", for: .normal)
+    button.setTitle(Strings.reloadButton, for: .normal)
     button.setTitleColor(.appLabel, for: .normal)
     button.tintColor = .appLabel
     button.layer.borderWidth = 1.0

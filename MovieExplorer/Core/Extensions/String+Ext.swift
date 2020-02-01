@@ -6,6 +6,8 @@
 //  Copyright © 2019 Evgeny Kazakov. All rights reserved.
 //
 
+import Foundation
+
 extension String {
   var emptyAsNil: String? {
     if isEmpty {
@@ -13,5 +15,9 @@ extension String {
     } else {
       return self
     }
+  }
+  
+  var localized: String {
+    NSLocalizedString(self, comment: "")
   }
 }

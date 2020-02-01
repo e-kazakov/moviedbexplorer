@@ -1,0 +1,12 @@
+/* 
+  Localizable.strings
+  MovieExplorer
+
+  Created by Evgeny Kazakov on 1/8/20.
+  Copyright © 2020 Evgeny Kazakov. All rights reserved.
+*/
+
+"movies_error_retry_button" = "Retry";
+
+"search_initial_message" = "Search movies";
+"search_empty_message" = "No movies found";

@@ -10,6 +10,10 @@ import UIKit
 
 class MovieSearchEmptyView: UIView {
   
+  private struct Strings {
+    static let message = "search_empty_message".localized
+  }
+  
   private let messageLabel: UILabel = {
     let label = UILabel()
     label.font = UIFont.preferredFont(forTextStyle: .title1)
@@ -23,7 +27,7 @@ class MovieSearchEmptyView: UIView {
     setupSubviews()
     style()
     
-    messageLabel.text = "No movies found"
+    messageLabel.text = Strings.message
   }
   
   required init?(coder aDecoder: NSCoder) {
