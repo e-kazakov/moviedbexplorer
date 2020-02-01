@@ -22,7 +22,7 @@ class FavoritesInitialView: UIView {
     
     setupSubviews()
     
-    messageLabel.text = "No starred films"
+    messageLabel.text = L10n.Favorites.emptyMessage
   }
   
   required init?(coder aDecoder: NSCoder) {

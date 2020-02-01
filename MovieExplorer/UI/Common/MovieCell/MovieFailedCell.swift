@@ -23,7 +23,7 @@ class MovieFailedCell: UICollectionViewCell {
   
   private let retryButton: UIButton = {
     let button = UIButton(type: .system)
-    button.setTitle("Retry", for: .normal)
+    button.setTitle(L10n.Common.MoviesList.reloadButton, for: .normal)
     button.setTitleColor(.appLabel, for: .normal)
     button.tintColor = .label
     return button
@@ -47,7 +47,7 @@ class MovieFailedCell: UICollectionViewCell {
     
     setupConstraints()
     
-    messageLabel.text = "Failed to load more movies"
+    messageLabel.text = L10n.Common.MoviesList.moreFailedMessage
     retryButton.addTarget(self, action: #selector(onRetryButtonTapped), for: .touchUpInside)
   }
   

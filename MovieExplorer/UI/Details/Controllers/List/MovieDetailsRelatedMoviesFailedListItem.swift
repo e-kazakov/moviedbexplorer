@@ -14,7 +14,7 @@ class MovieDetailsRelatedMoviesFailedListItem: ListItem {
   
   func cell(in collectionView: UICollectionView, at indexPath: IndexPath) -> UICollectionViewCell {
     let cell = collectionView.dequeueReusableCell(MovieFailedCell.self, for: indexPath)
-    cell.message = "Failed to load"
+    cell.message = L10n.Details.relatedMoviesFailedMessage
     cell.onRetry = { [weak self] in self?.onRetry?() }
     return cell
   }

@@ -25,7 +25,7 @@ class MovieDetailsRelatedMoviesEmptyCell: UICollectionViewCell {
   private func setupSubviews() {
     setupConstraints()
     
-    messageLabel.text = #"¯\_(ツ)_/¯"#
+    messageLabel.text = L10n.Details.relatedMoviesEmptyMessage
   }
   
   private func setupConstraints() {

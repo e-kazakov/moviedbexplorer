@@ -48,7 +48,7 @@ class FavoritesVC: UIViewController {
   }
   
   private func configureNavigationItem() {
-    title = "Favorites"
+    title = L10n.Favorites.navTitle
     navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
   }
   

@@ -18,9 +18,9 @@ class ExploreView: UIView {
   }()
   let errorView: ListErrorView = {
     let errorView = ListErrorView()
-    errorView.title = "Failed to load movies"
-    errorView.message = "Please retry"
-    errorView.retryButtonTitle = "Retry"
+    errorView.title = L10n.Explore.failedTitle
+    errorView.message = L10n.Explore.failedMessage
+    errorView.retryButtonTitle = L10n.Explore.failedRetryButton
     return errorView
   }()
 

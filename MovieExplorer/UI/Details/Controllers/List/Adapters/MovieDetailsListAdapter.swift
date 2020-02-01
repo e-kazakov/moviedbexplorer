@@ -38,9 +38,9 @@ class MovieDetailsListAdapter {
       castSection(viewModel.cast),
       crewTitleSection(viewModel.crew),
       crewSection(viewModel.crew),
-      relatedMoviesTitleSection("Recommended"),
+      relatedMoviesTitleSection(L10n.Details.sectionRecommendedTitle),
       recommendedMoviesSection(viewModel.recommendedMovies),
-      relatedMoviesTitleSection("Similar"),
+      relatedMoviesTitleSection(L10n.Details.sectionSimilarTitle),
       similarMoviesSection(viewModel.similarMovies),
     ]
     return List(sections: sections.compactMap({ $0 }))
@@ -103,7 +103,7 @@ class MovieDetailsListAdapter {
   }
   
   private func castTitleSection(_ cast: [MoviePersonellMemberViewModel]) -> ListSection? {
-    return membersTitleSection(members: cast, title: "Cast")
+    return membersTitleSection(members: cast, title: L10n.Details.sectionCastTitle)
   }
   
   private func castSection(_ cast: [MoviePersonellMemberViewModel]) -> ListSection? {
@@ -111,7 +111,7 @@ class MovieDetailsListAdapter {
   }
 
   private func crewTitleSection(_ cast: [MoviePersonellMemberViewModel]) -> ListSection? {
-    return membersTitleSection(members: cast, title: "Crew")
+    return membersTitleSection(members: cast, title: L10n.Details.sectionCrewTitle)
   }
   
   private func crewSection(_ crew: [MoviePersonellMemberViewModel]) -> ListSection? {

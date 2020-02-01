@@ -18,7 +18,7 @@ class MovieDetailsView: UIView {
   }()
   let errorView: ListErrorView = {
     let errorView = ListErrorView()
-    errorView.title = "Failed to load movie"
+    errorView.title = L10n.Details.failedTitle
     return errorView
   }()
   let loadingView = MovieDetailsLoadingView()

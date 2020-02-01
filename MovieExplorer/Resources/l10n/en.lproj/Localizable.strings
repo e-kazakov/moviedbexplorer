@@ -1,0 +1,46 @@
+/* 
+  Localizable.strings
+  MovieExplorer
+
+  Created by Evgeny Kazakov on 1/8/20.
+  Copyright © 2020 Evgeny Kazakov. All rights reserved.
+*/
+
+// MARK: - Common
+
+// MARK: Movies List
+"movies_error_retry_button" = "Retry";
+"movies_failed_title" = "Failed to load movies";
+"movies_failed_message" = "Try loading again";
+"movies_more_failed_message" = "Failed to load more movies";
+
+// MARK: - Tabs
+"tab_explore" = "Explore";
+"tab_favorites" = "Favorites";
+"tab_search" = "Search";
+
+// MARK: - Explore
+"explore_nav_title" = "Popular";
+"explore_failed_title" = "Failed to load movies";
+"explore_failed_message" = "Please retry";
+"explore_failed_retry_button" = "Retry";
+
+// MARK: - Search
+"search_initial_message" = "Search movies";
+"search_empty_message" = "No movies found";
+"search_failed_title" = "Search failed";
+"search_failed_message" = "Please retry";
+"search_failed_retry_button" = "Retry";
+
+// MARK: - Favorites
+"favorites_nav_title" = "Favorites";
+"favorites_empty_message" = "No starred films";
+
+// MARK: - Details
+"details_failed_title" = "Failed to load movie";
+"details_section_cast_title" = "Cast";
+"details_section_crew_title" = "Crew";
+"details_section_recommended_title" = "Recommended";
+"details_section_similar_title" = "Similar";
+"details_related_movies_failed_message" = "Failed to load";
+"details_related_movies_empty_message" = "¯\_(ツ)_/¯";

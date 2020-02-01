@@ -27,9 +27,9 @@ class MovieSearchView: UIView {
   let emptyView = MovieSearchEmptyView()
   let errorView: ListErrorView = {
     let errorView = ListErrorView()
-    errorView.title = "Failed to search results"
-    errorView.message = "Please retry"
-    errorView.retryButtonTitle = "Retry"
+    errorView.title = L10n.Search.failedTitle
+    errorView.message = L10n.Search.failedMessage
+    errorView.retryButtonTitle = L10n.Search.failedRetryButton
     return errorView
   }()
 

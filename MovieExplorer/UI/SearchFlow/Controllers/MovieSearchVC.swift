@@ -44,7 +44,6 @@ class MovieSearchVC: UIViewController {
   }
   
   private func configureNavigationItem() {
-    title = "Search"
     navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
     navigationItem.titleView = searchBar
   }

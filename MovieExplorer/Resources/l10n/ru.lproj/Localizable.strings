@@ -1,0 +1,45 @@
+/* 
+  Localizable.strings
+  MovieExplorer
+
+  Created by Evgeny Kazakov on 1/8/20.
+  Copyright © 2020 Evgeny Kazakov. All rights reserved.
+*/
+// MARK: - Common
+
+// MARK: Movies List
+"movies_error_retry_button" = "Загрузить";
+"movies_failed_title" = "Ошибка загрузки";
+"movies_failed_message" = "Попробуйте снова";
+"movies_more_failed_message" = "Ошибка загрузки";
+
+// MARK: - Tabs
+"tab_explore" = "Популярное";
+"tab_favorites" = "Избранное";
+"tab_search" = "Поиск";
+
+// MARK: - Explore
+"explore_nav_title" = "Популярное";
+"explore_failed_title" = "Ошибка загрузки";
+"explore_failed_message" = "Попробуйте снова";
+"explore_failed_retry_button" = "Загрузить";
+
+// MARK: - Search
+"search_initial_message" = "Поиск фильмов";
+"search_empty_message" = "Ничего не найдено";
+"search_failed_title" = "Ошибка поиска";
+"search_failed_message" = "Попробуйте снова";
+"search_failed_retry_button" = "Искать";
+
+// MARK: - Favorites
+"favorites_nav_title" = "Избранное";
+"favorites_empty_message" = "Нет избранных";
+
+// MARK: - Details
+"details_failed_title" = "Ошибка загрузки";
+"details_section_cast_title" = "В ролях";
+"details_section_crew_title" = "Съемочная группа";
+"details_section_recommended_title" = "Рекомендации";
+"details_section_similar_title" = "Похожие";
+"details_related_movies_failed_message" = "Ошибка загрузки";
+"details_related_movies_empty_message" = "¯\_(ツ)_/¯";

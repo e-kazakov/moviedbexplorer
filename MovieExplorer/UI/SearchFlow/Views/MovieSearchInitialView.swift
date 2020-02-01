@@ -23,7 +23,7 @@ class MovieSearchInitialView: UIView {
     setupSubviews()
     style()
     
-    messageLabel.text = "Search movies"
+    messageLabel.text = L10n.Search.initialMessage
   }
   
   required init?(coder aDecoder: NSCoder) {

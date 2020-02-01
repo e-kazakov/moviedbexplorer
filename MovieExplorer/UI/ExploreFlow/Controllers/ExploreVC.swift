@@ -50,7 +50,7 @@ class ExploreVC: UIViewController {
   }
   
   private func configureNavigationItem() {
-    title = "The Movie DB"
+    title = L10n.Explore.navTitle
     navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
   }
   

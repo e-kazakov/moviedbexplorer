@@ -41,7 +41,7 @@ class ListErrorView: UIView {
   
   private let reloadButton: UIButton = {
     let button = UIButton(type: .system)
-    button.setTitle("Retry", for: .normal)
+    button.setTitle(L10n.Common.MoviesList.reloadButton, for: .normal)
     button.setTitleColor(.appLabel, for: .normal)
     button.tintColor = .appLabel
     button.layer.borderWidth = 1.0
@@ -69,8 +69,8 @@ class ListErrorView: UIView {
     setupConstraints()
     
     reloadButton.addTarget(self, action: #selector(onReloadButtonTap), for: .touchUpInside)
-    titleLabel.text = "Failed to load movies"
-    messageLabel.text = "Try loading again"
+    titleLabel.text = L10n.Common.MoviesList.failedTitle
+    messageLabel.text = L10n.Common.MoviesList.failedMessage
   }
   
   private func setupConstraints() {

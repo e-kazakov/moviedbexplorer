@@ -23,7 +23,7 @@ class MovieSearchEmptyView: UIView {
     setupSubviews()
     style()
     
-    messageLabel.text = "No movies found"
+    messageLabel.text = L10n.Search.emptyMessage
   }
   
   required init?(coder aDecoder: NSCoder) {
