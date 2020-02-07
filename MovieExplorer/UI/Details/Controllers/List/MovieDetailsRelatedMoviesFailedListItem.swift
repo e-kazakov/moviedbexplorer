@@ -18,8 +18,4 @@ class MovieDetailsRelatedMoviesFailedListItem: ListItem {
     cell.onRetry = { [weak self] in self?.onRetry?() }
     return cell
   }
-    
-  func size(containerSize: CGSize) -> CGSize {
-    containerSize
-  }
 }

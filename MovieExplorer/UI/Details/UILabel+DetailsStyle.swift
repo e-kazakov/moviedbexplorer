@@ -47,4 +47,11 @@ extension UILabel.Style {
     return label
   }
 
+  @discardableResult
+  static func emptyRelated(_ label: UILabel) -> UILabel {
+    label.font = UIFont.monospacedSystemFont(ofSize: 36, weight: .thin)
+    label.textAlignment = .center
+    label.numberOfLines = 0
+    return label
+  }
 }

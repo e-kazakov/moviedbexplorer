@@ -20,8 +20,14 @@ protocol ListItem {
 }
 
 extension ListItem {
+  
   func prefetch() { }
+  
   func select() { }
+  
+  func size(containerSize: CGSize) -> CGSize {
+    containerSize
+  }
 }
 
 protocol ListSupplementaryItem {

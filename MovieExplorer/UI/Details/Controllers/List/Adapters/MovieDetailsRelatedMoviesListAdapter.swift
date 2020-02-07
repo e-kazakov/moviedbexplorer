@@ -41,11 +41,19 @@ class MovieDetailsRelatedMoviesListAdapter {
     return List.single(item)
   }
   
+  private func emptyList() -> List {
+    List.single(
+      MovieDetailsRelatedMoviesEmptyListItem()
+    )
+  }
+  
   private enum NextStatus {
     case loading, loaded, failed
   }
   
   private func loadedList(movies: [RelatedMovieCellViewModel], nextStatus: NextStatus) -> List {
+    guard !movies.isEmpty else { return emptyList() }
+    
     var section = ListSection(
       header: nil,
       items: movies.map { movie in
